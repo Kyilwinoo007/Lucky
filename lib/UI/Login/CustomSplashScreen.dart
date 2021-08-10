@@ -85,10 +85,17 @@ Widget build(BuildContext context) {
                           RotateAnimatedText('Lucky',
                           duration: Duration(milliseconds: 3000),
                           textStyle: TextStyle(
-                            fontSize: 80.0,
-                            fontWeight: FontWeight.w300
+                            fontSize: 60.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
                           )),
-                          RotateAnimatedText('Be Your Friend'),
+                          RotateAnimatedText('Be Your Friend',
+                          duration: Duration(milliseconds: 3000),
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 40.0
+                          )),
                         ],
                         isRepeatingAnimation: true,
                       ),

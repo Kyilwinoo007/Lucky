@@ -7,29 +7,30 @@ import 'package:lucky/Data/Database/database.dart';
 import 'package:lucky/Repository/TransactionViewModel.dart';
 import 'package:lucky/UI/Transactions/TransactionDetail.dart';
 import 'package:lucky/UI/Transactions/TransactionItem.dart';
+import 'package:lucky/UI/Transfer/CreateTransfer.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/UI/Withdraw/Withdraw.dart';
 import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/Utils.dart';
 import 'package:lucky/common/serviceLocator.dart';
 
-class WithDrawRecord extends StatefulWidget{
+class TransferRecord extends StatefulWidget{
   @override
-  _WithdrawRecordState createState() => _WithdrawRecordState();
+  _TransferRecordState createState() => _TransferRecordState();
 }
 
-class _WithdrawRecordState extends State<WithDrawRecord> {
+class _TransferRecordState extends State<TransferRecord> {
   final TransactionViewModel model = serviceLocator<TransactionViewModel>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: luckyAppbar(
-          context: context,
-          title: "Withdraw",
-        ),
+      // appBar: luckyAppbar(
+      //   context: context,
+      //   title: "Transfer",
+      // ),
       body: StreamBuilder(
-          stream: model.getTransactionByType(context, Constants.WITHDRAW_TYPE),
+          stream: model.getTransactionByType(context, Constants.TRANSFER_TYPE),
           builder: (context, AsyncSnapshot<List<Transaction>> snapshot) {
             // if (!snapshot.hasData) return Utils.buildLoading();
             final transactionList = snapshot.data ?? [];
@@ -39,14 +40,9 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add,size: 25,),
         backgroundColor: LuckyColors.splashScreenColors,
-        onPressed: () async{
-      var result = await  Navigator.push(context, MaterialPageRoute(
-              builder: (context) => Withdraw()));
-      if(result != null){
-        if(result){
-          model.getTransactionByType(context, Constants.WITHDRAW_TYPE);
-        }
-      }
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => CreateTransfer()));
         },
       ),
     );
@@ -67,7 +63,7 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Withdraw List");
+        title: "Empty Transfer List");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {
@@ -76,7 +72,8 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
       itemBuilder: (context, index) => InkWell(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => TransactionDetail(transactionList[index])));        },
+              builder: (context) => TransactionDetail(transactionList[index])));
+          },
         child: Container(
           width: 20,
           child: Slidable(
@@ -118,8 +115,7 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
         itemBuilder: (context, index) => InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(
-                builder: (context) => TransactionDetail(transactionList[index])));
-          },
+                builder: (context) => TransactionDetail(transactionList[index])));          },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
@@ -131,6 +127,17 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
               ),
             ],
             secondaryActions: <Widget>[
+              // IconSlideAction(
+              //   caption: 'Edit',
+              //   color: Colors.indigo,
+              //   icon: Icons.edit,
+              //   onTap: () => {
+              //     Navigator.of(context)
+              //         .pushNamed("/withdraw-create", arguments: {
+              //       "transactionEntity": transactionList[index],
+              //     })
+              //   },
+              // ),
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
@@ -155,7 +162,7 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
         context, "Confirm", "Are you sure want to delete.")
         .then((value) {
       if (value) {
-         model.deleteTransaction(context, transaction);
+        model.deleteTransaction(context, transaction);
       }
     });
   }

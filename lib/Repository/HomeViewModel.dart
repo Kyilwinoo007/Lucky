@@ -15,7 +15,7 @@ class HomeViewModel extends ChangeNotifier{
     List<BalanceData> result = await balanceDao.getAllBalance;
     for(int i = 0 ; i< result.length ; i ++){
       totalCash += result[i].cash;
-      totalEmoney += result[i].e_money;
+      totalEmoney += result[i].eMoney;
     }
     this.totalCash = totalCash;
     this.totalEmoney = totalEmoney;

@@ -4,13 +4,15 @@ import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/Data/Database/database.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
 
-class TransactionItem extends StatelessWidget {
+class BankTransactionItem extends StatelessWidget {
   final Transaction transaction;
+  final String transferorType;
 
-  const TransactionItem({Key? key, required this.transaction}) : super(key: key);
+  const BankTransactionItem({Key? key, required this.transaction, required this.transferorType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    late bool isTransfer ,isBank;
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
       ResponsiveWidgets.init(
         context,
@@ -26,25 +28,37 @@ class TransactionItem extends StatelessWidget {
         allowFontScaling: true,
       );
     }
-    bool isWithDraw = transaction.transactionsType == Constants.WITHDRAW_TYPE;
+    if(transferorType == Constants.BankType){
+      isBank = true;
+      isTransfer = transaction.transactionsType == Constants.BANK_TRANSFER_TYPE;
+    }else if(transferorType == Constants.PartnerType){
+      isBank = false;
+      isTransfer = transaction.transactionsType == Constants.PARTNER_TRANSFER_TYPE;
+    }
     return Card(
       elevation: 5,
       child: Container(
 //        height: 80.sp,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: isWithDraw ? Colors.red[50] : Colors.green[50],
-//          child: Image.asset("images/kbzpay.png",fit: BoxFit.cover,)
+            backgroundColor: isTransfer ? Colors.red[50] : Colors.green[50],
             child: Icon(
-              isWithDraw ? Icons.arrow_back : Icons.arrow_forward,
-              color: isWithDraw ? Colors.red : Colors.green,
+              isTransfer ? Icons.arrow_back : Icons.arrow_forward,
+              color: isTransfer ? Colors.red : Colors.green,
               size: 30.0,
             ),
           ),
-          title: Text(
-            this.transaction.fromCustomerName.isEmpty
+          title: transaction.transferrorType == Constants.BankType ? Text(
+            this.transaction.bank.isEmpty
                 ? "Unknown"
-                : this.transaction.fromCustomerName,
+                : this.transaction.bank,
+            style: TextStyle(
+              fontSize: 15.0,
+            ),
+          ) : Text(
+            this.transaction.partner.isEmpty
+                ? "Unknown"
+                : this.transaction.partner,
             style: TextStyle(
               fontSize: 15.0,
             ),
@@ -57,7 +71,7 @@ class TransactionItem extends StatelessWidget {
           ),
           trailing: Container(
             decoration: BoxDecoration(
-              color: isWithDraw ? Colors.red[50] : Colors.green[50],
+              color: isTransfer ? Colors.red[50] : Colors.green[50],
               borderRadius: BorderRadius.all(
                 Radius.circular(10.0),
               ),
@@ -65,10 +79,10 @@ class TransactionItem extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(10.0),
               child: Text(
-                (isWithDraw ? "-" : "+") + " \$${this.transaction.amount}",
+                (isTransfer ? "-" : "+") + " \$${this.transaction.amount}",
                 style: TextStyle(
                   fontSize: 15.0,
-                  color: isWithDraw ? Colors.red : Colors.green,
+                  color: isTransfer ? Colors.red : Colors.green,
                   fontWeight: FontWeight.bold,
                 ),
               ),

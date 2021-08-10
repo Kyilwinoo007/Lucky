@@ -2,48 +2,113 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 part 'database.g.dart';
 class Balance extends Table{
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement().nullable()();
   RealColumn get cash => real().withDefault(Constant(0.0))();
-  RealColumn get e_money => real().withDefault(Constant(0.0))();
+  RealColumn get eMoney => real().withDefault(Constant(0.0))();
   TextColumn get date => text()();
-  TextColumn get agentId => text()();
+  TextColumn get agent => text()();
 }
+class BalanceInputRecords extends Table {
+  IntColumn get id => integer().autoIncrement().nullable()();
+
+  TextColumn get agent => text().withLength(max: 50)();
+
+  DateTimeColumn get date => dateTime()();
+
+  RealColumn get eMoney => real()();
+
+  RealColumn get cash => real()();
+}
+class OpeningClosing extends Table{
+  IntColumn get id => integer().autoIncrement().nullable()();
+  RealColumn get openingCash => real().withDefault(Constant(0.0))();
+  RealColumn get openingEMoney => real().withDefault(Constant(0.0))();
+  RealColumn get closingCash => real().nullable().withDefault(Constant(0.0))();
+  RealColumn get closingEMoney => real().nullable().withDefault(Constant(0.0))();
+  TextColumn get date => text()();
+  TextColumn get agent => text()();
+}
+
 class Transactions extends Table{
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement().nullable()();
   TextColumn get fromCustomerName => text()();
   TextColumn get toCustomerName => text()();
   TextColumn get fromPhone => text()();
   TextColumn get toPhone => text()();
-  TextColumn get agentId => text()();
+  TextColumn get bank => text()();
+  TextColumn get partner => text()();
+  TextColumn get phone => text()();
+  TextColumn get transferrorType => text()();
+
+  TextColumn get agent => text()();
   TextColumn get transactionsType => text()();
   TextColumn get date => text()();
+  TextColumn get time => text()();
   RealColumn get amount => real().withDefault(Constant(0.0))();
   RealColumn get commission => real().withDefault(Constant(0.0))();
   RealColumn get charges => real().withDefault(Constant(0.0))();
 
 }
-class BankTransactions extends Table{
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get fromBank => text()();
-  TextColumn get toBank => text()();
-  TextColumn get phone => text()();
-  RealColumn get amount => real().withDefault(Constant(0.0))();
-  RealColumn get commission => real().withDefault(Constant(0.0))();
-  TextColumn get date => text()();
-  TextColumn get bankId => text()();
-  TextColumn get type => text()();
-
-}
-
-@UseMoor(tables:[Balance,Transactions,BankTransactions],daos: [BalanceDao,TransactionsDao,BankTransactionsDao])
+@UseMoor(tables:[Balance,Transactions,BalanceInputRecords,OpeningClosing],daos: [BalanceDao,TransactionsDao ,BalanceInputRecordsDao,OpeningClosingDao])
 class MyDatabase extends _$MyDatabase {
   MyDatabase()
       : super(FlutterQueryExecutor.inDatabaseFolder(
-    path: 'db.sqlite',
+    path: 'lucky.sqlite',
   ));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+}
+
+@UseDao(tables: [OpeningClosing])
+class OpeningClosingDao extends DatabaseAccessor<MyDatabase> with _$OpeningClosingDaoMixin{
+  OpeningClosingDao(MyDatabase attachedDatabase) : super(attachedDatabase);
+
+  Future<List<OpeningClosingData>> get getAllOpeningClosing => (select(openingClosing)).get();
+  Stream<List<OpeningClosingData>> get watchAllModes => select(openingClosing).watch();
+
+  Future<OpeningClosingData> getOpeningClosingViaAgentId(String agent) =>
+      (select(openingClosing)..where((tbl) => tbl.agent.equals(agent))).getSingle();
+
+  Future<OpeningClosingData> getOpeningClosingByAgentAndDate(String agent,String date)=>
+      (select(openingClosing)..where((tbl) => tbl.agent.equals(agent) & tbl.date.equals(date))).getSingle();
+
+  Future<List<OpeningClosingData>> getAllOpeningClosingViaDate(String date) =>
+      (select(openingClosing)..where((tbl) => tbl.date.equals(date))).get();
+
+  Future insertOpeningClosing(OpeningClosingData openingClosingData) =>
+      into(openingClosing).insert(openingClosingData);
+
+  Future updateOpeningClosing(OpeningClosingData openingClosingData) =>
+      update(openingClosing).replace(openingClosingData);
+
+  Future deleteOpeningClosing(OpeningClosingData openingClosingData) =>
+      delete(openingClosing).delete(openingClosingData);
+}
+
+@UseDao(tables: [BalanceInputRecords])
+class BalanceInputRecordsDao extends DatabaseAccessor<MyDatabase> with _$BalanceInputRecordsDaoMixin{
+  BalanceInputRecordsDao(MyDatabase attachedDatabase) : super(attachedDatabase);
+
+  Future<List<BalanceInputRecord>> get getAllBalanceInputRecord => (select(balanceInputRecords)).get();
+  Stream<List<BalanceInputRecord>> get watchAllModes => select(balanceInputRecords).watch();
+
+  Future<BalanceInputRecord> getBalanceInputRecordViaAgentId(String agent) =>
+      (select(balanceInputRecords)..where((tbl) => tbl.agent.equals(agent))).getSingle();
+
+  // Future<List<Transaction>> getAllTransactionWithType(bool isWithdraw) =>
+  //     (select(transactions)..where((tbl) => tbl.isWithdraw.equals(isWithdraw)))
+  //         .get();
+
+  Future insertBalanceInputRecord(BalanceInputRecord balanceInputRecord) =>
+      into(balanceInputRecords).insert(balanceInputRecord);
+
+  Future updateBalanceInputRecord(BalanceInputRecord balanceInputRecord) =>
+      update(balanceInputRecords).replace(balanceInputRecord);
+
+  Future deleteBalanceInputRecord(BalanceInputRecord balanceInputRecord) =>
+      delete(balanceInputRecords).delete(balanceInputRecord);
 
 }
 
@@ -56,12 +121,12 @@ class BalanceDao extends DatabaseAccessor<MyDatabase> with _$BalanceDaoMixin{
   Future<List<BalanceData>> get getAllBalance => (select(balance)).get();
   Stream<List<BalanceData>> get watchAllModes => select(balance).watch();
 
-  Future<BalanceData> getBalanceViaAgentId(String agentId) =>
-      (select(balance)..where((tbl) => tbl.agentId.equals(agentId))).getSingle();
+  Future<BalanceData> getBalanceViaAgentId(String agent) =>
+      (select(balance)..where((tbl) => tbl.agent.equals(agent))).getSingle();
 
-  // Future<List<Transaction>> getAllTransactionWithType(bool isWithdraw) =>
-  //     (select(transactions)..where((tbl) => tbl.isWithdraw.equals(isWithdraw)))
-  //         .get();
+  Future<List<BalanceData>> getAllBalanceWithDate(String date) =>
+      (select(balance)..where((tbl) => tbl.date.equals(date)))
+          .get();
 
   Future insertBalance(BalanceData balanceData) =>
       into(balance).insert(balanceData);
@@ -84,8 +149,17 @@ class TransactionsDao extends DatabaseAccessor<MyDatabase> with _$TransactionsDa
           .watch();
 
 
+  Stream<List<Transaction>> watchAllTransactionWithTransferorType(String type) =>
+      (select(transactions)..where((tbl) => tbl.transferrorType.equals(type)))
+          .watch();
+
+
+
   Future<Transaction> getTransactionViaAgentId(String agentId) =>
-      (select(transactions)..where((tbl) => tbl.agentId.equals(agentId))).getSingle();
+      (select(transactions)..where((tbl) => tbl.agent.equals(agentId))).getSingle();
+
+  Future<List<Transaction>> getAllTransactionViaAgent(String agent) =>
+      (select(transactions)..where((tbl) => tbl.agent.equals(agent))).get();
 
   Future<List<Transaction>> getAllTransactionWithType(String type) =>
       (select(transactions)..where((tbl) => tbl.transactionsType.equals(type)))
@@ -100,30 +174,5 @@ class TransactionsDao extends DatabaseAccessor<MyDatabase> with _$TransactionsDa
 
   Future deleteTransaction(Transaction transaction) =>
       delete(transactions).delete(transaction);
-
-}
-@UseDao(tables:[BankTransactions])
-class BankTransactionsDao extends DatabaseAccessor<MyDatabase> with _$BankTransactionsDaoMixin{
-  BankTransactionsDao(MyDatabase attachedDatabase) : super(attachedDatabase);
-
-  Future<List<BankTransaction>> get getAllBankTransactions => (select(bankTransactions)).get();
-  Stream<List<BankTransaction>> get watchAllModes => select(bankTransactions).watch();
-
-  Future<BankTransaction> getBankTransactionViaBankId(String bankId) =>
-      (select(bankTransactions)..where((tbl) => tbl.bankId.equals(bankId))).getSingle();
-
-  Future<List<BankTransaction>> getAllBankTransactionWithType(String type) =>
-      (select(bankTransactions)..where((tbl) => tbl.type.equals(type)))
-          .get();
-
-
-  Future insertBankTransaction(BankTransaction transaction) =>
-      into(bankTransactions).insert(transaction);
-
-  Future updateBankTransaction(BankTransaction transaction) =>
-      update(bankTransactions).replace(transaction);
-
-  Future deleteBankTransaction(BankTransaction transaction) =>
-      delete(bankTransactions).delete(transaction);
 
 }

@@ -14,35 +14,38 @@ import 'package:lucky/Utils/styles.dart';
 import 'package:lucky/common/serviceLocator.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
 
-class Withdraw extends StatefulWidget{
+class CreateTransfer extends StatefulWidget {
   @override
-  _WithdrawState createState() => _WithdrawState();
-
+  _CreateTransferState createState() => _CreateTransferState();
 }
 
-class _WithdrawState extends State<Withdraw> {
-  late List<DropdownMenuItem<String>> _agentDropDownMenuItems = getDropDownMenuItems();
+class _CreateTransferState extends State<CreateTransfer> {
+  late List<DropdownMenuItem<String>> _agentDropDownMenuItems =
+      getDropDownMenuItems();
   String? _selectedAgent = Constants.agentList[0];
   late BalanceData balancedata;
 
   final TransactionViewModel model = serviceLocator<TransactionViewModel>();
 
-  TextEditingController withdrawerNameController = new TextEditingController();
+  TextEditingController recipientNameController = new TextEditingController();
   TextEditingController transferorNameController = new TextEditingController();
-  TextEditingController transferorPhoneNumberController = new TextEditingController();
-  TextEditingController withdrawerPhoneNumberController = new TextEditingController();
-  TextEditingController withdrawAmountController = new TextEditingController();
+  TextEditingController transferorPhoneNumberController =
+      new TextEditingController();
+  TextEditingController recipientPhoneNumberController =
+      new TextEditingController();
+  TextEditingController amountController = new TextEditingController();
   TextEditingController transferAgentController = new TextEditingController();
   TextEditingController commissionController = new TextEditingController();
+  TextEditingController chargesController = new TextEditingController();
 
-  Wrapper _transferorPhoneNumberErrMessage =  new Wrapper("");
-  Wrapper _withdrawerPhoneNumberErrMessage = new Wrapper("");
-  Wrapper _withdrawAmountErrMessage = new Wrapper("");
+  Wrapper _transferorPhoneNumberErrMessage = new Wrapper("");
+  Wrapper _recipientPhoneNumberErrMessage = new Wrapper("");
+  Wrapper _amountErrMessage = new Wrapper("");
+  Wrapper _chargesErrMessage = new Wrapper("");
   Wrapper _commissionErrMessage = new Wrapper("");
 
   var _date = new DateTime.now();
   var _time = new DateTime.now();
-
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = [];
@@ -71,14 +74,15 @@ class _WithdrawState extends State<Withdraw> {
 
   @override
   Widget build(BuildContext context) {
-    final withdrawerNameInput = CustomTextInput(
-      controller: this.withdrawerNameController,
-      label: "Withdrawer Name",
-      hintText: "Enter Withdrawer Name",
+    final recipientNameInput = CustomTextInput(
+      controller: this.recipientNameController,
+      label: "Recipient Name",
+      hintText: "Enter Recipient Name",
       leadingIcon: Icon(
         LineAwesomeIcons.user,
         size: 25.0,
-      ), errorMessage: '',
+      ),
+      errorMessage: '',
     );
     final transferorNameInput = CustomTextInput(
       controller: this.transferorNameController,
@@ -90,12 +94,12 @@ class _WithdrawState extends State<Withdraw> {
       ),
     );
 
-    final withdrawerPhNoInput = CustomTextInput(
+    final recipientPhNoInput = CustomTextInput(
       inputType: TextInputType.number,
-      controller: this.withdrawerPhoneNumberController,
-      errorMessage: this._withdrawerPhoneNumberErrMessage.value,
+      controller: this.recipientPhoneNumberController,
+      errorMessage: this._recipientPhoneNumberErrMessage.value,
       isRequired: true,
-      label: "Withdrawer Phone No.",
+      label: "Recipient Phone No.",
       hintText: "eg.09***",
       leadingIcon: Icon(
         LineAwesomeIcons.phone,
@@ -106,11 +110,12 @@ class _WithdrawState extends State<Withdraw> {
       controller: this.commissionController,
       errorMessage: this._commissionErrMessage.value,
       label: "Commission",
-      inputType: TextInputType.number,
+      inputType: TextInputType.phone,
       leadingIcon: Icon(
         LineAwesomeIcons.hand_holding_us_dollar,
         size: 25.0,
-      ), hintText: 'eg.1000',
+      ),
+      hintText: 'eg.1000',
     );
     final transferorPhoneNoInput = CustomTextInput(
       controller: this.transferorPhoneNumberController,
@@ -124,11 +129,23 @@ class _WithdrawState extends State<Withdraw> {
         size: 25.0,
       ),
     );
+    final chargesInput = CustomTextInput(
+      errorMessage: this._chargesErrMessage.value,
+      inputType: TextInputType.number,
+      controller: this.chargesController,
+      isRequired: false,
+      label: "Fees",
+      hintText: "eg.1000",
+      leadingIcon: Icon(
+        LineAwesomeIcons.alternate_wavy_money_bill,
+        size: 25.0,
+      ),
+    );
     final transferAmountInput = CustomTextInput(
       inputType: TextInputType.number,
       isRequired: true,
-      controller: this.withdrawAmountController,
-      errorMessage: this._withdrawAmountErrMessage.value,
+      controller: this.amountController,
+      errorMessage: this._amountErrMessage.value,
       // onChangeHandler: this.amountChangeHandler,
       label: "Amount",
       hintText: "eg.12000",
@@ -188,10 +205,10 @@ class _WithdrawState extends State<Withdraw> {
         DatePicker.showTime12hPicker(context,
             theme: Utils.kDateTimePickerTheme,
             showTitleActions: true, onConfirm: (date) {
-              setState(() {
-                this._time = date;
-              });
-            }, currentTime: this._time);
+          setState(() {
+            this._time = date;
+          });
+        }, currentTime: this._time);
       },
       child: MyCustomInput(
         isRequired: false,
@@ -211,9 +228,7 @@ class _WithdrawState extends State<Withdraw> {
               ),
               Center(
                 child: Text(
-                  this._time == null
-                      ? "Choose Time"
-                      : Utils.formatTime(_time),
+                  this._time == null ? "Choose Time" : Utils.formatTime(_time),
                   style: formLabelTextStyle.copyWith(
                     color: Colors.black,
                     fontSize: 14.0,
@@ -235,7 +250,7 @@ class _WithdrawState extends State<Withdraw> {
             padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: Icon(
               LineAwesomeIcons.alternate_sync,
-              size: 20.0,
+              size: 25.0,
               color: Colors.grey,
             ),
           ),
@@ -245,8 +260,8 @@ class _WithdrawState extends State<Withdraw> {
                 elevation: 0,
                 value: _selectedAgent,
                 items: _agentDropDownMenuItems,
-                onChanged: (selectedItem){
-                  setState((){
+                onChanged: (selectedItem) {
+                  setState(() {
                     _selectedAgent = selectedItem;
                     getBalanceByAgentName();
                   });
@@ -257,21 +272,20 @@ class _WithdrawState extends State<Withdraw> {
         ],
       ),
     );
-
     final submitButton = SolidGreenButton(
-      title:"Submit",
-      clickHandler: () async{
-        if(isValid()){
+      title: "Create",
+      clickHandler: () async {
+        if (isValid()) {
           updateBalance();
           saveTransaction();
-
         }
       },
     );
     final clearButton = OutlineGreenElevatedButton(
-      title: "Cancel", clickHandler: () {
+      title: "Cancel",
+      clickHandler: () {
         Navigator.of(context).pop();
-    },
+      },
     );
 
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
@@ -292,46 +306,49 @@ class _WithdrawState extends State<Withdraw> {
 
     var orientation = MediaQuery.of(context).orientation;
     return Scaffold(
-        appBar: luckyAppbar(
-          context: context,
-          title: "Create Withdraw",
-        ),
-        body: orientation == Orientation.landscape
-            ? buildLandscapeView(
-          commissionInput: commissionInput,
-          transferorNameInput: transferorNameInput,
-          withdrawerNameInput: withdrawerNameInput,
-          withdrawerPhNoInput: withdrawerPhNoInput,
-          transferorPhoneNoInput: transferorPhoneNoInput,
-          transferAmountInput: transferAmountInput,
-          dateInput: dateInput,
-          timeInput: timeInput,
-          userAgentInput: userAgentInput,
-          submitButton: submitButton,
-          clearButton: clearButton,
-        )
-            : buildPortraitView(
-          commissionInput: commissionInput,
-          transferorNameInput: transferorNameInput,
-          withdrawerNameInput: withdrawerNameInput,
-          withdrawerPhNoInput: withdrawerPhNoInput,
-          transferorPhoneNoInput: transferorPhoneNoInput,
-          transferAmountInput: transferAmountInput,
-          dateInput: dateInput,
-          timeInput: timeInput,
-          userAgentInput: userAgentInput,
-          submitButton: submitButton,
-          clearButton: clearButton,
-        ),
+      appBar: luckyAppbar(
+        context: context,
+        title: "Create Transfer",
+      ),
+      body: orientation == Orientation.landscape
+          ? buildLandscapeView(
+              commissionInput: commissionInput,
+              transferorNameInput: transferorNameInput,
+              recipientNameInput: recipientNameInput,
+              recipientPhNoInput: recipientPhNoInput,
+              transferorPhoneNoInput: transferorPhoneNoInput,
+              chargesInput: chargesInput,
+              transferAmountInput: transferAmountInput,
+              dateInput: dateInput,
+              timeInput: timeInput,
+              userAgentInput: userAgentInput,
+              submitButton: submitButton,
+              clearButton: clearButton,
+            )
+          : buildPortraitView(
+              commissionInput: commissionInput,
+              transferorNameInput: transferorNameInput,
+              recipientNameInput: recipientNameInput,
+              recipientPhNoInput: recipientPhNoInput,
+              transferorPhoneNoInput: transferorPhoneNoInput,
+              chargesInput: chargesInput,
+              transferAmountInput: transferAmountInput,
+              dateInput: dateInput,
+              timeInput: timeInput,
+              userAgentInput: userAgentInput,
+              submitButton: submitButton,
+              clearButton: clearButton,
+            ),
     );
   }
 
   buildLandscapeView(
       {commissionInput,
       transferorNameInput,
-      withdrawerNameInput,
-      withdrawerPhNoInput,
+      recipientNameInput,
+      recipientPhNoInput,
       transferorPhoneNoInput,
+      chargesInput,
       transferAmountInput,
       dateInput,
       timeInput,
@@ -346,10 +363,10 @@ class _WithdrawState extends State<Withdraw> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: withdrawerNameInput,
+                child: transferorNameInput,
               ),
               Expanded(
-                child: withdrawerPhNoInput,
+                child: transferorPhoneNoInput,
               ),
             ],
           ),
@@ -359,10 +376,10 @@ class _WithdrawState extends State<Withdraw> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: transferorPhoneNoInput,
+                child: recipientNameInput,
               ),
               Expanded(
-                child: transferorNameInput,
+                child: recipientPhNoInput,
               ),
             ],
           ),
@@ -374,7 +391,19 @@ class _WithdrawState extends State<Withdraw> {
               Expanded(
                 child: transferAmountInput,
               ),
-
+              Expanded(
+                child: userAgentInput,
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: chargesInput,
+              ),
               Expanded(
                 child: commissionInput,
               )
@@ -386,9 +415,6 @@ class _WithdrawState extends State<Withdraw> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: userAgentInput,
-              ),
-              Expanded(
                 child: dateInput,
               ),
               Expanded(
@@ -397,8 +423,9 @@ class _WithdrawState extends State<Withdraw> {
             ],
           ),
         ),
-        SizedBox(height: 16,),
-
+        SizedBox(
+          height: 16,
+        ),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -413,15 +440,15 @@ class _WithdrawState extends State<Withdraw> {
         )
       ],
     );
-
   }
 
   buildPortraitView(
       {commissionInput,
       transferorNameInput,
-      withdrawerNameInput,
-      withdrawerPhNoInput,
+      recipientNameInput,
+      recipientPhNoInput,
       transferorPhoneNoInput,
+      chargesInput,
       transferAmountInput,
       dateInput,
       timeInput,
@@ -430,7 +457,6 @@ class _WithdrawState extends State<Withdraw> {
       clearButton}) {
     return SingleChildScrollView(
       child: Container(
-        // height: MediaQuery.of(context).size.height,
         margin: EdgeInsets.only(
           left: 10,
           right: 10,
@@ -439,15 +465,24 @@ class _WithdrawState extends State<Withdraw> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            withdrawerNameInput,
-            SizedBox(height: 10,),
             transferorNameInput,
             SizedBox(height: 10,),
-            withdrawerPhNoInput,
+            recipientNameInput,
             SizedBox(height: 10,),
             transferorPhoneNoInput,
             SizedBox(height: 10,),
-            transferAmountInput,
+            recipientPhNoInput,
+            SizedBox(height: 10,),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: transferAmountInput,
+                ),
+                Expanded(
+                  child: chargesInput,
+                ),
+              ],
+            ),
             SizedBox(height: 10,),
             Row(
               children: <Widget>[
@@ -461,16 +496,18 @@ class _WithdrawState extends State<Withdraw> {
             ),
             SizedBox(height: 10,),
             Row(
-                children: <Widget>[
-                  Expanded(
-                    child: dateInput,
-                  ),
-                  Expanded(
-                    child: timeInput,
-                  ),
-                ],
-              ),
-            SizedBox(height: 16,),
+              children: <Widget>[
+                Expanded(
+                  child: dateInput,
+                ),
+                Expanded(
+                  child: timeInput,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 16,
+            ),
             Padding(
               padding: const EdgeInsets.only(bottom: 24.0),
               child: Row(
@@ -492,41 +529,45 @@ class _WithdrawState extends State<Withdraw> {
         ),
       ),
     );
-
   }
 
   bool isValid() {
-    bool isWithdrawerPhoneValid,isTransferorPhoneValid,isAmountValid;
+    bool isRecipientPhoneValid, isTransferorPhoneValid, isAmountValid;
+    bool isFeeValid = true;
     bool isCommissionValid = true;
-    String withdrawPhoneErrorMsg = '',transferPhoneErrorMsg = '' , amountMsg = '' ,commissionErrorMsg = '';
-    if(withdrawerPhoneNumberController.text.trim().isNotEmpty){
-      if(Utils.validatePhone(withdrawerPhoneNumberController.text.trim())){
-        isWithdrawerPhoneValid = true;
-      }else{
-        isWithdrawerPhoneValid = false;
-        withdrawPhoneErrorMsg = "Invalid Phone";
+    String recipientPhoneErrorMsg = '',
+        transferPhoneErrorMsg = '',
+        amountMsg = '',
+        feeMsg = '',
+        commissionMsg = '';
+    if (recipientPhoneNumberController.text.trim().isNotEmpty) {
+      if (Utils.validatePhone(recipientPhoneNumberController.text.trim())) {
+        isRecipientPhoneValid = true;
+      } else {
+        isRecipientPhoneValid = false;
+        recipientPhoneErrorMsg = "Invalid Phone";
       }
-    }else{
-      withdrawPhoneErrorMsg = "Required";
-      isWithdrawerPhoneValid = false;
+    } else {
+      recipientPhoneErrorMsg = "Required";
+      isRecipientPhoneValid = false;
     }
-    if(transferorPhoneNumberController.text.trim().isNotEmpty){
-      if(Utils.validatePhone(transferorPhoneNumberController.text.trim())){
+    if (transferorPhoneNumberController.text.trim().isNotEmpty) {
+      if (Utils.validatePhone(transferorPhoneNumberController.text.trim())) {
         isTransferorPhoneValid = true;
-      }else{
+      } else {
         isTransferorPhoneValid = false;
         transferPhoneErrorMsg = "Invalid Phone";
       }
-    }else{
+    } else {
       transferPhoneErrorMsg = "Required";
       isTransferorPhoneValid = false;
     }
 
-    if(withdrawAmountController.text.trim().isNotEmpty){
-      double amount = double.parse(withdrawAmountController.text.trim());
+    if (amountController.text.trim().isNotEmpty) {
+      double amount = double.parse(amountController.text.trim());
       if (amount > 1) {
         if (balancedata != null) {
-          if (amount > balancedata.cash) {
+          if (amount > balancedata.eMoney) {
             amountMsg = "Exceeded max amount";
             isAmountValid = false;
           } else {
@@ -536,83 +577,107 @@ class _WithdrawState extends State<Withdraw> {
           amountMsg = "Not enough amount.";
           isAmountValid = false;
         }
-      }else{
+      } else {
         amountMsg = "Invalid";
         isAmountValid = false;
       }
-    }else{
+    } else {
       amountMsg = "Required";
       isAmountValid = false;
     }
-
-    if(commissionController.text.trim().isNotEmpty){
+    if (chargesController.text.trim().isNotEmpty) {
+      double charges = double.parse(chargesController.text.trim());
+      if (charges < 1) {
+        isFeeValid = false;
+        feeMsg = "Invalid";
+      }
+    }
+    if (commissionController.text.trim().isNotEmpty) {
       double commission = double.parse(commissionController.text.trim());
-      if(commission < 1){
+      if (commission < 1) {
         isCommissionValid = false;
-        commissionErrorMsg = "Invalid";
+        commissionMsg = "Invalid";
       }
     }
 
     setState(() {
-      _commissionErrMessage.value = commissionErrorMsg;
-      _withdrawerPhoneNumberErrMessage.value = withdrawPhoneErrorMsg;
+      _chargesErrMessage.value = feeMsg;
+      _commissionErrMessage.value = commissionMsg;
+      _recipientPhoneNumberErrMessage.value = recipientPhoneErrorMsg;
       _transferorPhoneNumberErrMessage.value = transferPhoneErrorMsg;
-      _withdrawAmountErrMessage.value = amountMsg;
+      _amountErrMessage.value = amountMsg;
     });
 
-    return isWithdrawerPhoneValid && isTransferorPhoneValid && isAmountValid && isCommissionValid;
+    return isRecipientPhoneValid &&
+        isTransferorPhoneValid &&
+        isAmountValid &&
+        isFeeValid &&
+        isCommissionValid;
   }
 
-  void getBalanceByAgentName() async{
-    balancedata = await  model.getBalanceByAgentName(_selectedAgent.toString(),context);
+  void getBalanceByAgentName() async {
+    balancedata =
+        await model.getBalanceByAgentName(_selectedAgent.toString(), context);
   }
 
-  void saveTransaction() async{
-    double  commission =  this.commissionController.text.trim().isNotEmpty ? double.parse(this.commissionController.text.trim()) : 0.0;
-   var result = await model.saveTransaction(
-      context,
+  void saveTransaction() async {
+    double commission = this.commissionController.text.trim().isNotEmpty
+        ? double.parse(this.commissionController.text.trim())
+        : 0.0;
+    double charges = this.chargesController.text.trim().isNotEmpty
+        ? double.parse(this.chargesController.text.trim())
+        : 0.0;
+    var result = await model.saveTransaction(
+        context,
         Transaction(
-            bank: "",
-            partner: "",
-            phone: "",
-            fromCustomerName: transferorNameController.text,
-            toCustomerName: withdrawerNameController.text,
-            fromPhone: transferorPhoneNumberController.text,
-            toPhone: withdrawerPhoneNumberController.text,
-            agent: _selectedAgent.toString(),
-            transactionsType: Constants.WITHDRAW_TYPE,
-            date: Utils.formatDate(_date),
-            time: Utils.formatTime(_time),
-            amount: double.parse(withdrawAmountController.text.trim()),
-            commission: commission,
-            transferrorType: Constants.CustomerType,
-            charges: 0.0)
-
-    );
-   if(result){
-     Utils.successDialog(context, "Success!", "Successfully Added").then((value){
-      if(value != null){
-        Navigator.of(context).pop(true);
-      }
-     });
-   }else{
-     Utils.errorDialog(context, "Something went wrong!");
-   }
-
-
+          bank: "",
+          partner: "",
+          phone: "",
+          fromCustomerName: transferorNameController.text,
+          toCustomerName: recipientNameController.text,
+          fromPhone: transferorPhoneNumberController.text,
+          toPhone: recipientPhoneNumberController.text,
+          agent: _selectedAgent.toString(),
+          transactionsType: Constants.TRANSFER_TYPE,
+          date: Utils.formatDate(_date),
+          time: Utils.formatTime(_time),
+          amount: double.parse(amountController.text.trim()),
+          commission: commission,
+          transferrorType: Constants.CustomerType,
+          charges: charges,
+        ));
+    if (result) {
+      Utils.successDialog(context, "Success!", "Successfully Added")
+          .then((value) {
+        if (value != null) {
+          Navigator.of(context).pop(true);
+        }
+      });
+    } else {
+      Utils.errorDialog(context, "Something went wrong!");
+    }
   }
 
   void updateBalance() {
-    //reduce cash
-    //add commission + amount to eMoney
-    double  commission =  this.commissionController.text.trim().isNotEmpty ? double.parse(this.commissionController.text.trim()) : 0.0;
-    double  amount =  this.withdrawAmountController.text.trim().isNotEmpty ? double.parse(this.withdrawAmountController.text.trim()) : 0.0;
-    double cash = balancedata.cash - amount;
-    double eMoney = balancedata.eMoney + commission + amount;
-    model.updateBalance(
-      BalanceData(id:balancedata.id,cash: cash, eMoney: eMoney, date: Utils.getCurrentDate(), agent: balancedata.agent)
-    );
-
+    //add cash + charges + amount
+    //reduce transfer eMoney amount
+    //add commission to eMoney
+    double commission = this.commissionController.text.trim().isNotEmpty
+        ? double.parse(this.commissionController.text.trim())
+        : 0.0;
+    double charges = this.chargesController.text.trim().isNotEmpty
+        ? double.parse(this.chargesController.text.trim())
+        : 0.0;
+    double cash =
+        balancedata.cash + double.parse(amountController.text.trim()) + charges;
+    double eMoney =
+        (balancedata.eMoney - double.parse(amountController.text.trim())) +
+            commission;
+    model.updateBalance(BalanceData(
+        id: balancedata.id,
+        cash: cash,
+        eMoney: eMoney,
+        date: Utils.getCurrentDate(),
+        agent: balancedata.agent));
   }
-
 }

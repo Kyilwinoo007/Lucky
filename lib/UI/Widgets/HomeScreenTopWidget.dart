@@ -36,16 +36,15 @@ class HomeScreenTopWidget extends StatelessWidget{
         right: 15.0,
         left: 15.0,
       )
-          : EdgeInsets.all(0),
+          : EdgeInsets.only(bottom: 10,top: 5 ,right: 32,left: 32),
       child: Container(
-//        width: 1000.sp,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
               Radius.circular(
                 MediaQuery.of(context).orientation == Orientation.portrait
                     ? 20.0
-                    : 0,
+                    : 10.0,
               ),
             ),
             boxShadow: [
@@ -75,7 +74,7 @@ class HomeScreenTopWidget extends StatelessWidget{
                     "Cash",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 22,
                     ),
                   ),
                   padding: EdgeInsets.only(bottom: 12),
@@ -100,7 +99,7 @@ class HomeScreenTopWidget extends StatelessWidget{
                     "E-money",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 22,
                     ),
                   ),
                   padding: EdgeInsets.only(bottom: 12),
@@ -122,62 +121,64 @@ class HomeScreenTopWidget extends StatelessWidget{
   }
 
   buildLandscapeView() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 25),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    "Cash",
+    return Container(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      "Cash",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    padding: EdgeInsets.only(right: 32),
+                  ),
+                  Text(
+                    this.cash.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 22,
+                      color: Colors.green,
+                      fontSize: 18,
                     ),
                   ),
-                  padding: EdgeInsets.only(right: 32),
-                ),
-                Text(
-                  this.cash.toString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    "E-money",
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      "E-money",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    padding: EdgeInsets.only(right: 32),
+                  ),
+                  Text(
+                    this.eMoney.toString(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 22,
+                      color: Colors.orange,
+                      fontSize: 18,
                     ),
                   ),
-                  padding: EdgeInsets.only(right: 32),
-                ),
-                Text(
-                  this.eMoney.toString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
 

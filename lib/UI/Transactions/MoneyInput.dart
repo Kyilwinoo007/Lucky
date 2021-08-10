@@ -11,18 +11,20 @@ import 'package:lucky/UI/Widgets/CustomButton.dart';
 import 'package:lucky/UI/Widgets/CustomTextInput.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/UI/Widgets/Wrapper.dart';
+import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/Utils.dart';
+import 'package:lucky/Utils/styles.dart';
 import 'package:lucky/common/serviceLocator.dart';
 import 'package:provider/provider.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:responsive_widgets/responsive_widgets.dart';
 
 class MoneyInput extends StatefulWidget{
-  final int type;
+  final String name;
   final int index;
   const MoneyInput({
     Key? key,
-    required  this.type,
+    required  this.name,
     required this.index,
   }) : super(key: key);
 
@@ -53,7 +55,7 @@ class _MoneyInputState extends State<MoneyInput> {
     this._cashInputErrMessage = new Wrapper("");
     this._eMoneyInputErrMessage = new Wrapper("");
     balanceDao = Provider.of<BalanceDao>(context,listen: false);
-    model.getBalanceByAgentId(widget.type, context);
+    model.getBalanceByAgentId(widget.name, context);
   }
 
   @override
@@ -73,16 +75,17 @@ class _MoneyInputState extends State<MoneyInput> {
         allowFontScaling: true,
       );
     }
-    var submitBtn = OutlineBlackButton(
+    var submitBtn = SolidGreenButton(
       title: "Add",
       clickHandler: () async {
        if(checkValid()){
           saveData();
           clearInputs();
+          Utils.hideKeyboard(context);
         }
       },
     );
-    var reduceAmountBtn = OutlineBlackButton(
+    var reduceAmountBtn = OutlineGreenElevatedButton(
       title: "Reduce",
       clickHandler: () async {
         // if (await isReduceAmountValid()) {
@@ -101,6 +104,7 @@ class _MoneyInputState extends State<MoneyInput> {
       hintText: "Enter E-Money Amount",
       leadingIcon: Icon(
         LineAwesomeIcons.wallet,
+        size: 25.0,
       ),
     );
     // var moneyHistory = buildMoneyInputRecordSection();
@@ -113,11 +117,11 @@ class _MoneyInputState extends State<MoneyInput> {
       hintText: "Enter Cash Amount",
       leadingIcon: Icon(
         LineAwesomeIcons.alternate_wavy_money_bill,
+        size: 25.0,
       ),
     );
     var leading = InkWell(
       onTap: () {
-        // FocusScope.of(context).requestFocus(new FocusNode());
         Navigator.of(context).pop(isUpdated);
       },
       child: Icon(
@@ -154,9 +158,9 @@ class _MoneyInputState extends State<MoneyInput> {
     );
   }
 
-   buildPortraitView(OutlineBlackButton submitBtn, CustomTextInput eMoneyInput,
+   buildPortraitView(SolidGreenButton submitBtn, CustomTextInput eMoneyInput,
        CustomTextInput cashInput,
-       OutlineBlackButton reduceAmountBtn) {
+       OutlineGreenElevatedButton reduceAmountBtn) {
      return SingleChildScrollView(
        child: Container(
          height: MediaQuery.of(context).size.height,
@@ -185,8 +189,12 @@ class _MoneyInputState extends State<MoneyInput> {
                         padding: EdgeInsets.symmetric(vertical: 10.0),
                         child: Row(
                           children: [
-                            Text("Remaining Cash : "),
-                            Text(model.cash.toString()),
+                            Text("Remaining Cash : ",style: formLabelTextStyle.copyWith(fontSize: 15.0),),
+                            Text(model.cash.toString(),  style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 14.0,
+                            ),),
                           ],
                         ),
                       ),
@@ -194,8 +202,12 @@ class _MoneyInputState extends State<MoneyInput> {
                         padding: EdgeInsets.symmetric(vertical: 10.0),
                         child: Row(
                           children: [
-                            Text("Remaining E-Money : "),
-                            Text(model.eMoney.toString()),
+                            Text("Remaining E-Money : ",style: formLabelTextStyle.copyWith(fontSize: 14.0),),
+                            Text(model.eMoney.toString() ,style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 14.0,
+                            ),),
                           ],
                         ),
                       ),
@@ -240,9 +252,9 @@ class _MoneyInputState extends State<MoneyInput> {
      );
    }
 
-   buildLandscapeView(OutlineBlackButton submitBtn, CustomTextInput eMoneyInput,
+   buildLandscapeView(SolidGreenButton submitBtn, CustomTextInput eMoneyInput,
        CustomTextInput cashInput,
-       OutlineBlackButton reduceAmountBtn) {
+       OutlineGreenElevatedButton reduceAmountBtn) {
      return SingleChildScrollView(
        child: Container(
          margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -337,25 +349,50 @@ class _MoneyInputState extends State<MoneyInput> {
         this._cashInputController.text.trim().isNotEmpty ? double.parse(this._cashInputController.text.trim()) : 0.0;
     double eMoney = this._eMoneyInputController.text.trim().isNotEmpty ?
         double.parse(this._eMoneyInputController.text.trim()) : 0.0;
-    BalanceData balanceData =
-    await balanceDao.getBalanceViaAgentId(this.widget.type.toString());
-    if(balanceData != null){
-      print(Utils.getCurrentDate());
+    BalanceData balanceData = await balanceDao.getBalanceViaAgentId(this.widget.name);
+
+     OpeningClosingData openingClosingData =await model.getOpeningClosingByAgentAndDate(this.widget.name,Utils.getCurrentDate());
+
+     print("OpeningClosing Data "+ jsonEncode(openingClosingData));
+     if(openingClosingData != null){
+      model.updateOpenClosingBalance(
+          OpeningClosingData(
+            id: openingClosingData.id,
+          openingCash: openingClosingData.openingCash + cash,
+          openingEMoney: openingClosingData.openingEMoney + eMoney,
+          closingCash: openingClosingData.closingCash,
+          closingEMoney: openingClosingData.closingEMoney,
+          date: Utils.getCurrentDate(),
+          agent: this.widget.name));
+    }else{
+       model.insertOpenClosingBalance(
+           context,
+           OpeningClosingData(
+               openingCash: cash,
+               openingEMoney: eMoney,
+               date: Utils.getCurrentDate(),
+               agent: this.widget.name
+
+           )
+       );
+     }
+     if(balanceData != null){
       if (balanceData.date == Utils.getCurrentDate()) {
         cash += balanceData.cash;
-        eMoney += balanceData.e_money;
+        eMoney += balanceData.eMoney;
       }
 
       result = await model.updateBalance(
-        BalanceData(id: balanceData.id,cash: cash, e_money: eMoney, date: Utils.getCurrentDate(), agentId: this.widget.type.toString()),
+        BalanceData(id: balanceData.id,cash: cash, eMoney: eMoney, date: Utils.getCurrentDate(), agent: this.widget.name),
       );
 
       }else{
       result = await model.insertBalance(
-        BalanceData(cash: cash, e_money: eMoney, date: Utils.getCurrentDate(), agentId: this.widget.type.toString()),
+        BalanceData(cash: cash, eMoney: eMoney, date: Utils.getCurrentDate(), agent: this.widget.name),
       );
+
       }
-    isUpdated = result;
+      isUpdated = result;
      if(result){
        Utils.successDialog(context, "Success!", "Successfully Added");
      }else{

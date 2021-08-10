@@ -41,7 +41,8 @@ class _AgentItemState extends State<AgentItem> {
   @override
   void initState() {
     super.initState();
-    model.getBalanceByAgentId(this.widget.type, context);
+    model.getBalanceByAgentId(this.widget.name, context);
+    model.getTransactionByAgent(this.widget.name,context);
   }
 
   @override
@@ -83,11 +84,11 @@ class _AgentItemState extends State<AgentItem> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MoneyInput(
-                                      type: this.widget.type,
+                                      name: this.widget.name,
                                       index: this.widget.index,
                                     )));
                      if(result){
-                       model.getBalanceByAgentId(this.widget.type, context);
+                       model.getBalanceByAgentId(this.widget.name, context);
                      }
                       },
                       child: Padding(
@@ -125,7 +126,7 @@ class _AgentItemState extends State<AgentItem> {
                                   child: AgentMoneyStatus(
                                     title: "Transfer",
                                     amountColor: Colors.amber,
-                                    amount: this.transferAmount,
+                                    amount: model.transfer,
                                   ),
                                 ),
                               ),
@@ -134,7 +135,7 @@ class _AgentItemState extends State<AgentItem> {
                                   child: AgentMoneyStatus(
                                     title: "Withdraw",
                                     amountColor: Colors.deepPurple,
-                                    amount: this.withdrawAmount,
+                                    amount: model.withdraw,
                                   ),
                                 ),
                               ),
@@ -160,7 +161,7 @@ class _AgentItemState extends State<AgentItem> {
                                   child: AgentMoneyStatus(
                                     title: "Charges",
                                     amountColor: Colors.green,
-                                    amount: this.chargesAmount,
+                                    amount: model.charges,
                                   ),
                                 ),
                               ),
@@ -169,7 +170,7 @@ class _AgentItemState extends State<AgentItem> {
                                   child: AgentMoneyStatus(
                                     title: "Commission",
                                     amountColor: Colors.blue,
-                                    amount: this.commissionAmount,
+                                    amount: model.commission,
                                   ),
                                 ),
                               ),

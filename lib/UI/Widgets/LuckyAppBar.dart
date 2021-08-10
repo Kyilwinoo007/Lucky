@@ -4,6 +4,7 @@ import 'package:responsive_widgets/responsive_widgets.dart';
 AppBar luckyAppbar({
   required String title,
   List<Widget>? actions,
+  PreferredSizeWidget? bottomWidget,
   Widget? leading,
   required BuildContext context,
 }) {
@@ -38,7 +39,7 @@ AppBar luckyAppbar({
 
   return AppBar(
     title: Text(
-      title ?? "",
+      title.isEmpty ? " " : title,
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 24.0,
@@ -47,5 +48,6 @@ AppBar luckyAppbar({
     leading: leading,
     centerTitle: true,
     actions: actions,
+    bottom: bottomWidget,
   );
 }

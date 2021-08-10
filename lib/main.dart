@@ -1,13 +1,22 @@
+//@dart = 2.9
+import 'dart:convert';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lucky/Data/Database/database.dart';
+import 'package:lucky/Data/SharedPref/basicInfo.dart';
+import 'package:lucky/Data/UserInfo.dart';
 import 'package:lucky/UI/Home/home.dart';
 import 'package:lucky/UI/Login/CustomSplashScreen.dart';
+import 'package:lucky/UI/Login/Login.dart';
 import 'package:lucky/Utils/Colors.dart';
 import 'package:provider/provider.dart';
 
 import 'common/serviceLocator.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   setupServiceLocator();
   runApp(MyApp());
 }
@@ -20,7 +29,7 @@ class MyApp extends StatefulWidget {
   }
 
 class _MyAppState extends State<MyApp> {
-   MyDatabase? _myDatabase;
+   MyDatabase _myDatabase;
 
   @override
   void initState() {
@@ -34,10 +43,11 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         Provider<BalanceDao>(
-          create: (_) => this._myDatabase!.balanceDao,
+          create: (_) => this._myDatabase.balanceDao,
         ),
-        Provider(create :(_) => this._myDatabase!.transactionsDao),
-        Provider(create :(_) => this._myDatabase!.bankTransactionsDao),
+        Provider(create :(_) => this._myDatabase.transactionsDao),
+
+        Provider(create :(_) => this._myDatabase.openingClosingDao),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -60,36 +70,80 @@ class _MyAppState extends State<MyApp> {
         ),
         title: 'Lucky',
         home: LuckySplashScreen(),
+        routes: {
+          'splashScreen': (context) => LuckySplashScreen(),
+          'home':(context) => Home(),
+        },
        ),
     );
   }
 }
 
 
-class LuckySplashScreen extends StatelessWidget {
+class LuckySplashScreen extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => _LuckSplashScreenState();
+
+}
+
+class _LuckSplashScreenState extends State<LuckySplashScreen>{
+   bool isAlreadyLogin = false;
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+    // basicInfo.getUserInfo().then((value){
+    //   UserInfo userInfo = value;
+    //   if(userInfo != null){
+    //     setState(() {
+    //       isAlreadyLogin = true;
+    //     });
+    //   }else{
+    //     setState(() {
+    //       isAlreadyLogin = false;
+    //     });
+    //   }
+    //   print("userInfo => "+ jsonEncode(userInfo));
+    // });
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: CustomSplashScreen(
-          seconds: 5,
-          navigateAfterSeconds: Home(),
-          title: new Text(
-            '',
-            style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-          ),
+        seconds: 6,
+        navigateAfterSeconds: isAlreadyLogin ? Home() : Login(),
+        title: new Text(
+          '',
+          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+        ),
 
-          loadingText: Text("Please wait...",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),),
-          backgroundColor: LuckyColors.splashScreenColors,
-          ),
+        loadingText: Text("Please wait...",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),),
+        backgroundColor: LuckyColors.splashScreenColors,
+      ),
 
 
     );
   }
+
+  void getUserInfo() async{
+    UserInfo userInfo =await basicInfo.getUserInfo();
+    if(userInfo != null){
+      setState(() {
+        isAlreadyLogin = true;
+      });
+    }else{
+      setState(() {
+        isAlreadyLogin = false;
+      });
+    }
+  }
+
 
 }

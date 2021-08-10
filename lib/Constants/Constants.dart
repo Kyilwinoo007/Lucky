@@ -3,13 +3,10 @@ class Constants {
   static const String KBZPAY = "KBZ Pay";
   static const String CBPAY = "CB Pay";
   static const String TRUEMONEY = "True Money";
-  static const TRANSFER = "TRANSFER";
-  static const WITHDRAW = "WITHDRAW";
 
   static const String CASH = "cash";
   static const String EMONEY = "e-money";
 
-  static const int InsertSuccessCode = 4;
 
   static const List<String> agentList = [WAVEMONEY, KBZPAY, CBPAY, TRUEMONEY];
   static const List<int> agentIdList = [WAVEMONEY_TYPE,KBZPAY_TYPE,CBPAY_TYPE,TRUEMONEY_TYPE];
@@ -19,21 +16,36 @@ class Constants {
   static const int TRUEMONEY_TYPE = 3;
 
 
-  static const List<int> transactionTypeList = [DEPOSITE_TYPE,WITHDRAW_TYPE,TRANSFER_TYPE];
-  static const int DEPOSITE_TYPE = 0;
-  static const int WITHDRAW_TYPE = 1;
-  static const int TRANSFER_TYPE = 2;
+  //transactions type
+  static const List<String> transactionTypeList = [DEPOSITE_TYPE,WITHDRAW_TYPE,TRANSFER_TYPE];
+  static const String DEPOSITE_TYPE = "Deposite";
+  static const String WITHDRAW_TYPE = "Withdraw";
+  static const String TRANSFER_TYPE = "Transfer";
+  static const String BILL_TOP_UP = "Bill Top Up";
+  static const String BANK_TRANSFER_TYPE = "Bank Transfer";
+  static const String BANK_RECEIVE_TYPE = "Bank Receive";
+  static const String PARTNER_TRANSFER_TYPE = "Partner Transfer";
+  static const String PARTNER_RECEIVE_TYPE = "Partner Receive";
 
-  static const List<int> bankTransferList = [BANK_TRANSFER,BANK_RECEIVE];
-  static const int BANK_TRANSFER = 0;
-  static const int BANK_RECEIVE = 1;
+  static const List<String> bankTransferTypeList = [BANK_TRANSFER_TYPE,BANK_RECEIVE_TYPE];
+  static const List<String> partnerTransferTypeList = [PARTNER_TRANSFER_TYPE,PARTNER_RECEIVE_TYPE];
 
-  static const List<int> bankIdList = [KBZ,CB,AYARWADY,YOMA,AGD];
-  static const int KBZ = 0;
-  static const int CB = 1;
-  static const int AYARWADY = 2;
-  static const int YOMA = 3;
-  static const int AGD = 4;
+  //TransferorType
+  static const String CustomerType = "Customer";
+  static const String BankType = "Bank";
+  static const String PartnerType = "Partner";
+
+  static const List<String> bankList = [KBZ,CB,AYARWADY,YOMA,AGD];
+  static const String KBZ = "KBZ";
+  static const String CB = "CB";
+  static const String AYARWADY = "Ayarwady";
+  static const String YOMA = "Yoma";
+  static const String AGD = "AGD";
+
+  static const String firestore_collection = "lucky_users";
+
+  static String userInfo = "userInfo";
+
 
 
 }
