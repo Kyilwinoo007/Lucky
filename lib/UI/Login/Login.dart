@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Constants/Constants.dart';
+import 'package:lucky/Data/Database/database.dart';
 import 'package:lucky/Data/SharedPref/basicInfo.dart';
 import 'package:lucky/Data/UserInfo.dart';
+import 'package:lucky/Repository/LoginViewModel.dart';
 import 'package:lucky/UI/Home/home.dart';
 import 'package:lucky/UI/Widgets/CustomButton.dart';
 import 'package:lucky/UI/Widgets/CustomClipper.dart';
@@ -15,6 +17,8 @@ import 'package:lucky/UI/Widgets/CustomTextInput.dart';
 import 'package:lucky/UI/Widgets/Wrapper.dart';
 import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/Utils.dart';
+import 'package:lucky/common/serviceLocator.dart';
+import 'package:provider/provider.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:responsive_widgets/responsive_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +36,8 @@ class _LoginState extends State<Login> {
   String email = '';
   String phone = '';
   late UserInfo userInfo;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  late List<String> userIdList;
+  final LoginViewModel model = serviceLocator<LoginViewModel>();
 
 
   @override
@@ -41,7 +46,6 @@ class _LoginState extends State<Login> {
     _userPasswordController = TextEditingController();
     _emailOrPhoneErrMessage = new Wrapper("");
     _userPasswordErrMessage = new Wrapper("");
-    // getDataFromFirestore();
     super.initState();
   }
 
@@ -85,17 +89,16 @@ class _LoginState extends State<Login> {
     Widget passwordInput = CustomPasswordInput(
       errorMessage: this._userPasswordErrMessage.value,
       userPasswordController: this._userPasswordController,
-      label: "Passowrd",
-      hintText: "Enter Passowrd",
+      label: "Password",
+      hintText: "Enter Password",
     );
     Widget userNameInput = CustomTextInput(
       errorMessage: this._emailOrPhoneErrMessage.value,
       isRequired: true,
-      label: "Eamil / Phone",
+      label: "Email / Phone",
       controller: this._emailOrPhoneController,
       hintText: "Enter email / phone",
-      leadingIcon: Icon(
-        LineAwesomeIcons.user,
+      leadingIcon: Icon(        LineAwesomeIcons.user,
         size: 25.0,
         color: LuckyColors.splashScreenColors,
       ),
@@ -115,40 +118,17 @@ class _LoginState extends State<Login> {
         color: Colors.white,
       ),
     );
-    // Widget registerHereText = InkWell(
-    //   onTap: () {
-    //     Navigator.of(context).pushNamed('/user-create', arguments: {
-    //       "fromRegister": true,
-    //     });
-    //   },
-    //   child: Text.rich(
-    //     TextSpan(
-    //         text: "Don't have an account. ",
-    //         style: TextStyle(
-    //           fontSize: 13.0,
-    //         ),
-    //         children: <InlineSpan>[
-    //           TextSpan(
-    //             text: "Register here",
-    //             style: TextStyle(
-    //               fontSize: 13.0,
-    //               fontWeight: FontWeight.bold,
-    //             ),
-    //           )
-    //         ]),
-    //   ),
-    // );
-    Widget submitButton = SolidGreenButton(
+        Widget submitButton = SolidGreenButton(
       title: "Login",
       clickHandler: () {
         if(isValid()) {
           Utils.checkInternetConnection(context).then((value) =>
           {
             if(!value){
-              _scaffoldKey.currentState!.showSnackBar(Utils.showSnackBar())
+              ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
             } else
               {
-
+                Utils.showLoaderDialog(context),
                 getUserFromFireStore(),
                 Utils.hideKeyboard(context),
               }
@@ -159,7 +139,6 @@ class _LoginState extends State<Login> {
     );
     return SafeArea(
         child: Scaffold(
-          key: _scaffoldKey,
           body: orientation == Orientation.landscape
               ? buildLandscapeLayout(
             passwordInput: passwordInput,
@@ -248,21 +227,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void getDataFromFirestore() async{
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection(Constants.firestore_collection).get();
-    querySnapshot.docs.forEach((element) {
-      UserInfo userInfo = UserInfo(
-          element.id,
-          element.get("name"),
-          element.get("phone"),
-          element.get("email"),
-          element.get("isActive"),
-          " ",
-          element.get("userType"),
-          element.get("isDeactivate"));
-    });
-  }
-
   bool isValid() {
     bool isPasswordValid,isEmailOrPhoneValid = false;
     String pwdErrMsg ="" ,emailOrPhoneErrMsg = "";
@@ -299,6 +263,7 @@ class _LoginState extends State<Login> {
 
   void getUserFromFireStore() async{
     late QuerySnapshot querySnapshot;
+
     if(phone.isNotEmpty){
       querySnapshot = await FirebaseFirestore.instance
           .collection(Constants.firestore_collection)
@@ -315,6 +280,7 @@ class _LoginState extends State<Login> {
     }
     if(querySnapshot.docs.isNotEmpty){
       querySnapshot.docs.forEach((element) {
+        userIdList = List.from(element.get("userIdList"));
         userInfo = UserInfo(
             element.id,
             element.get("name"),
@@ -323,27 +289,28 @@ class _LoginState extends State<Login> {
             element.get("isActive"),
             " ",
             element.get("userType"),
-            element.get("isDeactivate"));
-        print("userInfo => " + jsonEncode(userInfo));
+            element.get("isDeactivate"),
+          List.from(element.get("userIdList")));
         if(userInfo.isDeactivate){
+          Utils.dismissDialog(context);
           Utils.errorDialog(context, "Your account was deactivated!");
         }else if(userInfo.isActive){
+          Utils.dismissDialog(context);
           Utils.errorDialog(context, "Your account was already login \n on another device!");
         }else{
+          setUser();
           setUserToSharedPreference();
           updateFireStoreData();
         }
       });
     }else{
-      Utils.errorDialog(context, "Email or Incorrect Password!");
+      Utils.dismissDialog(context);
+      Utils.errorDialog(context, "Incorrect Email or Password!");
     }
 
-
   }
-
   void setUserToSharedPreference() {
     basicInfo.setUserInfo(userInfo).then((value){
-      print("basic User Info set => "+ value.toString());
     });
   }
 
@@ -355,8 +322,27 @@ class _LoginState extends State<Login> {
         .update({
       "isActive": true,
     }).then((_) {
+      Utils.dismissDialog(context);
       Navigator.of(context).pushNamedAndRemoveUntil(
           "home", (Route<dynamic> route) => false);
     });
+  }
+
+  void setUser() async{
+    for(int i = 0 ; i < userIdList.length ; i ++){
+      var document =  FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userIdList[i].trim()).get();
+      document.then((value) => {
+        model.insertUser(context,UserData(
+          userId: value.id,
+          parentId: userInfo.id,
+          name: value.get("name"),
+          email: value.get("email"),
+          phone: value.get("phone"),
+          isActive: value.get("isActive") ,
+          userType: value.get("userType"),
+          isDeactivate: value.get("isDeactivate"),
+        ))
+      });
+    }
   }
 }

@@ -2,6 +2,8 @@ import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lucky/UI/Analytics/BankTransferChart.dart';
+import 'package:lucky/UI/Analytics/PartnerTransferChart.dart';
 import 'package:lucky/UI/Analytics/ProfitChart.dart';
 import 'package:lucky/UI/Analytics/DepositeChart.dart';
 import 'package:lucky/UI/Analytics/TransferChart.dart';
@@ -30,6 +32,11 @@ class _AnalyticState extends State<Analytics> with SingleTickerProviderStateMixi
       text: "Withdraw",
     ),
     Tab(
+      text: "Bank",
+    ),
+    Tab(text: "Partner",
+    ),
+    Tab(
       text: "Profit",
     ),
   ];
@@ -38,6 +45,8 @@ class _AnalyticState extends State<Analytics> with SingleTickerProviderStateMixi
     DepositeChart(),
     TransferChart(),
     WithdrawChart(),
+    BankTransferChart(),
+    PartnerTransferChart(),
     ProfitChart(),
   ];
 

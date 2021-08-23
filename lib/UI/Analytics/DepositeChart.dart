@@ -195,20 +195,18 @@ class _DepositeChartState extends State<DepositeChart> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Expanded(
-                    flex: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                            right: 20.0,
+                            right: 16.0,
                           ),
                           child: Text(
                             "${this._fromDate.day} / ${this._fromDate.month} / ${this._fromDate.year}",
@@ -252,25 +250,21 @@ class _DepositeChartState extends State<DepositeChart> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        '-',
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  Text(
+                    '-',
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   Expanded(
-                    flex: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                            right: 20.0,
+                            right: 16.0,
                           ),
                           child: Text(
                             this._toDate != null
@@ -317,6 +311,7 @@ class _DepositeChartState extends State<DepositeChart> {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),

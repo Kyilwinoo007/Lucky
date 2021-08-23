@@ -10,4 +10,10 @@ class AnalyticViewModel extends ChangeNotifier{
     return transactions;
   }
 
+  Future<List<Transaction>> getAllTransactionByTransactionType(BuildContext context, String selectedType) async{
+   transactionsDao = Provider.of<TransactionsDao>(context,listen: false);
+   List<Transaction> transactions = await transactionsDao.getAllTransactionWithType(selectedType);
+   return transactions;
+  }
+
 }

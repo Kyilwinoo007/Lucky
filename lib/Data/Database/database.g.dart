@@ -1187,32 +1187,38 @@ class BalanceInputRecord extends DataClass
     implements Insertable<BalanceInputRecord> {
   final int? id;
   final String agent;
-  final DateTime date;
+  final String date;
   final double eMoney;
   final double cash;
+  final String inputType;
+  final String? reason;
   BalanceInputRecord(
       {this.id,
       required this.agent,
       required this.date,
       required this.eMoney,
-      required this.cash});
+      required this.cash,
+      required this.inputType,
+      this.reason});
   factory BalanceInputRecord.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     final doubleType = db.typeSystem.forDartType<double>();
     return BalanceInputRecord(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       agent:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}agent']),
-      date:
-          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+      date: stringType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
       eMoney:
           doubleType.mapFromDatabaseResponse(data['${effectivePrefix}e_money']),
       cash: doubleType.mapFromDatabaseResponse(data['${effectivePrefix}cash']),
+      inputType: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}input_type']),
+      reason:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}reason']),
     );
   }
   @override
@@ -1225,13 +1231,19 @@ class BalanceInputRecord extends DataClass
       map['agent'] = Variable<String>(agent);
     }
     if (!nullToAbsent || date != null) {
-      map['date'] = Variable<DateTime>(date);
+      map['date'] = Variable<String>(date);
     }
     if (!nullToAbsent || eMoney != null) {
       map['e_money'] = Variable<double>(eMoney);
     }
     if (!nullToAbsent || cash != null) {
       map['cash'] = Variable<double>(cash);
+    }
+    if (!nullToAbsent || inputType != null) {
+      map['input_type'] = Variable<String>(inputType);
+    }
+    if (!nullToAbsent || reason != null) {
+      map['reason'] = Variable<String>(reason);
     }
     return map;
   }
@@ -1245,6 +1257,11 @@ class BalanceInputRecord extends DataClass
       eMoney:
           eMoney == null && nullToAbsent ? const Value.absent() : Value(eMoney),
       cash: cash == null && nullToAbsent ? const Value.absent() : Value(cash),
+      inputType: inputType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inputType),
+      reason:
+          reason == null && nullToAbsent ? const Value.absent() : Value(reason),
     );
   }
 
@@ -1254,9 +1271,11 @@ class BalanceInputRecord extends DataClass
     return BalanceInputRecord(
       id: serializer.fromJson<int?>(json['id']),
       agent: serializer.fromJson<String>(json['agent']),
-      date: serializer.fromJson<DateTime>(json['date']),
+      date: serializer.fromJson<String>(json['date']),
       eMoney: serializer.fromJson<double>(json['eMoney']),
       cash: serializer.fromJson<double>(json['cash']),
+      inputType: serializer.fromJson<String>(json['inputType']),
+      reason: serializer.fromJson<String?>(json['reason']),
     );
   }
   @override
@@ -1265,24 +1284,30 @@ class BalanceInputRecord extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int?>(id),
       'agent': serializer.toJson<String>(agent),
-      'date': serializer.toJson<DateTime>(date),
+      'date': serializer.toJson<String>(date),
       'eMoney': serializer.toJson<double>(eMoney),
       'cash': serializer.toJson<double>(cash),
+      'inputType': serializer.toJson<String>(inputType),
+      'reason': serializer.toJson<String?>(reason),
     };
   }
 
   BalanceInputRecord copyWith(
           {int? id,
           String? agent,
-          DateTime? date,
+          String? date,
           double? eMoney,
-          double? cash}) =>
+          double? cash,
+          String? inputType,
+          String? reason}) =>
       BalanceInputRecord(
         id: id ?? this.id,
         agent: agent ?? this.agent,
         date: date ?? this.date,
         eMoney: eMoney ?? this.eMoney,
         cash: cash ?? this.cash,
+        inputType: inputType ?? this.inputType,
+        reason: reason ?? this.reason,
       );
   @override
   String toString() {
@@ -1291,7 +1316,9 @@ class BalanceInputRecord extends DataClass
           ..write('agent: $agent, ')
           ..write('date: $date, ')
           ..write('eMoney: $eMoney, ')
-          ..write('cash: $cash')
+          ..write('cash: $cash, ')
+          ..write('inputType: $inputType, ')
+          ..write('reason: $reason')
           ..write(')'))
         .toString();
   }
@@ -1299,8 +1326,14 @@ class BalanceInputRecord extends DataClass
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(agent.hashCode,
-          $mrjc(date.hashCode, $mrjc(eMoney.hashCode, cash.hashCode)))));
+      $mrjc(
+          agent.hashCode,
+          $mrjc(
+              date.hashCode,
+              $mrjc(
+                  eMoney.hashCode,
+                  $mrjc(cash.hashCode,
+                      $mrjc(inputType.hashCode, reason.hashCode)))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1309,38 +1342,49 @@ class BalanceInputRecord extends DataClass
           other.agent == this.agent &&
           other.date == this.date &&
           other.eMoney == this.eMoney &&
-          other.cash == this.cash);
+          other.cash == this.cash &&
+          other.inputType == this.inputType &&
+          other.reason == this.reason);
 }
 
 class BalanceInputRecordsCompanion extends UpdateCompanion<BalanceInputRecord> {
   final Value<int?> id;
   final Value<String> agent;
-  final Value<DateTime> date;
+  final Value<String> date;
   final Value<double> eMoney;
   final Value<double> cash;
+  final Value<String> inputType;
+  final Value<String?> reason;
   const BalanceInputRecordsCompanion({
     this.id = const Value.absent(),
     this.agent = const Value.absent(),
     this.date = const Value.absent(),
     this.eMoney = const Value.absent(),
     this.cash = const Value.absent(),
+    this.inputType = const Value.absent(),
+    this.reason = const Value.absent(),
   });
   BalanceInputRecordsCompanion.insert({
     this.id = const Value.absent(),
     required String agent,
-    required DateTime date,
+    required String date,
     required double eMoney,
     required double cash,
-  })   : agent = Value(agent),
+    required String inputType,
+    this.reason = const Value.absent(),
+  })  : agent = Value(agent),
         date = Value(date),
         eMoney = Value(eMoney),
-        cash = Value(cash);
+        cash = Value(cash),
+        inputType = Value(inputType);
   static Insertable<BalanceInputRecord> custom({
     Expression<int>? id,
     Expression<String>? agent,
-    Expression<DateTime>? date,
+    Expression<String>? date,
     Expression<double>? eMoney,
     Expression<double>? cash,
+    Expression<String>? inputType,
+    Expression<String>? reason,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1348,21 +1392,27 @@ class BalanceInputRecordsCompanion extends UpdateCompanion<BalanceInputRecord> {
       if (date != null) 'date': date,
       if (eMoney != null) 'e_money': eMoney,
       if (cash != null) 'cash': cash,
+      if (inputType != null) 'input_type': inputType,
+      if (reason != null) 'reason': reason,
     });
   }
 
   BalanceInputRecordsCompanion copyWith(
       {Value<int?>? id,
       Value<String>? agent,
-      Value<DateTime>? date,
+      Value<String>? date,
       Value<double>? eMoney,
-      Value<double>? cash}) {
+      Value<double>? cash,
+      Value<String>? inputType,
+      Value<String?>? reason}) {
     return BalanceInputRecordsCompanion(
       id: id ?? this.id,
       agent: agent ?? this.agent,
       date: date ?? this.date,
       eMoney: eMoney ?? this.eMoney,
       cash: cash ?? this.cash,
+      inputType: inputType ?? this.inputType,
+      reason: reason ?? this.reason,
     );
   }
 
@@ -1376,13 +1426,19 @@ class BalanceInputRecordsCompanion extends UpdateCompanion<BalanceInputRecord> {
       map['agent'] = Variable<String>(agent.value);
     }
     if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+      map['date'] = Variable<String>(date.value);
     }
     if (eMoney.present) {
       map['e_money'] = Variable<double>(eMoney.value);
     }
     if (cash.present) {
       map['cash'] = Variable<double>(cash.value);
+    }
+    if (inputType.present) {
+      map['input_type'] = Variable<String>(inputType.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
     }
     return map;
   }
@@ -1394,7 +1450,9 @@ class BalanceInputRecordsCompanion extends UpdateCompanion<BalanceInputRecord> {
           ..write('agent: $agent, ')
           ..write('date: $date, ')
           ..write('eMoney: $eMoney, ')
-          ..write('cash: $cash')
+          ..write('cash: $cash, ')
+          ..write('inputType: $inputType, ')
+          ..write('reason: $reason')
           ..write(')'))
         .toString();
   }
@@ -1422,9 +1480,9 @@ class $BalanceInputRecordsTable extends BalanceInputRecords
 
   final VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
-  late final GeneratedDateTimeColumn date = _constructDate();
-  GeneratedDateTimeColumn _constructDate() {
-    return GeneratedDateTimeColumn(
+  late final GeneratedTextColumn date = _constructDate();
+  GeneratedTextColumn _constructDate() {
+    return GeneratedTextColumn(
       'date',
       $tableName,
       false,
@@ -1453,8 +1511,31 @@ class $BalanceInputRecordsTable extends BalanceInputRecords
     );
   }
 
+  final VerificationMeta _inputTypeMeta = const VerificationMeta('inputType');
   @override
-  List<GeneratedColumn> get $columns => [id, agent, date, eMoney, cash];
+  late final GeneratedTextColumn inputType = _constructInputType();
+  GeneratedTextColumn _constructInputType() {
+    return GeneratedTextColumn(
+      'input_type',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedTextColumn reason = _constructReason();
+  GeneratedTextColumn _constructReason() {
+    return GeneratedTextColumn(
+      'reason',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, agent, date, eMoney, cash, inputType, reason];
   @override
   $BalanceInputRecordsTable get asDslTable => this;
   @override
@@ -1492,6 +1573,16 @@ class $BalanceInputRecordsTable extends BalanceInputRecords
           _cashMeta, cash.isAcceptableOrUnknown(data['cash'], _cashMeta));
     } else if (isInserting) {
       context.missing(_cashMeta);
+    }
+    if (data.containsKey('input_type')) {
+      context.handle(_inputTypeMeta,
+          inputType.isAcceptableOrUnknown(data['input_type'], _inputTypeMeta));
+    } else if (isInserting) {
+      context.missing(_inputTypeMeta);
+    }
+    if (data.containsKey('reason')) {
+      context.handle(_reasonMeta,
+          reason.isAcceptableOrUnknown(data['reason'], _reasonMeta));
     }
     return context;
   }
@@ -1928,6 +2019,539 @@ class $OpeningClosingTable extends OpeningClosing
   }
 }
 
+class UserData extends DataClass implements Insertable<UserData> {
+  final int? id;
+  final String userId;
+  final String parentId;
+  final String name;
+  final String email;
+  final String phone;
+  final String userType;
+  final bool isActive;
+  final bool isDeactivate;
+  UserData(
+      {this.id,
+      required this.userId,
+      required this.parentId,
+      required this.name,
+      required this.email,
+      required this.phone,
+      required this.userType,
+      required this.isActive,
+      required this.isDeactivate});
+  factory UserData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
+    return UserData(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      userId:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
+      parentId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}parent_id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      email:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      phone:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}phone']),
+      userType: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}user_type']),
+      isActive:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_active']),
+      isDeactivate: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_deactivate']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<String>(parentId);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || userType != null) {
+      map['user_type'] = Variable<String>(userType);
+    }
+    if (!nullToAbsent || isActive != null) {
+      map['is_active'] = Variable<bool>(isActive);
+    }
+    if (!nullToAbsent || isDeactivate != null) {
+      map['is_deactivate'] = Variable<bool>(isDeactivate);
+    }
+    return map;
+  }
+
+  UserCompanion toCompanion(bool nullToAbsent) {
+    return UserCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      email:
+          email == null && nullToAbsent ? const Value.absent() : Value(email),
+      phone:
+          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
+      userType: userType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userType),
+      isActive: isActive == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isActive),
+      isDeactivate: isDeactivate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isDeactivate),
+    );
+  }
+
+  factory UserData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return UserData(
+      id: serializer.fromJson<int?>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
+      parentId: serializer.fromJson<String>(json['parentId']),
+      name: serializer.fromJson<String>(json['name']),
+      email: serializer.fromJson<String>(json['email']),
+      phone: serializer.fromJson<String>(json['phone']),
+      userType: serializer.fromJson<String>(json['userType']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      isDeactivate: serializer.fromJson<bool>(json['isDeactivate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int?>(id),
+      'userId': serializer.toJson<String>(userId),
+      'parentId': serializer.toJson<String>(parentId),
+      'name': serializer.toJson<String>(name),
+      'email': serializer.toJson<String>(email),
+      'phone': serializer.toJson<String>(phone),
+      'userType': serializer.toJson<String>(userType),
+      'isActive': serializer.toJson<bool>(isActive),
+      'isDeactivate': serializer.toJson<bool>(isDeactivate),
+    };
+  }
+
+  UserData copyWith(
+          {int? id,
+          String? userId,
+          String? parentId,
+          String? name,
+          String? email,
+          String? phone,
+          String? userType,
+          bool? isActive,
+          bool? isDeactivate}) =>
+      UserData(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        parentId: parentId ?? this.parentId,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        phone: phone ?? this.phone,
+        userType: userType ?? this.userType,
+        isActive: isActive ?? this.isActive,
+        isDeactivate: isDeactivate ?? this.isDeactivate,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UserData(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('parentId: $parentId, ')
+          ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('userType: $userType, ')
+          ..write('isActive: $isActive, ')
+          ..write('isDeactivate: $isDeactivate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          userId.hashCode,
+          $mrjc(
+              parentId.hashCode,
+              $mrjc(
+                  name.hashCode,
+                  $mrjc(
+                      email.hashCode,
+                      $mrjc(
+                          phone.hashCode,
+                          $mrjc(
+                              userType.hashCode,
+                              $mrjc(isActive.hashCode,
+                                  isDeactivate.hashCode)))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is UserData &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.parentId == this.parentId &&
+          other.name == this.name &&
+          other.email == this.email &&
+          other.phone == this.phone &&
+          other.userType == this.userType &&
+          other.isActive == this.isActive &&
+          other.isDeactivate == this.isDeactivate);
+}
+
+class UserCompanion extends UpdateCompanion<UserData> {
+  final Value<int?> id;
+  final Value<String> userId;
+  final Value<String> parentId;
+  final Value<String> name;
+  final Value<String> email;
+  final Value<String> phone;
+  final Value<String> userType;
+  final Value<bool> isActive;
+  final Value<bool> isDeactivate;
+  const UserCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.userType = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.isDeactivate = const Value.absent(),
+  });
+  UserCompanion.insert({
+    this.id = const Value.absent(),
+    required String userId,
+    required String parentId,
+    required String name,
+    required String email,
+    required String phone,
+    required String userType,
+    required bool isActive,
+    required bool isDeactivate,
+  })   : userId = Value(userId),
+        parentId = Value(parentId),
+        name = Value(name),
+        email = Value(email),
+        phone = Value(phone),
+        userType = Value(userType),
+        isActive = Value(isActive),
+        isDeactivate = Value(isDeactivate);
+  static Insertable<UserData> custom({
+    Expression<int>? id,
+    Expression<String>? userId,
+    Expression<String>? parentId,
+    Expression<String>? name,
+    Expression<String>? email,
+    Expression<String>? phone,
+    Expression<String>? userType,
+    Expression<bool>? isActive,
+    Expression<bool>? isDeactivate,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (parentId != null) 'parent_id': parentId,
+      if (name != null) 'name': name,
+      if (email != null) 'email': email,
+      if (phone != null) 'phone': phone,
+      if (userType != null) 'user_type': userType,
+      if (isActive != null) 'is_active': isActive,
+      if (isDeactivate != null) 'is_deactivate': isDeactivate,
+    });
+  }
+
+  UserCompanion copyWith(
+      {Value<int?>? id,
+      Value<String>? userId,
+      Value<String>? parentId,
+      Value<String>? name,
+      Value<String>? email,
+      Value<String>? phone,
+      Value<String>? userType,
+      Value<bool>? isActive,
+      Value<bool>? isDeactivate}) {
+    return UserCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      parentId: parentId ?? this.parentId,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      userType: userType ?? this.userType,
+      isActive: isActive ?? this.isActive,
+      isDeactivate: isDeactivate ?? this.isDeactivate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (userType.present) {
+      map['user_type'] = Variable<String>(userType.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (isDeactivate.present) {
+      map['is_deactivate'] = Variable<bool>(isDeactivate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('parentId: $parentId, ')
+          ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('userType: $userType, ')
+          ..write('isActive: $isActive, ')
+          ..write('isDeactivate: $isDeactivate')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserTable extends User with TableInfo<$UserTable, UserData> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $UserTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedIntColumn id = _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, true,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedTextColumn userId = _constructUserId();
+  GeneratedTextColumn _constructUserId() {
+    return GeneratedTextColumn(
+      'user_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _parentIdMeta = const VerificationMeta('parentId');
+  @override
+  late final GeneratedTextColumn parentId = _constructParentId();
+  GeneratedTextColumn _constructParentId() {
+    return GeneratedTextColumn(
+      'parent_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedTextColumn name = _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn(
+      'name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedTextColumn email = _constructEmail();
+  GeneratedTextColumn _constructEmail() {
+    return GeneratedTextColumn(
+      'email',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedTextColumn phone = _constructPhone();
+  GeneratedTextColumn _constructPhone() {
+    return GeneratedTextColumn(
+      'phone',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _userTypeMeta = const VerificationMeta('userType');
+  @override
+  late final GeneratedTextColumn userType = _constructUserType();
+  GeneratedTextColumn _constructUserType() {
+    return GeneratedTextColumn(
+      'user_type',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _isActiveMeta = const VerificationMeta('isActive');
+  @override
+  late final GeneratedBoolColumn isActive = _constructIsActive();
+  GeneratedBoolColumn _constructIsActive() {
+    return GeneratedBoolColumn(
+      'is_active',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _isDeactivateMeta =
+      const VerificationMeta('isDeactivate');
+  @override
+  late final GeneratedBoolColumn isDeactivate = _constructIsDeactivate();
+  GeneratedBoolColumn _constructIsDeactivate() {
+    return GeneratedBoolColumn(
+      'is_deactivate',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        userId,
+        parentId,
+        name,
+        email,
+        phone,
+        userType,
+        isActive,
+        isDeactivate
+      ];
+  @override
+  $UserTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'user';
+  @override
+  final String actualTableName = 'user';
+  @override
+  VerificationContext validateIntegrity(Insertable<UserData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id'], _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(_parentIdMeta,
+          parentId.isAcceptableOrUnknown(data['parent_id'], _parentIdMeta));
+    } else if (isInserting) {
+      context.missing(_parentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+          _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
+    } else if (isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+          _phoneMeta, phone.isAcceptableOrUnknown(data['phone'], _phoneMeta));
+    } else if (isInserting) {
+      context.missing(_phoneMeta);
+    }
+    if (data.containsKey('user_type')) {
+      context.handle(_userTypeMeta,
+          userType.isAcceptableOrUnknown(data['user_type'], _userTypeMeta));
+    } else if (isInserting) {
+      context.missing(_userTypeMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active'], _isActiveMeta));
+    } else if (isInserting) {
+      context.missing(_isActiveMeta);
+    }
+    if (data.containsKey('is_deactivate')) {
+      context.handle(
+          _isDeactivateMeta,
+          isDeactivate.isAcceptableOrUnknown(
+              data['is_deactivate'], _isDeactivateMeta));
+    } else if (isInserting) {
+      context.missing(_isDeactivateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return UserData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $UserTable createAlias(String alias) {
+    return $UserTable(_db, alias);
+  }
+}
+
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $BalanceTable balance = $BalanceTable(this);
@@ -1935,6 +2559,7 @@ abstract class _$MyDatabase extends GeneratedDatabase {
   late final $BalanceInputRecordsTable balanceInputRecords =
       $BalanceInputRecordsTable(this);
   late final $OpeningClosingTable openingClosing = $OpeningClosingTable(this);
+  late final $UserTable user = $UserTable(this);
   late final BalanceDao balanceDao = BalanceDao(this as MyDatabase);
   late final TransactionsDao transactionsDao =
       TransactionsDao(this as MyDatabase);
@@ -1942,17 +2567,21 @@ abstract class _$MyDatabase extends GeneratedDatabase {
       BalanceInputRecordsDao(this as MyDatabase);
   late final OpeningClosingDao openingClosingDao =
       OpeningClosingDao(this as MyDatabase);
+  late final UserDao userDao = UserDao(this as MyDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [balance, transactions, balanceInputRecords, openingClosing];
+      [balance, transactions, balanceInputRecords, openingClosing, user];
 }
 
 // **************************************************************************
 // DaoGenerator
 // **************************************************************************
 
+mixin _$UserDaoMixin on DatabaseAccessor<MyDatabase> {
+  $UserTable get user => attachedDatabase.user;
+}
 mixin _$OpeningClosingDaoMixin on DatabaseAccessor<MyDatabase> {
   $OpeningClosingTable get openingClosing => attachedDatabase.openingClosing;
 }

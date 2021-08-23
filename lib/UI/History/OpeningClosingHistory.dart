@@ -92,7 +92,6 @@ class _OpeningClosingHistoryState extends State<OpeningClosingHistory> {
         itemCount: openingClosingList.length,
         itemBuilder: (context, index) => InkWell(
           onTap: () {
-           //todo go to detail
           },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
@@ -123,8 +122,13 @@ class _OpeningClosingHistoryState extends State<OpeningClosingHistory> {
     );
   }
 
-  deleteTransaction(OpeningClosingData openingClosingList) {
+  deleteTransaction(OpeningClosingData openingClosing) {
+    Utils.confirmDialog(context, "Confirm!", "Are you sure you want to delete!").then((value) {
+      if(value){
+        model.deleteOpeningClosingHistory(context, openingClosing);
 
+      }
+    });
   }
 }
 

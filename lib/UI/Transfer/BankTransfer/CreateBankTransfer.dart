@@ -42,6 +42,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
   Wrapper _phoneNumberErrMessage =  new Wrapper("");
   Wrapper _bankNameErrMessage =  new Wrapper("");
   Wrapper _amountErrMessage =  new Wrapper("");
+  Wrapper _partnerErrMessage =  new Wrapper("");
   Wrapper _commissionErrMessage =  new Wrapper("");
 
 
@@ -113,6 +114,8 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
     );
     final partnerInput = CustomTextInput(
       controller: this.partnerController,
+      isRequired: true,
+      errorMessage: _partnerErrMessage.value,
       label: "Partner Name",
       hintText: "Enter Partner Name",
       leadingIcon: Icon(
@@ -499,8 +502,9 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
 
   bool isValid() {
     bool isPhoneValid = true,isAmountValid = false,isBankNameValid = true;
+    bool isPartNameValid = true;
     bool isCommissionValid = true;
-    String phoneErrorMsg = '' , amountMsg = '',bankNameErrorMsg = '' , commissionMsg = '';
+    String phoneErrorMsg = '' , amountMsg = '',bankNameErrorMsg = '' , commissionMsg = '' ,partnerErrorMsg = '';
     if(this.widget.transferorType == Constants.BankType){    // if current widget is for bank transfer bank name is required and phoneNo is not required
       isPhoneValid = true;
       if(bankController.text.trim().isNotEmpty){
@@ -508,6 +512,12 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
       }else{
         isBankNameValid = false;
         bankNameErrorMsg = "Required";
+      }
+      if(phoneNumberController.text.trim().isNotEmpty){
+        if(!Utils.validatePhone(phoneNumberController.text.trim())){
+          isPhoneValid = false;
+          phoneErrorMsg = "Invalid Phone";
+        }
       }
     }else{                                          //current widget is for partner transfer phone No is required
       isBankNameValid = true;
@@ -521,6 +531,12 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
       }else{
         phoneErrorMsg = "Required";
         isPhoneValid = false;
+      }
+      if(partnerController.text.trim().isEmpty){
+        isPartNameValid = false;
+        partnerErrorMsg = "Required";
+      }else{
+        isPartNameValid = true;
       }
     }
 
@@ -565,9 +581,10 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
       _phoneNumberErrMessage.value = phoneErrorMsg;
       _bankNameErrMessage.value = bankNameErrorMsg;
       _amountErrMessage.value = amountMsg;
+      _partnerErrMessage.value = partnerErrorMsg;
     });
 
-    return isPhoneValid && isBankNameValid && isAmountValid && isCommissionValid;
+    return isPhoneValid && isBankNameValid && isAmountValid && isCommissionValid && isPartNameValid;
 
   }
 
@@ -577,7 +594,6 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
 
   void updateBalance() async{
     double  commission =  this.commissionController.text.trim().isNotEmpty ? double.parse(this.commissionController.text.trim()) : 0.0;
-  //  double cash = balanceData.cash + double.parse(amountController.text.trim());
 
     if(_selectedType == Constants.BANK_TRANSFER_TYPE || _selectedType == Constants.PARTNER_TRANSFER_TYPE){
       //if transfer reduce amount from eMoney
@@ -621,7 +637,6 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         );
       }
     }
-
   }
 
   void saveTransaction() async{

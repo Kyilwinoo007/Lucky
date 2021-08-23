@@ -39,6 +39,7 @@ class _WithdrawState extends State<Withdraw> {
   Wrapper _withdrawerPhoneNumberErrMessage = new Wrapper("");
   Wrapper _withdrawAmountErrMessage = new Wrapper("");
   Wrapper _commissionErrMessage = new Wrapper("");
+  Wrapper _withdrawerNameErrMessage = new Wrapper("");
 
   var _date = new DateTime.now();
   var _time = new DateTime.now();
@@ -75,10 +76,11 @@ class _WithdrawState extends State<Withdraw> {
       controller: this.withdrawerNameController,
       label: "Withdrawer Name",
       hintText: "Enter Withdrawer Name",
+      isRequired: true,
       leadingIcon: Icon(
         LineAwesomeIcons.user,
         size: 25.0,
-      ), errorMessage: '',
+      ), errorMessage: _withdrawerNameErrMessage.value,
     );
     final transferorNameInput = CustomTextInput(
       controller: this.transferorNameController,
@@ -498,7 +500,8 @@ class _WithdrawState extends State<Withdraw> {
   bool isValid() {
     bool isWithdrawerPhoneValid,isTransferorPhoneValid,isAmountValid;
     bool isCommissionValid = true;
-    String withdrawPhoneErrorMsg = '',transferPhoneErrorMsg = '' , amountMsg = '' ,commissionErrorMsg = '';
+    bool isWithdrawerNameValid;
+    String withdrawPhoneErrorMsg = '',transferPhoneErrorMsg = '' , amountMsg = '' ,commissionErrorMsg = '',withdrawerNameErrorMsg = '';
     if(withdrawerPhoneNumberController.text.trim().isNotEmpty){
       if(Utils.validatePhone(withdrawerPhoneNumberController.text.trim())){
         isWithdrawerPhoneValid = true;
@@ -520,6 +523,13 @@ class _WithdrawState extends State<Withdraw> {
     }else{
       transferPhoneErrorMsg = "Required";
       isTransferorPhoneValid = false;
+    }
+
+    if(withdrawerNameController.text.trim().isEmpty){
+      isWithdrawerNameValid = false;
+      withdrawerNameErrorMsg = "Required";
+    }else{
+      isWithdrawerNameValid = true;
     }
 
     if(withdrawAmountController.text.trim().isNotEmpty){
@@ -558,9 +568,10 @@ class _WithdrawState extends State<Withdraw> {
       _withdrawerPhoneNumberErrMessage.value = withdrawPhoneErrorMsg;
       _transferorPhoneNumberErrMessage.value = transferPhoneErrorMsg;
       _withdrawAmountErrMessage.value = amountMsg;
+      _withdrawerNameErrMessage.value = withdrawerNameErrorMsg;
     });
 
-    return isWithdrawerPhoneValid && isTransferorPhoneValid && isAmountValid && isCommissionValid;
+    return isWithdrawerPhoneValid && isTransferorPhoneValid && isAmountValid && isCommissionValid && isWithdrawerNameValid;
   }
 
   void getBalanceByAgentName() async{

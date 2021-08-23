@@ -59,9 +59,7 @@ class _TransferChartState extends State<TransferChart> {
         })
         .toList()
         .where((transaction) =>
-            transaction.transactionsType == Constants.TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.BANK_TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.PARTNER_TRANSFER_TYPE)
+            transaction.transactionsType == Constants.TRANSFER_TYPE)
         .toList();
 
     var kbzPayTransactions = transactions
@@ -75,9 +73,7 @@ class _TransferChartState extends State<TransferChart> {
         )
         .toList()
         .where((transaction) =>
-            transaction.transactionsType == Constants.TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.BANK_TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.PARTNER_TRANSFER_TYPE)
+            transaction.transactionsType == Constants.TRANSFER_TYPE )
         .toList();
 
     var trueMoneyTransactions = transactions
@@ -91,9 +87,7 @@ class _TransferChartState extends State<TransferChart> {
         )
         .toList()
         .where((transaction) =>
-            transaction.transactionsType == Constants.TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.BANK_TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.PARTNER_TRANSFER_TYPE)
+            transaction.transactionsType == Constants.TRANSFER_TYPE )
         .toList();
 
     var cbPayTransactions = transactions
@@ -107,9 +101,7 @@ class _TransferChartState extends State<TransferChart> {
         )
         .toList()
         .where((transaction) =>
-            transaction.transactionsType == Constants.TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.BANK_TRANSFER_TYPE ||
-            transaction.transactionsType == Constants.PARTNER_TRANSFER_TYPE)
+            transaction.transactionsType == Constants.TRANSFER_TYPE )
         .toList();
 
     double waveMoneyTransferAmount =
@@ -122,7 +114,7 @@ class _TransferChartState extends State<TransferChart> {
     double trueMoneyTransferAmount =
         trueMoneyTransactions.fold(0, (sum, item) => sum + item.amount);
 
-    final commissionData = [
+    final transferData = [
       new SaleData('Wave Money', waveMoneyTransferAmount),
       new SaleData('Cb Pay', cbPayTransferAmount),
       new SaleData('True Money', trueMoneyTransferAmount),
@@ -133,7 +125,7 @@ class _TransferChartState extends State<TransferChart> {
         new charts.Series<SaleData, String>(
           id: 'transfer',
           measureFn: (SaleData sales, _) => sales.sales,
-          data: commissionData,
+          data: transferData,
           labelAccessorFn: (SaleData sale, _) => '${sale.sales.toString()}',
           colorFn: (_, __) => charts.ColorUtil.fromDartColor(leftBarColor),
           domainFn: (SaleData sales, _) => sales.agent,
@@ -209,20 +201,18 @@ class _TransferChartState extends State<TransferChart> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Expanded(
-                    flex: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                            right: 20.0,
+                            right: 16.0,
                           ),
                           child: Text(
                             "${this._fromDate.day} / ${this._fromDate.month} / ${this._fromDate.year}",
@@ -266,25 +256,21 @@ class _TransferChartState extends State<TransferChart> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        '-',
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  Text(
+                    '-',
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   Expanded(
-                    flex: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                            right: 20.0,
+                            right: 16.0,
                           ),
                           child: Text(
                             this._toDate != null
@@ -331,6 +317,7 @@ class _TransferChartState extends State<TransferChart> {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),

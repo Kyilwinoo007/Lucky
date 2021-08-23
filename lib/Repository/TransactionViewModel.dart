@@ -27,7 +27,6 @@ class TransactionViewModel extends ChangeNotifier{
     if(result != null){
       this.cash = result.cash;
       this.eMoney = result.eMoney;
-      print("${this.cash}");
     }
     return result;
   }
@@ -76,6 +75,17 @@ class TransactionViewModel extends ChangeNotifier{
 
   void insertOpeningClosing(OpeningClosingData openingClosingData) {
     openingClosingDao.insertOpeningClosing(openingClosingData);
+  }
+
+ Stream<List<BalanceInputRecord>> getAllMoneyInputRecords(BuildContext context) {
+    BalanceInputRecordsDao dao = Provider.of<BalanceInputRecordsDao>(context,listen: false);
+    return dao.watchAllModes;
+  }
+
+  deleteOpeningClosingHistory(BuildContext context, OpeningClosingData openingClosing) async{
+    openingClosingDao = Provider.of<OpeningClosingDao>(context,listen: false);
+    var result = await openingClosingDao.deleteOpeningClosing(openingClosing);
+    return result;
   }
 
 

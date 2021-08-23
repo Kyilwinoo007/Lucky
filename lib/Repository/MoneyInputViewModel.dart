@@ -10,6 +10,7 @@ class MoneyInputViewModel extends ChangeNotifier{
   double eMoney = 0.0;
   late BalanceDao  balanceDao;
   late OpeningClosingDao openingClosingDao;
+  late BalanceInputRecordsDao balanceInputRecordsDao;
   late BuildContext context;
   late String agent;
   void getBalanceByAgentId(String agent,BuildContext context) async {
@@ -37,10 +38,10 @@ class MoneyInputViewModel extends ChangeNotifier{
     return result > 0;
   }
 
-  void insertOpenClosingBalance(BuildContext context,OpeningClosingData openingClosingData) async{
+  Future<bool> insertOpenClosingBalance(BuildContext context,OpeningClosingData openingClosingData) async{
     openingClosingDao = Provider.of<OpeningClosingDao>(context,listen: false);
-    print("openclosingdata para "+ jsonEncode(openingClosingData));
     var result = await openingClosingDao.insertOpeningClosing(openingClosingData);
+    return result > 0;
   }
 
   Future<List<BalanceData>> getBalanceByDate(BuildContext context, String currentDate) {
@@ -56,16 +57,22 @@ class MoneyInputViewModel extends ChangeNotifier{
     return result;
   }
 
-  void updateOpenClosingBalance(OpeningClosingData openingClosingData) async{
+  Future<bool> updateOpenClosingBalance(OpeningClosingData openingClosingData) async{
     openingClosingDao = Provider.of<OpeningClosingDao>(context,listen: false);
-    print("openclosingdata para "+ jsonEncode(openingClosingData));
     var result = await openingClosingDao.updateOpeningClosing(openingClosingData);
+    return result;
   }
 
   Future<OpeningClosingData> getOpeningClosingByAgentAndDate(String agent, String date) async{
     openingClosingDao = Provider.of<OpeningClosingDao>(context,listen: false);
     var result = await openingClosingDao.getOpeningClosingByAgentAndDate(agent, date);
     return result;
+  }
+
+ Future<bool> insertBalanceRecords(BuildContext context, BalanceInputRecord balanceInputRecord) async{
+    balanceInputRecordsDao = Provider.of<BalanceInputRecordsDao>(context,listen: false);
+    var result = await balanceInputRecordsDao.insertBalanceInputRecord(balanceInputRecord);
+    return result > 0;
   }
 
 }

@@ -59,7 +59,6 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
   buildPortraitView() {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.75,
         color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -82,8 +81,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                               color: Colors.black54,
                               fontWeight: FontWeight.bold
                           ),),
-                          Expanded(
-                            child: Container(
+                          Container(
                               decoration: BoxDecoration(
                                 color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -91,7 +89,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 16,vertical: 8),
                                 child: Text(this.widget.transaction.bank.isEmpty ? "Unknown" : this.widget.transaction.bank,
                                   style: TextStyle(
                                       fontSize: 16,
@@ -100,7 +98,6 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                   ),),
                               ),
                             ),
-                          )
                         ],
                       ) :
                       Row(
@@ -110,8 +107,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                               color: Colors.black54,
                               fontWeight: FontWeight.bold
                           ),),
-                          Expanded(
-                            child: Container(
+                           Container(
                               decoration: BoxDecoration(
                                 color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -119,7 +115,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 16,vertical: 8),
                                 child: Text(this.widget.transaction.partner.isEmpty ? "Unknown" : this.widget.transaction.partner,
                                   style: TextStyle(
                                       fontSize: 16,
@@ -128,7 +124,6 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                   ),),
                               ),
                             ),
-                          )
                         ],
                       ),
                     ),

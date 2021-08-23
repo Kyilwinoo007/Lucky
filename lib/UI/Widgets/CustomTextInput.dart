@@ -70,11 +70,10 @@ class _MyCustomTextInputState extends State<CustomTextInput> {
       isRequired: this.widget.isRequired,
       child: Container(
         child: ListTile(
-
           horizontalTitleGap: -5.0,
           leading: this.widget.leadingIcon,
           trailing: this.widget.trailingIcon,
-          title: TextFormField(
+          title:TextFormField(
             onChanged: (val) => this.widget.onChangeHandler != null
                 ? this.widget.onChangeHandler!(val)
                 : null,
@@ -104,65 +103,6 @@ class _MyCustomTextInputState extends State<CustomTextInput> {
           ),
         ),
       ),
-      // child: TextFormField(
-      //   onChanged: (val) => this.widget.onChangeHandler != null
-      //       ? this.widget.onChangeHandler!(val)
-      //       : null,
-      //   onSaved: (val) => this.widget.controller.text = val!.trim(),
-      //   style: TextStyle(
-      //     fontSize: 15,
-      //     fontWeight: FontWeight.bold,
-      //   ),
-      //   keyboardType: widget.inputType,
-      //   controller: widget.controller,
-      //   enabled: !this.widget.disable,
-      //   decoration: InputDecoration(
-      //     isDense: true,
-      //     contentPadding: EdgeInsetsResponsive.only(
-      //       top: widget.leadingIcon == null && widget.trailingIcon == null
-      //           ? 0.0
-      //           : 20.0,
-      //       left: 10.0,
-      //     ),
-      //     border: InputBorder.none,
-      //     hintText: widget.hintText,
-      //     //    labelText: widget.hintText,
-      //     labelStyle: TextStyle(
-      //       color: Colors.grey,
-      //       fontSize: 13.0,
-      //     ),
-      //     hintStyle: TextStyle(
-      //       color: Colors.grey,
-      //       fontSize: 13.0,
-      //     ),
-      //     // Here is key idea
-      //     prefixIcon: (widget.leadingIcon == null)
-      //         ? null
-      //         : Padding(
-      //       padding: const EdgeInsets.all(0.0),
-      //       child: IconButton(
-      //         icon: widget.leadingIcon,
-      //         iconSize: 22.0,
-      //         onPressed: widget.onLeadingIconPressed,
-      //       ),
-      //     ),
-      //     suffixIcon: this.widget.disable && (widget.trailingIcon == null)
-      //         ? ((this.widget.errorMessage ?? "").length > 0)
-      //         ? Icon(
-      //       LineAwesomeIcons.times_circle,
-      //       size: 20.0,
-      //       color: Colors.red,
-      //     )
-      //         : (this.widget.controller.text.length > 0)
-      //         ? Icon(
-      //       Icons.check_circle,
-      //       size: 20.0,
-      //       color: Colors.green,
-      //     )
-      //         : null
-      //         : this.widget.trailingIcon,
-      //   ),
-      // ),
     );
   }
 }

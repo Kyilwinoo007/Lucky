@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lucky/Constants/Constants.dart';
+import 'package:lucky/Data/SharedPref/basicInfo.dart';
+import 'package:lucky/Data/UserInfo.dart';
 import 'package:lucky/Repository/AgentViewModel.dart';
 import 'package:lucky/Repository/HomeViewModel.dart';
 import 'package:lucky/UI/Agent/Agent.dart';
@@ -12,9 +17,11 @@ import 'package:lucky/UI/History/HistoryTab.dart';
 import 'package:lucky/UI/Profile/Profile.dart';
 import 'package:lucky/UI/Transfer/TransferRecord.dart';
 import 'package:lucky/UI/Transfer/TransferTab.dart';
+import 'package:lucky/UI/User/UserScreens.dart';
 import 'package:lucky/UI/Widgets/ButtonWidgets.dart';
 import 'package:lucky/UI/Widgets/HomeScreenTopWidget.dart';
 import 'package:lucky/UI/Withdraw/WithDrawRecord.dart';
+import 'package:lucky/Utils/Utils.dart';
 import 'package:lucky/common/serviceLocator.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -27,20 +34,29 @@ class Home extends StatefulWidget {
 // ignore: camel_case_types
 class _HomeState extends State<Home> {
   final HomeViewModel model = serviceLocator<HomeViewModel>();
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  late UserInfo userInfo;
 
   @override
   void initState() {
     super.initState();
     model.getAllBalance(context);
-    getUsers();
+    getUserInfo();
   }
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     model.getAllBalance(context);
   }
+  void getUserInfo() async{
+    UserInfo userInfo =await basicInfo.getUserInfo();
+    if(userInfo != null){
+      setState(() {
+        this.userInfo =  userInfo;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,17 +85,6 @@ class _HomeState extends State<Home> {
       },
       text: "Transfer",
     );
-    var bankTransferWidget = ButtonWidgets(
-      icon: Icon(Icons.account_balance),
-      onTap: () {
-        print("Transfer");
-
-        // Navigator.of(context).pushNamed("/transactions", arguments: {
-        //   "type": "Text",
-        // });
-      },
-      text: "Bank",
-    );
     var billTopUpWidget = ButtonWidgets(
       icon: Icon(Icons.villa),
       onTap: () {
@@ -91,8 +96,12 @@ class _HomeState extends State<Home> {
     var analyticsWidget = ButtonWidgets(
       icon: Icon(Icons.insert_chart),
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Analytics()));
+        if(userInfo.userType.trim() == Constants.AdminUserType){
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Analytics()));
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar(text: "Permission denied!"));
+        }
       },
       text: "Analytics",
     );
@@ -106,12 +115,12 @@ class _HomeState extends State<Home> {
     );
     var usersWidget = ButtonWidgets(
       icon: Icon(Icons.people),
-      onTap: () {
-        print("Users");
-
-        // Navigator.of(context).pushNamed("/transactions", arguments: {
-        //   "type": "Text",
-        // });
+      onTap: () async{
+        if(userInfo.userType.trim() == Constants.AdminUserType){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => UserScreen()));
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar(text: "Permission denied!"));
+        }
       },
       text: "Users",
     );
@@ -148,9 +157,7 @@ class _HomeState extends State<Home> {
           body: SmartRefresher(
               onRefresh: _refresh,
               controller: _refreshController,
-              // child: Column(
-              //   children: [
-              //     Center(
+
               child: MediaQuery.of(context).orientation == Orientation.portrait
                   ? buildPortraitView(Consumer<HomeViewModel>(
                       builder: (context, model, child) {
@@ -163,7 +170,6 @@ class _HomeState extends State<Home> {
                       depositWidget,
                       withdrawWidget,
                       transferWidget,
-                      // bankTransferWidget,
                       billTopUpWidget,
                       agentWidget,
                       analyticsWidget,
@@ -355,10 +361,5 @@ class _HomeState extends State<Home> {
           )
         ],
     );
-  }
-
-  void getUsers() async{
-    QuerySnapshot querySnapshot =await FirebaseFirestore.instance.collection(Constants.firestore_collection).get();
-    print("firestore data length => " + querySnapshot.docs.length.toString());
   }
 }

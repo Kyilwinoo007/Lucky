@@ -14,6 +14,7 @@ import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/Utils.dart';
 import 'package:lucky/common/serviceLocator.dart';
 import 'package:lucky/main.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
 
 class Profile extends StatefulWidget {
@@ -26,7 +27,6 @@ class _ProfileState extends State<Profile> {
   final MoneyInputViewModel model = serviceLocator<MoneyInputViewModel>();
   List<BalanceData> balanceList = [];
   List<OpeningClosingData> openingBalanceList = [];
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   @override
@@ -54,7 +54,6 @@ class _ProfileState extends State<Profile> {
     }
     var orientation = MediaQuery.of(context).orientation;
     return Scaffold(
-      key: _scaffoldKey,
       appBar: luckyAppbar(
         context: context,
         title: "Profile",
@@ -184,184 +183,160 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              Positioned(
-                  top: 20,
-                  right: 20,
-                  child: InkWell(
-                    onTap: () {
-                      //todo edit
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      color: LuckyColors.splashScreenColors,
-                      size: 22,
-                    ),
-                  ))
+              // Positioned(
+              //     top: 20,
+              //     right: 20,
+              //     child: InkWell(
+              //       onTap: () {
+              //         //todo edit
+              //       },
+              //       child: Icon(
+              //         Icons.edit,
+              //         color: LuckyColors.splashScreenColors,
+              //         size: 22,
+              //       ),
+              //     ))
             ],
           ),
-          InkWell(
-            onTap: (){
-              getAllBalanceByDate();
+                  Row(
+                    children: [
+                      Expanded(child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
+                        child:ElevatedButton(
+                          onPressed: (){
+                            getAllBalanceByDate();
 
-            },
-            child: Stack(
-              children: [
-                Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
+                          },
+                          style:ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          elevation: 5.0,
+                          shadowColor: Colors.grey,
+                          padding: EdgeInsets.only(top: 16,bottom: 16,left: 18,right: 18),
+                        ),
                           child: Row(
-                            children: <Widget>[
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children :[
                               Text(
                                 "Close Balance",
                                 style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17.0,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: Colors.black,
+                                size: 22,
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 20,
-                  right: 20,
-                    child: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      color: Colors.black,
-                      size: 22,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Stack(
-            children: [
-              Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Setting",
-                              style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
+
+                      ),)
+
                     ],
                   ),
-                ),
-              ),
-              Positioned(
-                top: 20,
-                right: 20,
-                child: InkWell(
-                  onTap: () {
-                    //todo go to setting
-                  },
-                  child: Icon(
-                    Icons.arrow_forward_ios_outlined,
-                    color: Colors.black,
-                    size: 22,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          InkWell(
-            onTap: (){
-              Utils.checkInternetConnection(context).then((value) => {
-              if(!value){
-              _scaffoldKey.currentState!.showSnackBar(Utils.showSnackBar())
-              }else{
-                Utils.confirmDialog(context, "Confirm!", "Are you sure you want to log out?").then((value) => {
-                  if(value){
-                  FirebaseFirestore.instance
-                  .collection(Constants.firestore_collection)
-                  .doc(userInfo.id)
-                  .update({
-                "isActive": false,
-              }).then((_) {
-                basicInfo.signOutClearData().then((value) {
-                  if(value){
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        "splashScreen", (Route<dynamic> route) => false);
-                  }
-                });
-                // Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                // builder: (BuildContext context) => Home()));
-              }),
-                  }
-                }),
-              }
-              });
-
-            },
-            child: Stack(
-              children: [
-                Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(10.0),
+                  Row(
+                    children: [
+                      Expanded(child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
+                        child:ElevatedButton(
+                          onPressed: (){
+                            //todo to go settings
+                          },
+                          style:ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          elevation: 5.0,
+                          shadowColor: Colors.grey,
+                          padding: EdgeInsets.only(top: 16,bottom: 16,left: 18,right: 18),
+                        ),
                           child: Row(
-                            children: <Widget>[
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children :[
+                              Text(
+                                "Printer Settings",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17.0,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: Colors.black,
+                                size: 22,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      ),)
+
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
+                        child:ElevatedButton(
+                          onPressed: (){
+                            Utils.checkInternetConnection(context).then((value) => {
+                              if(!value){
+                                ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+                              }else{
+                                Utils.confirmDialog(context, "Confirm!", "Are you sure you want to log out?").then((value) => {
+                                  if(value){
+                                    FirebaseFirestore.instance
+                                        .collection(Constants.firestore_collection)
+                                        .doc(userInfo.id)
+                                        .update({
+                                      "isActive": false,
+                                    }).then((_) {
+                                      basicInfo.signOutClearData().then((value) {
+                                        if(value){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "splashScreen", (Route<dynamic> route) => false);
+                                        }
+                                      });
+                                      // Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                                      // builder: (BuildContext context) => Home()));
+                                    }),
+                                  }
+                                }),
+                              }
+                            });
+                          },
+                          style:ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          elevation: 5.0,
+                          shadowColor: Colors.grey,
+                          padding: EdgeInsets.only(top: 16,bottom: 16,left: 18,right: 18),
+                        ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children :[
                               Text(
                                 "Log Out",
                                 style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17.0,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: Colors.black,
+                                size: 22,
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 20,
-                  right: 20,
-                  child: InkWell(
-                    onTap: () {
 
-                    },
-                    child: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      color: Colors.black,
-                      size: 22,
-                    ),
+                      ),)
+
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ),
         ])));
   }
 
@@ -377,7 +352,6 @@ class _ProfileState extends State<Profile> {
 
   void getAllBalanceByDate() async{
     balanceList = await model.getBalanceByDate(context,Utils.getCurrentDate());
-    print("balanceList"+ jsonEncode(balanceList));
     if(balanceList.length == 0){
       Utils.errorDialog(context, "There is no balance today!");
     }else{
@@ -387,19 +361,26 @@ class _ProfileState extends State<Profile> {
 
   void getAllOpeningBalanceByDate() async{
     openingBalanceList = await model.getAllOpeningBalanceByDate(context,Utils.getCurrentDate());
+    var result ;
     if(openingBalanceList.length > 0 ){
-      updateClosingBalance();
-      updateBalance();
+     result = await updateClosingBalance();
+     result = await updateBalance();
+    }
+    if(result){
+      Utils.successDialog(context, "Success", "Successful!");
+    }else{
+      Utils.errorDialog(context, "Something went wrong!");
     }
   }
 
-  void updateClosingBalance() {
+  Future<bool> updateClosingBalance() async{
+    var result ;
     for(int i = 0 ; i< balanceList.length ; i ++){
       for(int ii = 0 ; ii< openingBalanceList.length ; ii ++){
         if(balanceList[i].agent == openingBalanceList[ii].agent){
           BalanceData balanceData = balanceList[i];
           OpeningClosingData data = openingBalanceList[ii];
-          model.updateOpenClosingBalance(OpeningClosingData(
+       result =  await  model.updateOpenClosingBalance(OpeningClosingData(
               id: data.id,
               openingCash: data.openingCash,
               openingEMoney: data.openingEMoney,
@@ -411,12 +392,15 @@ class _ProfileState extends State<Profile> {
         }
       }
     }
+    return result;
   }
 
-  void updateBalance() {
+  Future<bool> updateBalance() async{
+    var result;
     for(int i = 0 ; i< balanceList.length ; i ++ ){
       BalanceData balanceData = balanceList[i];
-      model.updateBalance(BalanceData(id:balanceData.id,cash: 0.0, eMoney: 0.0, date: balanceData.date, agent: balanceData.agent));
+    result = await  model.updateBalance(BalanceData(id:balanceData.id,cash: 0.0, eMoney: 0.0, date: balanceData.date, agent: balanceData.agent));
     }
+    return result;
   }
 }

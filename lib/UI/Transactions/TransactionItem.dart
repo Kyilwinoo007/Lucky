@@ -34,14 +34,21 @@ class TransactionItem extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: isWithDraw ? Colors.red[50] : Colors.green[50],
-//          child: Image.asset("images/kbzpay.png",fit: BoxFit.cover,)
             child: Icon(
               isWithDraw ? Icons.arrow_back : Icons.arrow_forward,
               color: isWithDraw ? Colors.red : Colors.green,
               size: 30.0,
             ),
           ),
-          title: Text(
+          title: isWithDraw ? Text(
+            this.transaction.toCustomerName.isEmpty
+                ? "Unknown"
+                : this.transaction.toCustomerName,
+            style: TextStyle(
+              fontSize: 15.0,
+            ),
+          ):
+          Text(
             this.transaction.fromCustomerName.isEmpty
                 ? "Unknown"
                 : this.transaction.fromCustomerName,

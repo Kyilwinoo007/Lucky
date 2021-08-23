@@ -48,6 +48,8 @@ class _MyAppState extends State<MyApp> {
         Provider(create :(_) => this._myDatabase.transactionsDao),
 
         Provider(create :(_) => this._myDatabase.openingClosingDao),
+        Provider(create :(_) => this._myDatabase.userDao),
+        Provider(create :(_) => this._myDatabase.balanceInputRecordsDao),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -92,20 +94,9 @@ class _LuckSplashScreenState extends State<LuckySplashScreen>{
   @override
   void initState() {
     super.initState();
+
     getUserInfo();
-    // basicInfo.getUserInfo().then((value){
-    //   UserInfo userInfo = value;
-    //   if(userInfo != null){
-    //     setState(() {
-    //       isAlreadyLogin = true;
-    //     });
-    //   }else{
-    //     setState(() {
-    //       isAlreadyLogin = false;
-    //     });
-    //   }
-    //   print("userInfo => "+ jsonEncode(userInfo));
-    // });
+
   }
   @override
   Widget build(BuildContext context) {
@@ -127,8 +118,6 @@ class _LuckSplashScreenState extends State<LuckySplashScreen>{
           ),),
         backgroundColor: LuckyColors.splashScreenColors,
       ),
-
-
     );
   }
 

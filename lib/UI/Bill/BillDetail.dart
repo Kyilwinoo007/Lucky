@@ -48,7 +48,6 @@ class _BillDetailState extends State<BillDetail> {
   buildPortraitView() {
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery.of(context).size.height,
         color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -71,8 +70,7 @@ class _BillDetailState extends State<BillDetail> {
                               color: Colors.black54,
                               fontWeight: FontWeight.bold
                           ),),
-                          Expanded(
-                            child: Container(
+                          Container(
                               decoration: BoxDecoration(
                                 color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -80,7 +78,7 @@ class _BillDetailState extends State<BillDetail> {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 16,vertical: 8),
                                 child: Text(this.widget.transaction.fromCustomerName.isEmpty ? "Unknown" : this.widget.transaction.fromCustomerName,
                                   style: TextStyle(
                                       fontSize: 16,
@@ -89,7 +87,6 @@ class _BillDetailState extends State<BillDetail> {
                                   ),),
                               ),
                             ),
-                          )
                         ],
                       ) ,
                     ),

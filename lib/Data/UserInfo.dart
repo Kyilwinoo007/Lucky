@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
 
@@ -12,9 +14,10 @@ class UserInfo{
   late String userType;  //admin or user
   late bool isDeactivate;
   late String email;
+  late List<String> userIdList;
 
   UserInfo(this.id, this.name, this.phone,this.email, this.isActive, this.pwd,
-      this.userType, this.isDeactivate);
+      this.userType, this.isDeactivate,this.userIdList);
 
   UserInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -23,6 +26,11 @@ class UserInfo{
     email = json['email'];
     isActive = json['isActive'];
     pwd = json['pwd'];
+    if (json['userIdList'] != null) {
+      userIdList = <String>[];
+      json['userIdList'].forEach((v) { userIdList.add(v); });
+    }
+    // userIdList = json['userIdList'];
   userType = json['userType'];
   isDeactivate = json['isDeactivate'];
   }
@@ -35,6 +43,7 @@ class UserInfo{
   data['email'] = this.email;
   data['isActive'] = this.isActive;
   data['pwd'] = this.pwd;
+  data['userIdList'] = this.userIdList;
   data['userType'] = this.userType;
   data['isDeactivate'] = this.isDeactivate;
   return data;

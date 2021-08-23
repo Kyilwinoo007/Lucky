@@ -13,11 +13,13 @@ class BalanceInputRecords extends Table {
 
   TextColumn get agent => text().withLength(max: 50)();
 
-  DateTimeColumn get date => dateTime()();
+  TextColumn get date => text()();
 
   RealColumn get eMoney => real()();
 
   RealColumn get cash => real()();
+  TextColumn get inputType => text()();
+  TextColumn get reason => text().nullable()();
 }
 class OpeningClosing extends Table{
   IntColumn get id => integer().autoIncrement().nullable()();
@@ -27,6 +29,18 @@ class OpeningClosing extends Table{
   RealColumn get closingEMoney => real().nullable().withDefault(Constant(0.0))();
   TextColumn get date => text()();
   TextColumn get agent => text()();
+}
+class User extends Table{
+  IntColumn get id => integer().autoIncrement().nullable()();
+  TextColumn get userId => text()();
+  TextColumn get parentId => text()();
+  TextColumn get name => text()();
+  TextColumn get email => text()();
+  TextColumn get phone => text()();
+  TextColumn get userType => text()();
+  BoolColumn get isActive => boolean()();
+  BoolColumn get isDeactivate => boolean()();
+
 }
 
 class Transactions extends Table{
@@ -49,7 +63,7 @@ class Transactions extends Table{
   RealColumn get charges => real().withDefault(Constant(0.0))();
 
 }
-@UseMoor(tables:[Balance,Transactions,BalanceInputRecords,OpeningClosing],daos: [BalanceDao,TransactionsDao ,BalanceInputRecordsDao,OpeningClosingDao])
+@UseMoor(tables:[Balance,Transactions,BalanceInputRecords,OpeningClosing,User],daos: [BalanceDao,TransactionsDao ,BalanceInputRecordsDao,OpeningClosingDao,UserDao])
 class MyDatabase extends _$MyDatabase {
   MyDatabase()
       : super(FlutterQueryExecutor.inDatabaseFolder(
@@ -61,6 +75,26 @@ class MyDatabase extends _$MyDatabase {
 
 }
 
+@UseDao(tables: [User])
+class UserDao extends DatabaseAccessor<MyDatabase>  with _$UserDaoMixin{
+  UserDao(MyDatabase attachedDatabase) : super(attachedDatabase);
+
+  Future<List<UserData>> get getAllUser => (select(user)).get();
+  Stream<List<UserData>> get watchAllModes => select(user).watch();
+  Future<UserData>  getUserByUserId(String userId) => (select(user)..where((tbl) => tbl.userId.equals(userId))).getSingle();
+
+  Future insertUser(UserData userData) =>
+      into(user).insert(userData);
+
+  Future updateUser(UserData userData) =>
+      update(user).replace(userData);
+
+  Future deleteUser(UserData userData) =>
+      delete(user).delete(userData);
+   deleteUserByParentId (String parentId) =>
+      delete(user)..where((tbl) => tbl.parentId.equals(parentId));
+
+}
 @UseDao(tables: [OpeningClosing])
 class OpeningClosingDao extends DatabaseAccessor<MyDatabase> with _$OpeningClosingDaoMixin{
   OpeningClosingDao(MyDatabase attachedDatabase) : super(attachedDatabase);

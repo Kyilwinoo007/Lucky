@@ -46,6 +46,10 @@ class Constants {
 
   static String userInfo = "userInfo";
 
+  static int maxUser = 2;
+  static String AdminUserType = "admin";
+  static String MoneyInputAdd ="Add";
+  static String MoneyInputReduce ="Reduce";
 
 
 }

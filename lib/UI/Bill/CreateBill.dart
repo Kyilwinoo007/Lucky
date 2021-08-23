@@ -260,7 +260,8 @@ class _CreateBillState extends State<CreateBill> {
   bool isValid() {
     bool isNameValid, isAmountValid;
     bool isCommissionValid = true;
-    String nameErrorMsg = '', amountErrorMsg = '' ,commissionErrorMsg = '';
+    bool isPhoneValid = true;
+    String nameErrorMsg = '', amountErrorMsg = '' ,commissionErrorMsg = '',phoneErrorMsg = '';
     if (nameController.text.trim().isNotEmpty) {
       isNameValid = true;
     } else {
@@ -297,14 +298,21 @@ class _CreateBillState extends State<CreateBill> {
         commissionErrorMsg = "Invalid";
       }
     }
+    if(phoneController.text.trim().isNotEmpty){
+      if(!Utils.validatePhone(phoneController.text.trim())){
+        isPhoneValid = false;
+        phoneErrorMsg = "Invalid phone number !";
+      }
+    }
 
     setState(() {
       _commissionErrMessage.value = commissionErrorMsg;
       _nameErrMessage.value = nameErrorMsg;
       _amountErrMessage.value = amountErrorMsg;
+      _phoneErrMessage.value = phoneErrorMsg;
     });
 
-    return isNameValid && isAmountValid && isCommissionValid;
+    return isNameValid && isAmountValid && isCommissionValid && isPhoneValid;
   }
 
   void updateBalance() {

@@ -39,6 +39,7 @@ class _CreateTransferState extends State<CreateTransfer> {
   TextEditingController chargesController = new TextEditingController();
 
   Wrapper _transferorPhoneNumberErrMessage = new Wrapper("");
+  Wrapper _transferorNameErrMessage = new Wrapper("");
   Wrapper _recipientPhoneNumberErrMessage = new Wrapper("");
   Wrapper _amountErrMessage = new Wrapper("");
   Wrapper _chargesErrMessage = new Wrapper("");
@@ -85,7 +86,9 @@ class _CreateTransferState extends State<CreateTransfer> {
       errorMessage: '',
     );
     final transferorNameInput = CustomTextInput(
+      isRequired: true,
       controller: this.transferorNameController,
+      errorMessage: _transferorNameErrMessage.value,
       label: "Transferor Name",
       hintText: "Enter Transferor Name",
       leadingIcon: Icon(
@@ -532,14 +535,15 @@ class _CreateTransferState extends State<CreateTransfer> {
   }
 
   bool isValid() {
-    bool isRecipientPhoneValid, isTransferorPhoneValid, isAmountValid;
+    bool isRecipientPhoneValid, isTransferorPhoneValid, isAmountValid ,isTransferNameValid;
     bool isFeeValid = true;
     bool isCommissionValid = true;
     String recipientPhoneErrorMsg = '',
         transferPhoneErrorMsg = '',
         amountMsg = '',
         feeMsg = '',
-        commissionMsg = '';
+        commissionMsg = '',
+        transferNameErrorMsg = '';
     if (recipientPhoneNumberController.text.trim().isNotEmpty) {
       if (Utils.validatePhone(recipientPhoneNumberController.text.trim())) {
         isRecipientPhoneValid = true;
@@ -561,6 +565,13 @@ class _CreateTransferState extends State<CreateTransfer> {
     } else {
       transferPhoneErrorMsg = "Required";
       isTransferorPhoneValid = false;
+    }
+
+    if(transferorNameController.text.trim().isEmpty){
+      isTransferNameValid = false;
+      transferNameErrorMsg = "Required";
+    }else{
+      isTransferNameValid = true;
     }
 
     if (amountController.text.trim().isNotEmpty) {
@@ -606,13 +617,15 @@ class _CreateTransferState extends State<CreateTransfer> {
       _recipientPhoneNumberErrMessage.value = recipientPhoneErrorMsg;
       _transferorPhoneNumberErrMessage.value = transferPhoneErrorMsg;
       _amountErrMessage.value = amountMsg;
+      _transferorNameErrMessage.value = transferNameErrorMsg;
     });
 
     return isRecipientPhoneValid &&
         isTransferorPhoneValid &&
         isAmountValid &&
         isFeeValid &&
-        isCommissionValid;
+        isCommissionValid &&
+        isTransferNameValid;
   }
 
   void getBalanceByAgentName() async {

@@ -3,24 +3,27 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/Data/Database/database.dart';
 import 'package:lucky/Repository/AnalyticViewModel.dart';
 import 'package:lucky/Utils/SaleData.dart';
 import 'package:lucky/Utils/Utils.dart';
+import 'package:lucky/Utils/styles.dart';
 import 'package:lucky/common/serviceLocator.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
 
-class ProfitChart extends StatefulWidget{
+class PartnerTransferChart extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => ProfitChartState();
+  State<StatefulWidget> createState() => _PartnerTransferChartState();
+
 }
 
-class ProfitChartState extends State<ProfitChart> {
-
+class _PartnerTransferChartState extends State<PartnerTransferChart> {
   final Color leftBarColor = Colors.green; //const Color(0xff53fdd7);
   DateTime _fromDate = DateTime.now();
   DateTime _toDate = DateTime.now();
+
 
   final defaultSaleData = [
     new SaleData('Wave Money', 0),
@@ -31,12 +34,19 @@ class ProfitChartState extends State<ProfitChart> {
 
   late List<charts.Series<SaleData, String>> saleData;
   final AnalyticViewModel model = serviceLocator<AnalyticViewModel>();
+  List<String> partnerTransferTypeList = Constants.partnerTransferTypeList;
+  late String? _selectedType;
+  late List<DropdownMenuItem<String>> _typeDropDownMenuItems;
+
+
 
   @override
   void initState() {
+    _selectedType =  partnerTransferTypeList[0];
+    _typeDropDownMenuItems = getDropDownMenuItems(partnerTransferTypeList);
     saleData = [
       new charts.Series<SaleData, String>(
-        id: 'profit',
+        id: 'banktransfer',
         domainFn: (SaleData sales, _) => sales.agent,
         measureFn: (SaleData sales, _) => sales.sales,
         data: defaultSaleData,
@@ -45,22 +55,28 @@ class ProfitChartState extends State<ProfitChart> {
     ];
     super.initState();
     this.loadChartData();
-
   }
-  void loadChartData() async {
-    List<Transaction> transactions = await model.getAllTransaction(context);
+  void loadChartData() async{
+    List<Transaction> transactions = await model.getAllTransactionByTransactionType(context,_selectedType!);
 
-    var waveMoneyTransactions = transactions.where((transaction) {
+    var waveMoneyTransactions = transactions
+        .where((transaction) {
       return transaction.agent == Constants.WAVEMONEY &&
-          Utils.isEqualDateFilter(new DateFormat("dd-MM-yyyy").parse(transaction.date), this._fromDate, this._toDate);
-    }).toList();
+          Utils.isEqualDateFilter(
+              new DateFormat("dd-MM-yyyy").parse(transaction.date),
+              this._fromDate,
+              this._toDate);
+    })
+        .toList();
 
     var kbzPayTransactions = transactions
         .where(
           (transaction) =>
       transaction.agent == Constants.KBZPAY &&
-          Utils.isEqualDateFilter(new DateFormat("dd-MM-yyyy").parse(transaction.date),
-              this._fromDate, this._toDate),
+          Utils.isEqualDateFilter(
+              new DateFormat("dd-MM-yyyy").parse(transaction.date),
+              this._fromDate,
+              this._toDate),
     )
         .toList();
 
@@ -68,8 +84,10 @@ class ProfitChartState extends State<ProfitChart> {
         .where(
           (transaction) =>
       transaction.agent == Constants.TRUEMONEY &&
-          Utils.isEqualDateFilter(new DateFormat("dd-MM-yyyy").parse(transaction.date),
-              this._fromDate, this._toDate),
+          Utils.isEqualDateFilter(
+              new DateFormat("dd-MM-yyyy").parse(transaction.date),
+              this._fromDate,
+              this._toDate),
     )
         .toList();
 
@@ -77,39 +95,42 @@ class ProfitChartState extends State<ProfitChart> {
         .where(
           (transaction) =>
       transaction.agent == Constants.CBPAY &&
-          Utils.isEqualDateFilter(new DateFormat("dd-MM-yyyy").parse(transaction.date),
-              this._fromDate, this._toDate),
+          Utils.isEqualDateFilter(
+              new DateFormat("dd-MM-yyyy").parse(transaction.date),
+              this._fromDate,
+              this._toDate),
     )
         .toList();
 
-    double waveMoneyCommissionAmount =
-    waveMoneyTransactions.fold(0, (sum, item) => sum + item.commission);
-    double kbzPayCommissionAmount =
-    kbzPayTransactions.fold(0, (sum, item) => sum + item.commission);
-    double cbPayTransactionsAmount =
-    cbPayTransactions.fold(0, (sum, item) => sum + item.commission);
+    double waveMoneyTransferAmount =
+    waveMoneyTransactions.fold(0, (sum, item) => sum + item.amount);
+    double kbzPayTransferAmount =
+    kbzPayTransactions.fold(0, (sum, item) => sum + item.amount);
+    double cbPayTransferAmount =
+    cbPayTransactions.fold(0, (sum, item) => sum + item.amount);
 
-    double trueMoneyCommissionAmount =
-    trueMoneyTransactions.fold(0, (sum, item) => sum + item.commission);
+    double trueMoneyTransferAmount =
+    trueMoneyTransactions.fold(0, (sum, item) => sum + item.amount);
 
-    final commissionData = [
-      new SaleData('Wave Money', waveMoneyCommissionAmount),
-      new SaleData('Cb Pay', cbPayTransactionsAmount),
-      new SaleData('True Money', trueMoneyCommissionAmount),
-      new SaleData('Kbz Pay', kbzPayCommissionAmount),
+    final transferData = [
+      new SaleData('Wave Money', waveMoneyTransferAmount),
+      new SaleData('Cb Pay', cbPayTransferAmount),
+      new SaleData('True Money', trueMoneyTransferAmount),
+      new SaleData('Kbz Pay', kbzPayTransferAmount),
     ];
     setState(() {
       saleData = [
         new charts.Series<SaleData, String>(
-          id: 'profit',
+          id: 'transfer',
           measureFn: (SaleData sales, _) => sales.sales,
-          data: commissionData,
+          data: transferData,
           labelAccessorFn: (SaleData sale, _) => '${sale.sales.toString()}',
           colorFn: (_, __) => charts.ColorUtil.fromDartColor(leftBarColor),
           domainFn: (SaleData sales, _) => sales.agent,
         ),
       ];
     });
+
   }
 
   @override
@@ -129,6 +150,38 @@ class ProfitChartState extends State<ProfitChart> {
         allowFontScaling: true,
       );
     }
+    final transactionType =
+    Card(
+      elevation: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14.0),
+            child: Icon(
+              LineAwesomeIcons.alternate_sync,
+              size: 20.0,
+              color: Colors.grey,
+            ),
+          ),
+          Center(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                elevation: 10,
+                value: _selectedType,
+                items: _typeDropDownMenuItems,
+                onChanged: (selectedItem){
+                  setState((){
+                    _selectedType = selectedItem;
+                  });
+                  this.loadChartData();
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
     var chartWidget = charts.BarChart(
       saleData,
       animate: true,
@@ -294,6 +347,7 @@ class ProfitChartState extends State<ProfitChart> {
                       ],
                     ),
                   ),
+                  Expanded(child: transactionType),
 
                 ],
               ),
@@ -309,5 +363,23 @@ class ProfitChartState extends State<ProfitChart> {
         ),
       ),
     );
+  }
+  List<DropdownMenuItem<String>> getDropDownMenuItems(List<String> typeList) {
+    List<DropdownMenuItem<String>> items = [];
+    for (String type in typeList) {
+      items.add(
+        new DropdownMenuItem(
+          value: type,
+          child: new Text(
+            type,
+            style: formLabelTextStyle.copyWith(
+              color: Colors.black,
+              fontSize: 12.0,
+            ),
+          ),
+        ),
+      );
+    }
+    return items;
   }
 }

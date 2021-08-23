@@ -59,9 +59,7 @@ class _WithdrawChartState extends State<WithdrawChart> {
     })
         .toList()
         .where((transaction) =>
-    transaction.transactionsType == Constants.WITHDRAW_TYPE ||
-        transaction.transactionsType == Constants.BANK_RECEIVE_TYPE ||
-        transaction.transactionsType == Constants.PARTNER_RECEIVE_TYPE)
+    transaction.transactionsType == Constants.WITHDRAW_TYPE )
         .toList();
 
     var kbzPayTransactions = transactions
@@ -75,9 +73,7 @@ class _WithdrawChartState extends State<WithdrawChart> {
     )
         .toList()
         .where((transaction) =>
-    transaction.transactionsType == Constants.WITHDRAW_TYPE ||
-        transaction.transactionsType == Constants.BANK_RECEIVE_TYPE ||
-        transaction.transactionsType == Constants.PARTNER_RECEIVE_TYPE)
+    transaction.transactionsType == Constants.WITHDRAW_TYPE )
         .toList();
 
     var trueMoneyTransactions = transactions
@@ -91,9 +87,7 @@ class _WithdrawChartState extends State<WithdrawChart> {
     )
         .toList()
         .where((transaction) =>
-    transaction.transactionsType == Constants.WITHDRAW_TYPE ||
-        transaction.transactionsType == Constants.BANK_RECEIVE_TYPE ||
-        transaction.transactionsType == Constants.PARTNER_RECEIVE_TYPE)
+    transaction.transactionsType == Constants.WITHDRAW_TYPE )
         .toList();
 
     var cbPayTransactions = transactions
@@ -107,9 +101,7 @@ class _WithdrawChartState extends State<WithdrawChart> {
     )
         .toList()
         .where((transaction) =>
-    transaction.transactionsType == Constants.WITHDRAW_TYPE ||
-        transaction.transactionsType == Constants.BANK_RECEIVE_TYPE ||
-        transaction.transactionsType == Constants.PARTNER_RECEIVE_TYPE)
+    transaction.transactionsType == Constants.WITHDRAW_TYPE )
         .toList();
 
     double waveMoneyWithdrawAmount =
@@ -209,20 +201,18 @@ class _WithdrawChartState extends State<WithdrawChart> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Expanded(
-                    flex: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                            right: 20.0,
+                            right: 16.0,
                           ),
                           child: Text(
                             "${this._fromDate.day} / ${this._fromDate.month} / ${this._fromDate.year}",
@@ -266,25 +256,21 @@ class _WithdrawChartState extends State<WithdrawChart> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        '-',
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  Text(
+                    '-',
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   Expanded(
-                    flex: 2,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.only(
-                            right: 20.0,
+                            right: 16.0,
                           ),
                           child: Text(
                             this._toDate != null
@@ -331,6 +317,7 @@ class _WithdrawChartState extends State<WithdrawChart> {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),

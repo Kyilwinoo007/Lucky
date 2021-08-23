@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/UI/Transfer/BankTransfer/BankTransferRecord.dart';
+import 'package:lucky/UI/Transfer/Partner/PartnerTransferRecord.dart';
 import 'package:lucky/UI/Transfer/TransferRecord.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 
@@ -47,7 +48,7 @@ class _TransferTabState extends State<TransferTab> with SingleTickerProviderStat
             children: [
                 TransferRecord(),
                 BankTransferRecord(transferorType: Constants.BankType,),
-                BankTransferRecord(transferorType: Constants.PartnerType,),
+                PartnerTransferRecord(),
             ],
           ),
         ),

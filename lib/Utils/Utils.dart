@@ -1,26 +1,33 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:dropdown_date_picker/dropdown_date_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lucky/Constants/Constants.dart';
+import 'package:lucky/Data/Result.dart';
+import 'package:lucky/UI/Widgets/CustomTextInput.dart';
+import 'package:lucky/UI/Widgets/Wrapper.dart';
 import 'package:lucky/Utils/Colors.dart';
+import 'package:lucky/Utils/styles.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
 
 class Utils{
    static String getCurrentDate(){
     DateTime now = new DateTime.now();
-    var formatter = new DateFormat('dd-MM-yyyy');
+    var formatter = new intl.DateFormat('dd-MM-yyyy');
     String formattedDate = formatter.format(now);
     return formattedDate;
   }
   static String formatDate(DateTime dateTime){
-     var formatter = new DateFormat('dd-MM-yyyy');
+     var formatter = new intl.DateFormat('dd-MM-yyyy');
      String formattedDate = formatter.format(dateTime);
      return formattedDate;
   }
   static String formatTime(DateTime dateTime){
-     var formatter = new DateFormat('hh:mm a');
+     var formatter = new intl.DateFormat('hh:mm a');
      return formatter.format(dateTime);
   }
 
@@ -110,7 +117,6 @@ class Utils{
            );
          });
    }
-
    static showLoaderDialog(BuildContext context){
      AlertDialog alert=AlertDialog(
        shape: RoundedRectangleBorder(
@@ -118,7 +124,7 @@ class Utils{
        ),
        content: new Row(
          children: [
-           CircularProgressIndicator(),
+           CircularProgressIndicator(color: Theme.of(context).primaryColor,backgroundColor: Colors.white,),
            SizedBox(width: 4,),
            Container(margin: EdgeInsets.only(left: 7),child:Text("Loading ...")),
          ],),
@@ -315,8 +321,6 @@ class Utils{
            );
          });
    }
-
-
    static  buildEmptyView({
      required IconData icon,
      required String title,
@@ -385,7 +389,7 @@ class Utils{
  static  bool isEqualDateFilter(DateTime objDate, DateTime fromDate, DateTime toDate) {
    String fromDateString =  formatDate(fromDate);
    String toDateString =  formatDate(toDate);
-   return objDate.compareTo(new DateFormat("dd-MM-yyyy").parse(fromDateString)) >= 0 && objDate.compareTo(new DateFormat("dd-MM-yyyy").parse(toDateString)) <= 0;
+   return objDate.compareTo(new intl.DateFormat("dd-MM-yyyy").parse(fromDateString)) >= 0 && objDate.compareTo(new intl.DateFormat("dd-MM-yyyy").parse(toDateString)) <= 0;
 
    }
    static hideKeyboard(BuildContext context) {
@@ -414,10 +418,10 @@ class Utils{
      }
      return _return;
    }
-   static SnackBar showSnackBar(){
+   static SnackBar showSnackBar({String text = 'No internet connection'}){
      return SnackBar(
        duration: const Duration(milliseconds: 500),
-       content: Text('No internet connection'),
+       content: Text(text),
      );
 
    }

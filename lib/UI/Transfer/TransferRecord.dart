@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/Data/Database/database.dart';
+import 'package:lucky/Data/Result.dart';
 import 'package:lucky/Repository/TransactionViewModel.dart';
 import 'package:lucky/UI/Transactions/TransactionDetail.dart';
 import 'package:lucky/UI/Transactions/TransactionItem.dart';
 import 'package:lucky/UI/Transfer/CreateTransfer.dart';
+import 'package:lucky/UI/Widgets/CustomFloatingButton.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/UI/Withdraw/Withdraw.dart';
 import 'package:lucky/Utils/Colors.dart';
@@ -22,27 +26,32 @@ class TransferRecord extends StatefulWidget{
 class _TransferRecordState extends State<TransferRecord> {
   final TransactionViewModel model = serviceLocator<TransactionViewModel>();
 
+  List<Transaction> transactionList = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: luckyAppbar(
-      //   context: context,
-      //   title: "Transfer",
-      // ),
       body: StreamBuilder(
           stream: model.getTransactionByType(context, Constants.TRANSFER_TYPE),
           builder: (context, AsyncSnapshot<List<Transaction>> snapshot) {
             // if (!snapshot.hasData) return Utils.buildLoading();
-            final transactionList = snapshot.data ?? [];
+            transactionList = snapshot.data ?? [];
             return buildBody(transactionList);
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add,size: 25,),
-        backgroundColor: LuckyColors.splashScreenColors,
-        onPressed: () {
+      floatingActionButton: CustomFloatingButton(
+        addClickHandler: (){
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => CreateTransfer()));
+                       builder: (context) => CreateTransfer()));
+        },
+        searchClickHandler: (){
+          setState(() {
+            showSearch(context: context, delegate: DataSearch(transactionList));
+          });
         },
       ),
     );
@@ -87,7 +96,6 @@ class _TransferRecordState extends State<TransferRecord> {
               ),
             ],
             secondaryActions: <Widget>[
-
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
@@ -165,5 +173,98 @@ class _TransferRecordState extends State<TransferRecord> {
         model.deleteTransaction(context, transaction);
       }
     });
+  }
+}
+class DataSearch extends SearchDelegate<String> {
+
+  final List<Transaction> transactionList;
+
+  DataSearch(this.transactionList);
+
+  // @override
+  // ThemeData appBarTheme(BuildContext context) {
+  //   return ThemeData(
+  //     primaryColor: LuckyColors.splashScreenColors,
+  //   );
+  // }
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    //Actions for app bar
+    return [IconButton(icon: Icon(Icons.clear), onPressed: () {
+      query = '';
+    })];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    //leading icon on the left of the app bar
+    return IconButton(
+        icon: AnimatedIcon(icon: AnimatedIcons.menu_arrow,
+          progress: transitionAnimation,
+        ),
+        onPressed: () {
+          close(context, "");
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // show some result based on the selection
+    final suggestionList = query.isEmpty
+        ? transactionList
+        : transactionList.where((p) => p.fromCustomerName.startsWith(RegExp(query, caseSensitive: false))).toList();
+
+    if(suggestionList.length > 0) {
+      return ListView.builder(itemBuilder: (context, index) =>
+          ListTile(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) =>
+                      TransactionDetail(suggestionList[index])));
+            },
+            trailing: Icon(Icons.arrow_forward_ios_outlined, size: 18.0,),
+            title: Text(
+              suggestionList[index].fromCustomerName, style: TextStyle(
+                fontSize: 15.0
+            ),),
+          ),
+        itemCount: suggestionList.length,
+      );
+    }else{
+      return Center(
+        child: Text("No result found!"),
+      );
+    }
+
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestionList = query.isEmpty
+        ? transactionList
+        : transactionList.where((p) => p.fromCustomerName.startsWith(RegExp(query, caseSensitive: false))).toList();
+
+
+    return ListView.builder(itemBuilder: (context, index) => ListTile(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => TransactionDetail(suggestionList[index])));
+      },
+      trailing: Icon(Icons.arrow_forward_ios_outlined,size: 18.0,),
+      title: RichText(
+        text: TextSpan(
+            text: suggestionList[index].fromCustomerName.substring(0, query.length),
+            style: TextStyle(
+                color: Colors.red, fontWeight: FontWeight.bold),
+            children: [
+              TextSpan(
+                  text: suggestionList[index].fromCustomerName.substring(query.length),
+                  style: TextStyle(color: Colors.grey))
+            ]),
+      ),
+    ),
+      itemCount: suggestionList.length,
+    );
   }
 }

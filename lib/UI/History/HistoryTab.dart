@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lucky/UI/History/MoneyAddReduceHistory.dart';
 import 'package:lucky/UI/History/OpeningClosingHistory.dart';
 import 'package:lucky/UI/History/TransactionHistory.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
@@ -16,13 +17,13 @@ class _HistoryTabState extends State<HistoryTab> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    controller =  TabController(length: 2 ,vsync: this);
+    controller =  TabController(length: 3 ,vsync: this);
 
   }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: luckyAppbar(
           bottomWidget: TabBar(
@@ -32,7 +33,8 @@ class _HistoryTabState extends State<HistoryTab> with SingleTickerProviderStateM
             controller: controller,
             tabs: [
               Tab(text: "Transaction",),
-              Tab(text: "Opening-Closing",),
+              Tab(text: "Money\nInputs",),
+              Tab(text: "Opening\nClosing",),
             ],
           ),
           title:"History", context: context,
@@ -41,6 +43,7 @@ class _HistoryTabState extends State<HistoryTab> with SingleTickerProviderStateM
           controller: controller,
           children: [
             TransactionHistory(),
+            MoneyAddReduceHistory(),
             OpeningClosingHistory(),
           ],
         ),
