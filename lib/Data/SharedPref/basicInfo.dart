@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:gson/gson.dart';
 import 'package:lucky/Constants/Constants.dart';
+import 'package:lucky/UI/PrinterSettings/BluetoothDevice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../UserInfo.dart';
@@ -22,9 +23,21 @@ class BasicInfo{
     return prefs.setString(Constants.userInfo,userInfo);
   }
 
+  Future<bool> _setPrinterDevice(String bluetoothDevice) async{
+    final SharedPreferences prefs = await _prefs;
+    return prefs.setString("Printer", bluetoothDevice);
+}
+Future<String> _getPrinterDevice() async{
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getString("Printer") ?? "";
+}
   Future<bool> _clearUserInfo()async{
     final SharedPreferences prefs = await _prefs;
     return prefs.remove(Constants.userInfo);
+  }
+  Future<bool> _removePrinter()async{
+    final SharedPreferences prefs = await _prefs;
+    return prefs.remove("Printer");
   }
 
   getUserInfo() async{
@@ -35,7 +48,17 @@ class BasicInfo{
   setUserInfo(UserInfo userInfo) async{
     return await _setUserInfo(gsonEncode(userInfo));
   }
+  getPrinterDevice() async{
+    String printerDevice = await _getPrinterDevice();
+    return printerDevice.isNotEmpty ? BluetoothDevice.fromJson(json.decode(printerDevice)) : null;
+  }
+  setPrinterDevice(BluetoothDevice bluetoothDevice) async{
+    return await _setPrinterDevice(gsonEncode(bluetoothDevice));
+  }
 
+  removePrinter()async{
+    return _removePrinter();
+  }
   signOutClearData() async{
     return _clearUserInfo();
   }

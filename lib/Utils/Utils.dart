@@ -1,3 +1,4 @@
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dropdown_date_picker/dropdown_date_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -423,6 +424,10 @@ class Utils{
        duration: const Duration(milliseconds: 500),
        content: Text(text),
      );
+
+   }
+   static Future<bool> isEnableBT(BlueThermalPrinter blueThermalPrinter) async{
+     return await blueThermalPrinter.isOn ?? false;
 
    }
 

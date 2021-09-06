@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucky/Constants/Constants.dart';
+import 'package:lucky/Data/SharedPref/basicInfo.dart';
+import 'package:lucky/UI/PrinterSettings/BluetoothDevice.dart' as userBt;
 import 'package:lucky/UI/Widgets/ListItem.dart';
 import 'package:lucky/Utils/Utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -32,7 +34,7 @@ class _BluetoothDeviceState extends State<BluetoothDevices> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    // bluetooth.disconnect();
+    bluetooth.disconnect();
   }
   @override
   Widget build(BuildContext context) {
@@ -84,6 +86,8 @@ class _BluetoothDeviceState extends State<BluetoothDevices> {
         if(!isConnected!){
           bluetooth.connect(device).then((value) => {
             setState(() {
+              userBt.BluetoothDevice bt = userBt.BluetoothDevice(name:device.name,address:device.address,type: device.type,connected: device.connected);
+              basicInfo.setPrinterDevice(bt);
               _devices[index].isSelected = true;
               Constants.lstDevices = _devices;
             }),
@@ -130,6 +134,10 @@ class _BluetoothDeviceState extends State<BluetoothDevices> {
       });
     }
     try {
+      basicInfo.getPrinterDevice().then((value) {
+        print("printer "+ jsonEncode(value));
+        userBt.BluetoothDevice bluetoothDevice = value;
+      });
       devices = await bluetooth.getBondedDevices();
     } on PlatformException {
       // TODO - Error

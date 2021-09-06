@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-import 'package:esc_pos_bluetooth/esc_pos_bluetooth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,14 +11,14 @@ import 'package:image/image.dart' as img;
 import 'package:intl/intl.dart';
 import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/Data/Database/database.dart';
+import 'package:lucky/Data/SharedPref/basicInfo.dart';
 import 'package:lucky/UI/Widgets/CustomButton.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/Utils/Utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:flutter_bluetooth_basic/flutter_bluetooth_basic.dart' as bt;
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:lucky/UI/PrinterSettings/BluetoothDevice.dart' as userBt;
 
 
 
@@ -66,6 +65,23 @@ class _DepositeDetailState extends State<DepositeDetail> {
       appBar: luckyAppbar(
         context: context,
         title: "${this.widget.transaction.transactionsType} Detail",
+        actions: [
+          IconButton(
+            onPressed: (){
+              Utils.isEnableBT(bluetooth).then((value) => {
+                if(value){
+                  _connect(),
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar(text: "Please enable bluetooth!")),
+                }
+              });
+            },
+            icon: Icon(Icons.print),
+          ),
+          SizedBox(
+            width: 16,
+          )
+        ]
       ),
       body: orientation == Orientation.portrait
           ? buildPortraitView()
@@ -94,82 +110,265 @@ class _DepositeDetailState extends State<DepositeDetail> {
     final submitButton = SolidGreenButton(
       title: "Print",
       clickHandler: () async {
-          printVoucher();
-          // bluetooth.disconnect();
+        Utils.isEnableBT(bluetooth).then((value) => {
+          if(value){
+            _connect(),
+      }else{
+            ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar(text: "Please enable bluetooth!")),
+          }
+        });
       },
     );
 
     return SingleChildScrollView(
-      child:  Screenshot(
-        controller: screenshotController,
-        child: Container(
-            width: 240,
-            color: Colors.white,
-            child: Column(children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                   Column(
-                        children: [
-                          Padding(
-                              padding: EdgeInsets.all(0.0),
+      child:  Center(
+        child: Screenshot(
+          controller: screenshotController,
+          child: Container(
+              width: 250, //250
+              // margin: EdgeInsets.symmetric(horizontal: 80),
+            color: Colors.green[50],
+              child: Column(children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                     Column(
+                          children: [
+                            Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      "Name  ",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      this.widget.transaction.fromCustomerName.isEmpty
+                                          ? "Unknown"
+                                          : this.widget.transaction.fromCustomerName,
+                                      style: TextStyle(fontSize: 16, color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    "Name  ",
+                                    "Phone No. ",
                                     style: TextStyle(
                                         fontSize: 16.0,
                                         color: Colors.black54,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    this.widget.transaction.fromCustomerName.isEmpty
-                                        ? "Unknown"
-                                        : this.widget.transaction.fromCustomerName,
-                                    style: TextStyle(fontSize: 16, color: Colors.black),
+                                    this.widget.transaction.fromPhone,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                             ),
-                          Padding(
-                            padding: EdgeInsets.all(0.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Phone No. ",
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.bold),
+                          ],
+                        ),
+                      Divider(
+                      color: Colors.black,
+                      height: 1,
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Amount  ",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
                                 ),
-                                Text(
-                                  this.widget.transaction.fromPhone,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: Text(
+                                    this.widget.transaction.amount.toString(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Commission  ",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  child: Text(
+                                    this.widget.transaction.commission.toString(),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     Divider(
-                    color: Colors.black,
-                    height: 1,
-                  ),
-                  Column(
+                      color: Colors.black,
+                      height: 1,
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Agent  ",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 8),
+                                  child: Text(
+                                    this.widget.transaction.agent,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Date  ",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text(
+                                    this.widget.transaction.date,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Divider(
+                    //   color: Colors.black,
+                    //   height: 1,
+                    // ),
+                  ],
+                ),
+              ]),
+            ),
+        ),
+      ),
+    );
+  }
+
+  buildLandscapeView() {
+    return ListView(children: [
+      Screenshot(
+        controller: screenshotController,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          color: Colors.green[50],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                  child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(0.0),
+                        padding: EdgeInsets.all(10.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              "Amount  ",
+                              "Name : ",
                               style: TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.black54,
@@ -184,7 +383,89 @@ class _DepositeDetailState extends State<DepositeDetail> {
                               ),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
+                                    horizontal: 20, vertical: 10),
+                                child: Text(
+                                  this.widget.transaction.fromCustomerName.isEmpty
+                                      ? "Unknown"
+                                      : this.widget.transaction.fromCustomerName,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Phone No. : ",
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.green[50],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                child: Text(
+                                  this.widget.transaction.fromPhone,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                elevation: 5,
+                shadowColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Amount : ",
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.green[50],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
                                 child: Text(
                                   this.widget.transaction.amount.toString(),
                                   style: TextStyle(
@@ -193,17 +474,16 @@ class _DepositeDetailState extends State<DepositeDetail> {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(0.0),
+                        padding: EdgeInsets.all(10.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              "Commission  ",
+                              "Commission : ",
                               style: TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.black54,
@@ -233,19 +513,23 @@ class _DepositeDetailState extends State<DepositeDetail> {
                       ),
                     ],
                   ),
-                  Divider(
-                    color: Colors.black,
-                    height: 1,
-                  ),
-                  Column(
+                ),
+              ),
+              Card(
+                elevation: 5,
+                shadowColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                  child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(0.0),
+                        padding: EdgeInsets.all(10.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              "Agent  ",
+                              "Agent : ",
                               style: TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.black54,
@@ -259,8 +543,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 8),
+                                padding: EdgeInsets.all(10),
                                 child: Text(
                                   this.widget.transaction.agent,
                                   style: TextStyle(
@@ -274,12 +557,11 @@ class _DepositeDetailState extends State<DepositeDetail> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(0.0),
+                        padding: EdgeInsets.all(10.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              "Date  ",
+                              "Date : ",
                               style: TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.black54,
@@ -308,266 +590,10 @@ class _DepositeDetailState extends State<DepositeDetail> {
                       ),
                     ],
                   ),
-                  Divider(
-                    color: Colors.black,
-                    height: 1,
-                  ),
-                ],
+                ),
               ),
-              submitButton,
-            ]),
+            ],
           ),
-      ),
-    );
-  }
-
-  buildLandscapeView() {
-    return ListView(children: [
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Name : ",
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Text(
-                                this.widget.transaction.fromCustomerName.isEmpty
-                                    ? "Unknown"
-                                    : this.widget.transaction.fromCustomerName,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Phone No. : ",
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              child: Text(
-                                this.widget.transaction.fromPhone,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Amount : ",
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: Text(
-                                this.widget.transaction.amount.toString(),
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Commission : ",
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: Text(
-                                this.widget.transaction.commission.toString(),
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Agent : ",
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                this.widget.transaction.agent,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Date : ",
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                this.widget.transaction.date,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     ]);
@@ -604,6 +630,26 @@ class _DepositeDetailState extends State<DepositeDetail> {
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
+  void _connect() {
+    try{
+      basicInfo.getPrinterDevice().then((value){
+        userBt.BluetoothDevice bt = value;
+       BluetoothDevice device = BluetoothDevice(bt.name,bt.address);
+        bluetooth.isConnected.then((isConnected) => {
+          if(!isConnected!){
+            bluetooth.connect(device).then((value) => {
+              printVoucher(),
+            }),
+          }
+
+        });
+      });
+
+    }on PlatformException{
+
+    }
+  }
+
   void printVoucher() {
 
     String filename = DateTime.now().microsecondsSinceEpoch.toString() + ".jpg";
@@ -614,7 +660,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
       bluetooth.isConnected.then((isConnected) {
         if (isConnected!) {
 
-          bluetooth.printCustom("Lucky", 3, 1);
+          bluetooth.printCustom("Lucky", 2, 1);
           bluetooth.printNewLine();
           bluetooth.printNewLine();
 
@@ -628,7 +674,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
           List<Uint8List> imgList = [];
 
           img.Image receiptImg = img.decodePng(capturedImage);
-
+          print("image width => "+ receiptImg.width.toString()); //360
           for (var i = 0; i <= receiptImg.height; i += 200) {
             img.Image cropedReceiptImg = img.copyCrop(receiptImg, 0, i, receiptImg.width, 200);
 
@@ -636,7 +682,6 @@ class _DepositeDetailState extends State<DepositeDetail> {
 
             imgList.add(bytes as Uint8List);
           }
-
           imgList.forEach((element) {
             bluetooth.printImageBytes(element.buffer.asUint8List(element.offsetInBytes,element.lengthInBytes));
           });
@@ -652,8 +697,8 @@ class _DepositeDetailState extends State<DepositeDetail> {
           // bluetooth.printLeftRight(
           //     "Charges", this.widget.transaction.charges.toString(), 1);
           // bluetooth.printNewLine();
-          bluetooth.printNewLine();
-          bluetooth.printNewLine();
+          // bluetooth.printNewLine();
+          // bluetooth.printNewLine();
           bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
           bluetooth.disconnect();
