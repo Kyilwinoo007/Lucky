@@ -9,6 +9,8 @@ import 'package:lucky/Data/SharedPref/basicInfo.dart';
 import 'package:lucky/Data/UserInfo.dart';
 import 'package:lucky/Repository/MoneyInputViewModel.dart';
 import 'package:lucky/UI/Home/home.dart';
+import 'package:lucky/UI/PrinterSettings/BluetoothDevices.dart';
+import 'package:lucky/UI/PrinterSettings/PrinterSetting.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/Utils.dart';
@@ -243,8 +245,8 @@ class _ProfileState extends State<Profile> {
                         padding: EdgeInsets.symmetric(horizontal: 4,vertical: 4),
                         child:ElevatedButton(
                           onPressed: (){
-                            //todo to go settings
-                          },
+                            Navigator.push(
+                                context, MaterialPageRoute(builder: (context) => BluetoothDevices()));                          },
                           style:ElevatedButton.styleFrom(
                           primary: Colors.white,
                           elevation: 5.0,

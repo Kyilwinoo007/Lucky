@@ -88,7 +88,7 @@ class _BankTransferRecordState extends State<BankTransferRecord> {
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Transfer List");
+        title: "Empty Transfer");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {

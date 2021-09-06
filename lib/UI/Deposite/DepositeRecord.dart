@@ -1,22 +1,23 @@
-import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/Data/Database/database.dart';
-import 'package:lucky/Data/Result.dart';
 import 'package:lucky/Repository/TransactionViewModel.dart';
 import 'package:lucky/UI/Deposite/CreateDeposite.dart';
 import 'package:lucky/UI/Deposite/DepositeDetail.dart';
-import 'package:lucky/UI/Widgets/CustomFloatingButton.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/UI/Widgets/LuckyFloatingActionButton.dart';
-import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/Utils.dart';
 import 'package:lucky/common/serviceLocator.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
+import 'dart:ui' as ui;
+import 'package:flutter/rendering.dart';
 
 class DepositeRecord extends StatefulWidget{
   @override
@@ -27,6 +28,7 @@ class DepositeRecord extends StatefulWidget{
 class _DepositeRecordState extends State<DepositeRecord>{
   final TransactionViewModel model = serviceLocator<TransactionViewModel>();
   List<Transaction> transactionList = [];
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
   @override
   void initState() {
@@ -37,36 +39,36 @@ class _DepositeRecordState extends State<DepositeRecord>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: luckyAppbar(
-        context: context,
-        title: "Deposite",
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    showSearch(context: context, delegate: DataSearch(transactionList));
-                  });
-                },
-                icon: Icon(
-                  Icons.search,
-                  size: 25.0,
-                  color: Colors.white,
-                )),
-          ]
-      ),
-      body: StreamBuilder(
-          stream: model.getTransactionByType(context, Constants.DEPOSITE_TYPE),
-          builder: (context, AsyncSnapshot<List<Transaction>> snapshot) {
-            transactionList = snapshot.data ?? [];
-            return buildBody(transactionList);
-          }),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: LuckyFloatingActionButton(
-        onTap: () async{
-          var result = await  Navigator.push(context, MaterialPageRoute(
-              builder: (context) => CreateDeposite()));
-        },
-      ),
+        appBar: luckyAppbar(
+          context: context,
+          title: "Deposite",
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      showSearch(context: context, delegate: DataSearch(transactionList));
+                    });
+                  },
+                  icon: Icon(
+                    Icons.search,
+                    size: 25.0,
+                    color: Colors.white,
+                  )),
+            ]
+        ),
+        body: StreamBuilder(
+            stream: model.getTransactionByType(context, Constants.DEPOSITE_TYPE),
+            builder: (context, AsyncSnapshot<List<Transaction>> snapshot) {
+              transactionList = snapshot.data ?? [];
+              return buildBody(transactionList);
+            }),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: LuckyFloatingActionButton(
+          onTap: () async{
+            var result = await  Navigator.push(context, MaterialPageRoute(
+                builder: (context) => CreateDeposite()));
+          },
+        ),
     );
 
   }
@@ -86,7 +88,7 @@ class _DepositeRecordState extends State<DepositeRecord>{
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Deposite List");
+        title: "Empty Deposite");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {
@@ -105,7 +107,9 @@ class _DepositeRecordState extends State<DepositeRecord>{
                 caption: 'Print',
                 color: Colors.green,
                 icon: Icons.print,
-                onTap: () => {},
+                onTap: () => {
+                  printVoucher(transactionList[index]),
+                },
               ),
             ],
             secondaryActions: <Widget>[
@@ -146,7 +150,9 @@ class _DepositeRecordState extends State<DepositeRecord>{
                 caption: 'Print',
                 color: Colors.green,
                 icon: Icons.print,
-                onTap: () => {},
+                onTap: () => {
+                  printVoucher(transactionList[index]),
+                },
               ),
             ],
             secondaryActions: <Widget>[
@@ -174,6 +180,39 @@ class _DepositeRecordState extends State<DepositeRecord>{
         .then((value) {
       if (value) {
         model.deleteTransaction(context, transaction);
+      }
+    });
+  }
+
+  printVoucher(Transaction transaction) async{
+//     //SIZE
+//     // 0- normal size text
+//     // 1- only bold text
+//     // 2- bold with medium text
+//     // 3- bold with large text
+//     //ALIGN
+//     // 0- ESC_ALIGN_LEFT
+//     // 1- ESC_ALIGN_CENTER
+//     // 2- ESC_ALIGN_RIGHT
+    bluetooth.isConnected.then((isConnected) {
+      if (isConnected!) {
+        bluetooth.printCustom("Lucky",3,1);
+        bluetooth.printNewLine();
+        // bluetooth.printImage(pathImage);
+        bluetooth.printNewLine();
+        bluetooth.printLeftRight("Name:", transaction.fromCustomerName,0);
+        bluetooth.printLeftRight("Phone", transaction.fromPhone,1);
+        bluetooth.printNewLine();
+        bluetooth.printLeftRight("Agent", transaction.agent,2);
+        bluetooth.printLeftRight("Amount", transaction.amount.toString(),2);
+        bluetooth.printLeftRight("Charges", transaction.charges.toString(),2);
+        bluetooth.printNewLine();
+        bluetooth.printCustom("မောင်ကြည်",2,1,charset: "UTF-8");
+        bluetooth.printCustom("查询字符串",2,1);
+        bluetooth.printNewLine();
+        bluetooth.printNewLine();
+        bluetooth.printCustom("---------------------------------",1,1);
+        bluetooth.paperCut();
       }
     });
   }

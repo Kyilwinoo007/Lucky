@@ -1,3 +1,6 @@
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:lucky/UI/Widgets/ListItem.dart';
+
 class Constants {
   static const String WAVEMONEY = "Wave Money";
   static const String KBZPAY = "KBZ Pay";
@@ -50,6 +53,8 @@ class Constants {
   static String AdminUserType = "admin";
   static String MoneyInputAdd ="Add";
   static String MoneyInputReduce ="Reduce";
+
+  static List<ListItem<BluetoothDevice>> lstDevices = [];
 
 
 }

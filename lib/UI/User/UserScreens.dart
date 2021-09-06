@@ -52,7 +52,8 @@ class _UserScreenState extends State<UserScreen> {
             return buildBody(userInfoList);
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:FloatingActionButton(
+
         child: Icon(
           Icons.add,
           size: 25,
@@ -176,9 +177,7 @@ class _UserScreenItemState extends State<UserScreenItem> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 12.0),
-                      child: InkWell(
+                  InkWell(
                         onTap: (){
                           Navigator.push(
                               context, MaterialPageRoute(builder: (context) => CreateUser(this.widget.user)));
@@ -189,26 +188,25 @@ class _UserScreenItemState extends State<UserScreenItem> {
                           size: 25.0,
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Utils.confirmDialog(context, "Confirm",
-                                "Are you sure you want to delete!")
-                            .then((value) {
-                          if (value) {
-                             Utils.showLoaderDialog(context);
-                            deleteUser(this.widget.user);
-                            Utils.dismissDialog(context);
-                            //updateUserInfo();
-                          }
-                        });
-                      },
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                        size: 25.0,
-                      ),
-                    )
+                    // InkWell(
+                    //   onTap: () {
+                    //     Utils.confirmDialog(context, "Confirm",
+                    //             "Are you sure you want to delete!")
+                    //         .then((value) {
+                    //       if (value) {
+                    //          Utils.showLoaderDialog(context);
+                    //         deleteUser(this.widget.user);
+                    //         Utils.dismissDialog(context);
+                    //         //updateUserInfo();
+                    //       }
+                    //     });
+                    //   },
+                    //   child: Icon(
+                    //     Icons.delete,
+                    //     color: Colors.red,
+                    //     size: 25.0,
+                    //   ),
+                    // )
                   ],
                 ),
               ),

@@ -88,7 +88,7 @@ class _PartnerTransferRecordState extends State<PartnerTransferRecord> {
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Transfer List");
+        title: "Empty Transfer");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {

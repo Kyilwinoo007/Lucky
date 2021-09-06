@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "84462762825",
-    "project_id": "lucky-375fe",
-    "storage_bucket": "lucky-375fe.appspot.com"
+    "project_number": "667150182904",
+    "project_id": "lucky-f5544",
+    "storage_bucket": "lucky-f5544.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84462762825:android:4f0c1f8eae2ef6ae5df898",
+        "mobilesdk_app_id": "1:667150182904:android:53f327ac4299bcf521ce0d",
         "android_client_info": {
           "package_name": "com.winwithtech.lucky"
         }
       },
       "oauth_client": [
         {
-          "client_id": "84462762825-qg3b3o6b89pqv291v7lb8aor88esl418.apps.googleusercontent.com",
+          "client_id": "667150182904-qdq0q7gsf1pn2l4ploe5hc15q7dldnlf.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCH8nGiOJEaN8NFxzNmMwVLI6kdh2IZg0U"
+          "current_key": "AIzaSyADTjNYjLU4IJnvbg9OXQrOupRNWyRqfZk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "84462762825-qg3b3o6b89pqv291v7lb8aor88esl418.apps.googleusercontent.com",
+              "client_id": "667150182904-qdq0q7gsf1pn2l4ploe5hc15q7dldnlf.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

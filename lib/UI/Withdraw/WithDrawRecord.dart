@@ -85,7 +85,7 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Withdraw List");
+        title: "Empty Withdraw");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {

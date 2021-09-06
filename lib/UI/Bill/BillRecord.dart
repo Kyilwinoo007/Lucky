@@ -90,7 +90,7 @@ class _BillRecordState extends State<BillRecord> {
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Bill Top Up List");
+        title: "Empty Bill Top Up");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {
