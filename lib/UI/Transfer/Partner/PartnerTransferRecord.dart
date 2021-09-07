@@ -105,15 +105,6 @@ class _PartnerTransferRecordState extends State<PartnerTransferRecord> {
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -145,14 +136,6 @@ class _PartnerTransferRecordState extends State<PartnerTransferRecord> {
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
-              IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,

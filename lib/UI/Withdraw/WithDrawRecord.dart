@@ -101,15 +101,6 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -141,14 +132,6 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
-              IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,

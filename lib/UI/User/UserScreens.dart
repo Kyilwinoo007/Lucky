@@ -161,7 +161,7 @@ class _UserScreenItemState extends State<UserScreenItem> {
                       child: Row(
                         children: [
                           Text(
-                            "Name : ",
+                            "Shop Name : ",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 17.0,

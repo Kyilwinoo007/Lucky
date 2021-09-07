@@ -106,15 +106,6 @@ class _BillRecordState extends State<BillRecord> {
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -146,14 +137,6 @@ class _BillRecordState extends State<BillRecord> {
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
-              IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,

@@ -58,9 +58,9 @@ class _CreateUserState extends State<CreateUser> {
     final nameInput = CustomTextInput(
       controller: this.nameController,
       errorMessage: _nameErrMessage.value,
-      label: "Name",
+      label: "Shop Name:",
       isRequired: true,
-      hintText: "Enter User Name",
+      hintText: "Enter Shop Name",
       leadingIcon: Icon(
         LineAwesomeIcons.user,
         size: 25.0,

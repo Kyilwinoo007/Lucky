@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dropdown_date_picker/dropdown_date_picker.dart';
@@ -9,11 +11,13 @@ import 'package:intl/intl.dart' as intl;
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Constants/Constants.dart';
 import 'package:lucky/Data/Result.dart';
+import 'package:lucky/Data/SharedPref/basicInfo.dart';
 import 'package:lucky/UI/Widgets/CustomTextInput.dart';
 import 'package:lucky/UI/Widgets/Wrapper.dart';
 import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/styles.dart';
 import 'package:responsive_widgets/responsive_widgets.dart';
+
 
 class Utils{
    static String getCurrentDate(){

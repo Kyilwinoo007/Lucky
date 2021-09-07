@@ -87,7 +87,7 @@ class _ProfileState extends State<Profile> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                              "Name : ",
+                              "Shop Name : ",
                               style: TextStyle(
                                   fontSize: 16.0,
                                   color: Colors.black54,
@@ -185,19 +185,6 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              // Positioned(
-              //     top: 20,
-              //     right: 20,
-              //     child: InkWell(
-              //       onTap: () {
-              //         //todo edit
-              //       },
-              //       child: Icon(
-              //         Icons.edit,
-              //         color: LuckyColors.splashScreenColors,
-              //         size: 22,
-              //       ),
-              //     ))
             ],
           ),
                   Row(

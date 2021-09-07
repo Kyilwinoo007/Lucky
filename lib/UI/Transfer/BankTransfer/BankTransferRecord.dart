@@ -105,15 +105,6 @@ class _BankTransferRecordState extends State<BankTransferRecord> {
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -145,14 +136,6 @@ class _BankTransferRecordState extends State<BankTransferRecord> {
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
-              IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,

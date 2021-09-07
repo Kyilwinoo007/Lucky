@@ -89,14 +89,6 @@ class _TransferRecordState extends State<TransferRecord> {
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -105,6 +97,7 @@ class _TransferRecordState extends State<TransferRecord> {
                 },
               ),
             ],
+
             child: TransactionItem(
               transaction: transactionList[index],
             ),
@@ -127,25 +120,6 @@ class _TransferRecordState extends State<TransferRecord> {
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
-              IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-              // IconSlideAction(
-              //   caption: 'Edit',
-              //   color: Colors.indigo,
-              //   icon: Icons.edit,
-              //   onTap: () => {
-              //     Navigator.of(context)
-              //         .pushNamed("/withdraw-create", arguments: {
-              //       "transactionEntity": transactionList[index],
-              //     })
-              //   },
-              // ),
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,

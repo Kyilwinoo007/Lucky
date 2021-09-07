@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -28,7 +27,6 @@ class DepositeRecord extends StatefulWidget{
 class _DepositeRecordState extends State<DepositeRecord>{
   final TransactionViewModel model = serviceLocator<TransactionViewModel>();
   List<Transaction> transactionList = [];
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
   @override
   void initState() {
@@ -104,17 +102,6 @@ class _DepositeRecordState extends State<DepositeRecord>{
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {
-                  printVoucher(transactionList[index]),
-                },
-              ),
-            ],
-            secondaryActions: <Widget>[
-
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -147,16 +134,6 @@ class _DepositeRecordState extends State<DepositeRecord>{
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {
-                  printVoucher(transactionList[index]),
-                },
-              ),
-            ],
-            secondaryActions: <Widget>[
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -180,39 +157,6 @@ class _DepositeRecordState extends State<DepositeRecord>{
         .then((value) {
       if (value) {
         model.deleteTransaction(context, transaction);
-      }
-    });
-  }
-
-  printVoucher(Transaction transaction) async{
-//     //SIZE
-//     // 0- normal size text
-//     // 1- only bold text
-//     // 2- bold with medium text
-//     // 3- bold with large text
-//     //ALIGN
-//     // 0- ESC_ALIGN_LEFT
-//     // 1- ESC_ALIGN_CENTER
-//     // 2- ESC_ALIGN_RIGHT
-    bluetooth.isConnected.then((isConnected) {
-      if (isConnected!) {
-        bluetooth.printCustom("Lucky",3,1);
-        bluetooth.printNewLine();
-        // bluetooth.printImage(pathImage);
-        bluetooth.printNewLine();
-        bluetooth.printLeftRight("Name:", transaction.fromCustomerName,0);
-        bluetooth.printLeftRight("Phone", transaction.fromPhone,1);
-        bluetooth.printNewLine();
-        bluetooth.printLeftRight("Agent", transaction.agent,2);
-        bluetooth.printLeftRight("Amount", transaction.amount.toString(),2);
-        bluetooth.printLeftRight("Charges", transaction.charges.toString(),2);
-        bluetooth.printNewLine();
-        bluetooth.printCustom("မောင်ကြည်",2,1,charset: "UTF-8");
-        bluetooth.printCustom("查询字符串",2,1);
-        bluetooth.printNewLine();
-        bluetooth.printNewLine();
-        bluetooth.printCustom("---------------------------------",1,1);
-        bluetooth.paperCut();
       }
     });
   }
