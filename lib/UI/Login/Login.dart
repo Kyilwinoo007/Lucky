@@ -290,7 +290,8 @@ class _LoginState extends State<Login> {
             " ",
             element.get("userType"),
             element.get("isDeactivate"),
-          List.from(element.get("userIdList")));
+            element.get('url'),
+            List.from(element.get("userIdList")));
         if(userInfo.isDeactivate){
           Utils.dismissDialog(context);
           Utils.errorDialog(context, "Your account was deactivated!");

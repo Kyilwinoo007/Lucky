@@ -55,7 +55,7 @@ class UserViewModel extends ChangeNotifier{
     return userDao.watchAllModes;
   }
 
-  void addUserToFireStore(String name, String phone,String email, String pwd) async{
+  void addUserToFireStore(String name, String phone,String email, String pwd, String url) async{
     await FirebaseFirestore.instance.collection(Constants.firestore_collection).add(
         {
           'name': name,
@@ -65,6 +65,7 @@ class UserViewModel extends ChangeNotifier{
           'isDeactivate' : false,
           'pwd':pwd,
           'userType':'user',
+          'url':url,
           'userIdList': [],
         }
     );
@@ -110,17 +111,33 @@ class UserViewModel extends ChangeNotifier{
   }
 
   updateUserFireStoreDatabase(UserData? userData, String name, String phone, String email, String pwd) async{
-    await FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userData!.userId).update(
-    {
-    'name': name,
-    'phone': phone.isNotEmpty ? phone : "",
-    'email': email,
-    'isActive': userData.isActive,
-    'isDeactivate' : userData.isDeactivate,
-    'pwd':pwd,
-    'userType':'user',
-    'userIdList': [],
-    });
+    // await FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userData!.userId).update(
+    // {
+    // 'name': name,
+    // 'phone': phone.isNotEmpty ? phone : "",
+    // 'email': email,
+    // 'pwd':pwd,
+    // });
+
+    if(pwd.isNotEmpty){
+      await FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userData!.userId).update(
+          {
+            'name': name,
+            'phone': phone.isNotEmpty ? phone : "",
+            'email': email,
+            'pwd':pwd,
+
+          });
+    }else{
+      await FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userData!.userId).update(
+          {
+            'name': name,
+            'phone': phone.isNotEmpty ? phone : "",
+            'email': email,
+          });
+    }
+
   }
+
   
 }

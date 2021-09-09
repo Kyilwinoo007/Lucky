@@ -102,6 +102,23 @@ class _TransactionDetailState extends State<TransactionDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                userInfo!.url.isNotEmpty ? Row(
+                    children: [
+                      Padding(
+                        padding:
+                        EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                        child:  Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ]):
+                SizedBox.shrink(),
                 Card(
                   elevation: 1,
                   shadowColor: Colors.grey,
@@ -542,6 +559,43 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             ],
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "#1-" + (this.widget.transaction.id! + 1000).toString(),
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 55,),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    // color: Colors.green[50],
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    child: Text(
+                                      Utils.formatTime(DateTime.now()),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                       ],
                     ),
                   ),
@@ -567,6 +621,23 @@ class _TransactionDetailState extends State<TransactionDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                userInfo!.url.isNotEmpty ? Row(
+                    children: [
+                      Padding(
+                        padding:
+                        EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                        child:  Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ]):
+                SizedBox.shrink(),
                 Card(
                   elevation: 1,
                   shadowColor: Colors.grey,
@@ -828,35 +899,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             ],
                           ),
                         ),
-                        // Padding(
-                        //   padding: EdgeInsets.all(10.0),
-                        //   child: Row(
-                        //     children: <Widget>[
-                        //       Text("Commission : " , style: TextStyle(
-                        //           fontSize: 16.0,
-                        //           color: Colors.black54,
-                        //           fontWeight: FontWeight.bold
-                        //       ),),
-                        //       Container(
-                        //         decoration: BoxDecoration(
-                        //           color: Colors.green[50],
-                        //           borderRadius: BorderRadius.all(
-                        //             Radius.circular(10.0),
-                        //           ),
-                        //         ),
-                        //         child: Padding(
-                        //           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                        //           child: Text(this.widget.transaction.commission.toString() ,
-                        //             style: TextStyle(
-                        //                 fontSize: 16,
-                        //                 color: Colors.green,
-                        //                 fontWeight: FontWeight.bold
-                        //             ),),
-                        //         ),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
                         Padding(
                           padding: EdgeInsets.all(4.0),
                           child: Row(
@@ -1006,6 +1048,43 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             ],
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "#1-" + (this.widget.transaction.id! + 1000).toString(),
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 55,),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    // color: Colors.green[50],
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    child: Text(
+                                      Utils.formatTime(DateTime.now()),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                       ],
                     ),
                   ),
@@ -1070,8 +1149,9 @@ class _TransactionDetailState extends State<TransactionDetail> {
             bluetooth.printImageBytes(element.buffer
                 .asUint8List(element.offsetInBytes, element.lengthInBytes));
           });
-          bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
           bluetooth.disconnect();
         }

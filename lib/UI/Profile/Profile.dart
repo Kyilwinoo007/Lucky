@@ -276,6 +276,7 @@ class _ProfileState extends State<Profile> {
                               }else{
                                 Utils.confirmDialog(context, "Confirm!", "Are you sure you want to log out?").then((value) => {
                                   if(value){
+
                                     FirebaseFirestore.instance
                                         .collection(Constants.firestore_collection)
                                         .doc(userInfo.id)
@@ -288,8 +289,7 @@ class _ProfileState extends State<Profile> {
                                               "splashScreen", (Route<dynamic> route) => false);
                                         }
                                       });
-                                      // Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                                      // builder: (BuildContext context) => Home()));
+
                                     }),
                                   }
                                 }),

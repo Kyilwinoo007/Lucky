@@ -178,8 +178,8 @@ class _UserScreenItemState extends State<UserScreenItem> {
                       ),
                     ),
                   InkWell(
-                        onTap: (){
-                          Navigator.push(
+                        onTap: () async{
+                         var reslut = await Navigator.push(
                               context, MaterialPageRoute(builder: (context) => CreateUser(this.widget.user)));
                         },
                         child: Icon(
@@ -188,25 +188,7 @@ class _UserScreenItemState extends State<UserScreenItem> {
                           size: 25.0,
                         ),
                       ),
-                    // InkWell(
-                    //   onTap: () {
-                    //     Utils.confirmDialog(context, "Confirm",
-                    //             "Are you sure you want to delete!")
-                    //         .then((value) {
-                    //       if (value) {
-                    //          Utils.showLoaderDialog(context);
-                    //         deleteUser(this.widget.user);
-                    //         Utils.dismissDialog(context);
-                    //         //updateUserInfo();
-                    //       }
-                    //     });
-                    //   },
-                    //   child: Icon(
-                    //     Icons.delete,
-                    //     color: Colors.red,
-                    //     size: 25.0,
-                    //   ),
-                    // )
+
                   ],
                 ),
               ),

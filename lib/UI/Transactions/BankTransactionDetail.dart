@@ -106,6 +106,23 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              userInfo!.url.isNotEmpty ? Row(
+                  children: [
+                    Padding(
+                      padding:
+                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                      child:  Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green[50],),
+                        height: 80,
+                        child: Image.network(
+                          userInfo!.url,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ]):
+              SizedBox.shrink(),
               Card(
                 elevation: 3,
                 shadowColor: Colors.grey,
@@ -457,6 +474,43 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "#1-" + (this.widget.transaction.id! + 1000).toString(),
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 30,),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  // color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  child: Text(
+                                    Utils.formatTime(DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                     ],
                   ),
                 ),
@@ -482,6 +536,23 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              userInfo!.url.isNotEmpty ? Row(
+                  children: [
+                    Padding(
+                      padding:
+                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                      child:  Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green[50],),
+                        height: 80,
+                        child: Image.network(
+                          userInfo!.url,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ]):
+              SizedBox.shrink(),
               Card(
                 elevation: 3,
                 shadowColor: Colors.grey,
@@ -728,35 +799,6 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                           ],
                         ),
                       ),
-                      // Padding(
-                      //   padding: EdgeInsets.all(10.0),
-                      //   child: Row(
-                      //     children: <Widget>[
-                      //       Text("Commission : " , style: TextStyle(
-                      //           fontSize: 16.0,
-                      //           color: Colors.black54,
-                      //           fontWeight: FontWeight.bold
-                      //       ),),
-                      //       Container(
-                      //         decoration: BoxDecoration(
-                      //           color: Colors.green[50],
-                      //           borderRadius: BorderRadius.all(
-                      //             Radius.circular(10.0),
-                      //           ),
-                      //         ),
-                      //         child: Padding(
-                      //           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                      //           child: Text(this.widget.transaction.commission.toString() ,
-                      //             style: TextStyle(
-                      //                 fontSize: 16,
-                      //                 color: Colors.green,
-                      //                 fontWeight: FontWeight.bold
-                      //             ),),
-                      //         ),
-                      //       )
-                      //     ],
-                      //   ),
-                      // ),
                       Padding(
                         padding: EdgeInsets.all(4.0),
                         child: Row(
@@ -833,320 +875,47 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "#1-" + (this.widget.transaction.id! + 1000).toString(),
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 30,),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  // color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  child: Text(
+                                    Utils.formatTime(DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                     ],
                   ),
                 ),
               ),
-              // Card(
-              //   elevation: 5,
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              //   child: Padding(
-              //     padding: EdgeInsets.only(left: 10,top: 8,bottom: 8),
-              //     child: Column(
-              //       children: [
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: isBank ?  Row(
-              //             children: <Widget>[
-              //               Text("Bank Name : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-              //                   child: Text(this.widget.transaction.bank.isEmpty ? "Unknown" : this.widget.transaction.bank,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ) :
-              //           Row(
-              //             children: <Widget>[
-              //               Text("Partner Name : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-              //                   child: Text(this.widget.transaction.partner.isEmpty ? "Unknown" : this.widget.transaction.partner,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Type : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-              //                   child: Text(this.widget.transaction.transactionsType,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ) ,
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // Card(
-              //   elevation: 5,
-              //   shadowColor: Colors.grey,
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              //   child: Padding(
-              //     padding: EdgeInsets.only(left: 10,top: 8,bottom: 8),
-              //     child: Column(
-              //       children :[
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Phone No. : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.all(10),
-              //                   child: Text(this.widget.transaction.phone.isEmpty ? "-": this.widget.transaction.phone ,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // Card(
-              //   elevation: 5,
-              //   shadowColor: Colors.grey,
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              //   child: Padding(
-              //     padding: EdgeInsets.only(left: 10,top: 8,bottom: 8),
-              //     child: Column(
-              //       children: [
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Agent : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.all(10),
-              //                   child: Text(this.widget.transaction.agent ,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Date : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.all(10),
-              //                   child: Text(this.widget.transaction.date,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // Card(
-              //   elevation: 5,
-              //   shadowColor: Colors.grey,
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              //   ),
-              //   child: Padding(
-              //     padding: EdgeInsets.only(left: 10,top: 8,bottom: 8),
-              //     child: Column(
-              //       children: [
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Amount : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-              //                   child: Text(this.widget.transaction.amount.toString() ,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Commission : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-              //                   child: Text(this.widget.transaction.commission.toString() ,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //         Padding(
-              //           padding: EdgeInsets.all(10.0),
-              //           child: Row(
-              //             children: <Widget>[
-              //               Text("Charges : " , style: TextStyle(
-              //                   fontSize: 16.0,
-              //                   color: Colors.black54,
-              //                   fontWeight: FontWeight.bold
-              //               ),),
-              //               Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.green[50],
-              //                   borderRadius: BorderRadius.all(
-              //                     Radius.circular(10.0),
-              //                   ),
-              //                 ),
-              //                 child: Padding(
-              //                   padding: EdgeInsets.all(10),
-              //                   child: Text(this.widget.transaction.charges.toString() ,
-              //                     style: TextStyle(
-              //                         fontSize: 16,
-              //                         color: Colors.green,
-              //                         fontWeight: FontWeight.bold
-              //                     ),),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
 
             ],
           ),
@@ -1203,8 +972,9 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
             bluetooth.printImageBytes(element.buffer
                 .asUint8List(element.offsetInBytes, element.lengthInBytes));
           });
-          bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
           bluetooth.disconnect();
         }

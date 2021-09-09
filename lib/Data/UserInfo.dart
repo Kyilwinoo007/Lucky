@@ -14,10 +14,11 @@ class UserInfo{
   late String userType;  //admin or user
   late bool isDeactivate;
   late String email;
+  late String url;     //logo url
   late List<String> userIdList;
 
   UserInfo(this.id, this.name, this.phone,this.email, this.isActive, this.pwd,
-      this.userType, this.isDeactivate,this.userIdList);
+      this.userType, this.isDeactivate,this.url,this.userIdList);
 
   UserInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -30,8 +31,8 @@ class UserInfo{
       userIdList = <String>[];
       json['userIdList'].forEach((v) { userIdList.add(v); });
     }
-    // userIdList = json['userIdList'];
   userType = json['userType'];
+    url = json['url'];
   isDeactivate = json['isDeactivate'];
   }
 
@@ -45,6 +46,7 @@ class UserInfo{
   data['pwd'] = this.pwd;
   data['userIdList'] = this.userIdList;
   data['userType'] = this.userType;
+  data['url'] = this.url;
   data['isDeactivate'] = this.isDeactivate;
   return data;
   }

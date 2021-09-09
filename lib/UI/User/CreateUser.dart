@@ -35,6 +35,7 @@ class _CreateUserState extends State<CreateUser> {
 
 
   String userId = "" ;
+  bool isUpdate = false;
 
   Wrapper _emailErrorMesssage = new Wrapper("");
   Wrapper _userPasswordErrMessage = new Wrapper("");
@@ -48,6 +49,7 @@ class _CreateUserState extends State<CreateUser> {
       nameController.text = this.widget.userData!.name;
       phoneController.text = this.widget.userData!.phone;
       emailController.text = this.widget.userData!.email;
+      isUpdate = true;
     }
     getUserInfo();
     super.initState();
@@ -314,17 +316,31 @@ class _CreateUserState extends State<CreateUser> {
         phoneErrorMsg = "Invalid phone number !";
       }
     }
-    if(_userPasswordController.text.trim().isNotEmpty){
-      if(_userPasswordController.text.length < 6){
-        isPasswordValid = false;
-        passwordErrorMsg = "Required at least 6 characters";
+    if(isUpdate){
+      if(_userPasswordController.text.trim().isNotEmpty){
+        if(_userPasswordController.text.length < 6){
+          isPasswordValid = false;
+          passwordErrorMsg = "Required at least 6 characters";
+        }else{
+          isPasswordValid = true;
+        }
+
       }else{
         isPasswordValid = true;
       }
-
     }else{
-      passwordErrorMsg = "Required";
-      isPasswordValid = false;
+      if(_userPasswordController.text.trim().isNotEmpty){
+        if(_userPasswordController.text.length < 6){
+          isPasswordValid = false;
+          passwordErrorMsg = "Required at least 6 characters";
+        }else{
+          isPasswordValid = true;
+        }
+
+      }else{
+        passwordErrorMsg = "Required";
+        isPasswordValid = false;
+      }
     }
 
     setState(() {
@@ -338,7 +354,7 @@ class _CreateUserState extends State<CreateUser> {
   }
 
   void createUser() async{
-    model.addUserToFireStore(nameController.text,phoneController.text,emailController.text,_userPasswordController.text);
+    model.addUserToFireStore(nameController.text,phoneController.text,emailController.text,_userPasswordController.text,userInfo.url);
     QuerySnapshot  querySnapshot = await FirebaseFirestore.instance
         .collection(Constants.firestore_collection)
         .where("email",isEqualTo: emailController.text)
@@ -383,7 +399,7 @@ class _CreateUserState extends State<CreateUser> {
         isDeactivate: this.widget.userData!.isDeactivate));
     if(result){
       Utils.dismissDialog(context);
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
     }
   }
 }

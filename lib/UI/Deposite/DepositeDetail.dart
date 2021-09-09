@@ -104,15 +104,30 @@ class _DepositeDetailState extends State<DepositeDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+               userInfo!.url.isNotEmpty ? Row(
+                   children: [
+                      Padding(
+                        padding:
+                            EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                        child:  Container(
+                          decoration: BoxDecoration(
+                              color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ]):
+                   SizedBox.shrink(),
                   Card(
                     elevation: 3,
                     shadowColor: Colors.grey,
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Row(children: [
                       Padding(
                         padding:
-                            EdgeInsets.only(top: 8.0, left: 90, bottom: 8.0),
+                            EdgeInsets.only(top: 4.0, left: 90, bottom: 8.0),
                         child: Text(
                           userInfo!.name,
                           style: TextStyle(
@@ -126,8 +141,6 @@ class _DepositeDetailState extends State<DepositeDetail> {
                   Card(
                     elevation: 3,
                     shadowColor: Colors.grey,
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Column(
                       children: [
                         Padding(
@@ -419,6 +432,42 @@ class _DepositeDetailState extends State<DepositeDetail> {
                             ],
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "#1-" + (this.widget.transaction.id! + 1000).toString(),
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 55,),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    // color: Colors.green[50],
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    child: Text(
+                                      Utils.formatTime(DateTime.now()),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -446,6 +495,23 @@ class _DepositeDetailState extends State<DepositeDetail> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              userInfo!.url.isNotEmpty ? Row(
+                  children: [
+                    Padding(
+                      padding:
+                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                      child:  Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green[50],),
+                        height: 80,
+                        child: Image.network(
+                          userInfo!.url,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ]):
+              SizedBox.shrink(),
               Card(
                 elevation: 5,
                 shadowColor: Colors.grey,
@@ -753,6 +819,42 @@ class _DepositeDetailState extends State<DepositeDetail> {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "#1-" + (this.widget.transaction.id! + 1000).toString(),
+                              style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 55,),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  // color: Colors.green[50],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  child: Text(
+                                    Utils.formatTime(DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -803,8 +905,10 @@ class _DepositeDetailState extends State<DepositeDetail> {
             bluetooth.printImageBytes(element.buffer
                 .asUint8List(element.offsetInBytes, element.lengthInBytes));
           });
-          bluetooth.printCustom("--------------------------------", 1, 1);
+
           bluetooth.printNewLine();
+          bluetooth.printNewLine();
+          bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
           bluetooth.disconnect();
         }
