@@ -13,6 +13,7 @@ class HomeViewModel extends ChangeNotifier{
     double totalEmoney = 0.0;
     balanceDao = Provider.of<BalanceDao>(context,listen: false);
     List<BalanceData> result = await balanceDao.getAllBalance;
+    Stream<List<BalanceData>> resultStream = balanceDao.watchAllModes;
     for(int i = 0 ; i< result.length ; i ++){
       totalCash += result[i].cash;
       totalEmoney += result[i].eMoney;
@@ -21,4 +22,5 @@ class HomeViewModel extends ChangeNotifier{
     this.totalEmoney = totalEmoney;
     notifyListeners();
   }
+
 }

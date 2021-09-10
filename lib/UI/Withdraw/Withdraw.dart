@@ -34,12 +34,14 @@ class _WithdrawState extends State<Withdraw> {
   TextEditingController withdrawAmountController = new TextEditingController();
   TextEditingController transferAgentController = new TextEditingController();
   TextEditingController commissionController = new TextEditingController();
+  TextEditingController chargesController = new TextEditingController();
 
   Wrapper _transferorPhoneNumberErrMessage =  new Wrapper("");
   Wrapper _withdrawerPhoneNumberErrMessage = new Wrapper("");
   Wrapper _withdrawAmountErrMessage = new Wrapper("");
   Wrapper _commissionErrMessage = new Wrapper("");
   Wrapper _withdrawerNameErrMessage = new Wrapper("");
+  Wrapper _chargesErrMessage = new Wrapper("");
 
   var _date = new DateTime.now();
   var _time = new DateTime.now();
@@ -139,6 +141,19 @@ class _WithdrawState extends State<Withdraw> {
         size: 25.0,
       ),
     );
+    final chargesInput = CustomTextInput(
+      errorMessage: this._chargesErrMessage.value,
+      inputType: TextInputType.number,
+      controller: this.chargesController,
+      isRequired: false,
+      label: "Fees",
+      hintText: "eg.1000",
+      leadingIcon: Icon(
+        LineAwesomeIcons.alternate_wavy_money_bill,
+        size: 25.0,
+      ),
+    );
+
     final dateInput = InkWell(
       onTap: () {
         DatePicker.showDatePicker(
@@ -307,7 +322,7 @@ class _WithdrawState extends State<Withdraw> {
           transferorPhoneNoInput: transferorPhoneNoInput,
           transferAmountInput: transferAmountInput,
           dateInput: dateInput,
-          timeInput: timeInput,
+          charge: chargesInput,
           userAgentInput: userAgentInput,
           submitButton: submitButton,
           clearButton: clearButton,
@@ -320,7 +335,7 @@ class _WithdrawState extends State<Withdraw> {
           transferorPhoneNoInput: transferorPhoneNoInput,
           transferAmountInput: transferAmountInput,
           dateInput: dateInput,
-          timeInput: timeInput,
+          charge: chargesInput,
           userAgentInput: userAgentInput,
           submitButton: submitButton,
           clearButton: clearButton,
@@ -336,12 +351,11 @@ class _WithdrawState extends State<Withdraw> {
       transferorPhoneNoInput,
       transferAmountInput,
       dateInput,
-      timeInput,
       userAgentInput,
       submitButton,
-      clearButton}) {
+      clearButton,charge}) {
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 16),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -377,9 +391,20 @@ class _WithdrawState extends State<Withdraw> {
                 child: transferAmountInput,
               ),
 
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: charge,
+              ),
               Expanded(
                 child: commissionInput,
               )
+
             ],
           ),
         ),
@@ -393,9 +418,7 @@ class _WithdrawState extends State<Withdraw> {
               Expanded(
                 child: dateInput,
               ),
-              Expanded(
-                child: timeInput,
-              ),
+
             ],
           ),
         ),
@@ -426,10 +449,9 @@ class _WithdrawState extends State<Withdraw> {
       transferorPhoneNoInput,
       transferAmountInput,
       dateInput,
-      timeInput,
       userAgentInput,
       submitButton,
-      clearButton}) {
+      clearButton,charge}) {
     return SingleChildScrollView(
       child: Container(
         // height: MediaQuery.of(context).size.height,
@@ -437,6 +459,7 @@ class _WithdrawState extends State<Withdraw> {
           left: 10,
           right: 10,
           top: 16,
+          bottom: 16
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -454,21 +477,22 @@ class _WithdrawState extends State<Withdraw> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: commissionInput,
+                  child: charge,
                 ),
                 Expanded(
-                  child: userAgentInput,
+                  child: commissionInput,
                 ),
+
               ],
             ),
             SizedBox(height: 10,),
             Row(
                 children: <Widget>[
                   Expanded(
-                    child: dateInput,
+                    child: userAgentInput,
                   ),
                   Expanded(
-                    child: timeInput,
+                    child: dateInput,
                   ),
                 ],
               ),
@@ -500,8 +524,9 @@ class _WithdrawState extends State<Withdraw> {
   bool isValid() {
     bool isWithdrawerPhoneValid,isTransferorPhoneValid,isAmountValid;
     bool isCommissionValid = true;
+    bool isChargeValid = true;
     bool isWithdrawerNameValid;
-    String withdrawPhoneErrorMsg = '',transferPhoneErrorMsg = '' , amountMsg = '' ,commissionErrorMsg = '',withdrawerNameErrorMsg = '';
+    String withdrawPhoneErrorMsg = '',transferPhoneErrorMsg = '' , amountMsg = '' ,commissionErrorMsg = '',withdrawerNameErrorMsg = '',chargeErrorMsg = '';
     if(withdrawerPhoneNumberController.text.trim().isNotEmpty){
       if(Utils.validatePhone(withdrawerPhoneNumberController.text.trim())){
         isWithdrawerPhoneValid = true;
@@ -563,15 +588,24 @@ class _WithdrawState extends State<Withdraw> {
       }
     }
 
+    if(chargesController.text.trim().isNotEmpty){
+      double charge = double.parse(chargesController.text.trim());
+      if(charge < 1){
+        isChargeValid = false;
+        chargeErrorMsg = "Invalid";
+      }
+    }
+
     setState(() {
       _commissionErrMessage.value = commissionErrorMsg;
       _withdrawerPhoneNumberErrMessage.value = withdrawPhoneErrorMsg;
       _transferorPhoneNumberErrMessage.value = transferPhoneErrorMsg;
       _withdrawAmountErrMessage.value = amountMsg;
       _withdrawerNameErrMessage.value = withdrawerNameErrorMsg;
+      _chargesErrMessage.value = chargeErrorMsg;
     });
 
-    return isWithdrawerPhoneValid && isTransferorPhoneValid && isAmountValid && isCommissionValid && isWithdrawerNameValid;
+    return isWithdrawerPhoneValid && isTransferorPhoneValid && isAmountValid && isCommissionValid && isWithdrawerNameValid && isChargeValid;
   }
 
   void getBalanceByAgentName() async{
@@ -597,7 +631,7 @@ class _WithdrawState extends State<Withdraw> {
             amount: double.parse(withdrawAmountController.text.trim()),
             commission: commission,
             transferrorType: Constants.CustomerType,
-            charges: 0.0)
+            charges: chargesController.text.trim().isNotEmpty ? double.parse(chargesController.text) : 0.0)
 
     );
    if(result){
@@ -616,9 +650,12 @@ class _WithdrawState extends State<Withdraw> {
   void updateBalance() {
     //reduce cash
     //add commission + amount to eMoney
+    double charges = this.chargesController.text.trim().isNotEmpty
+        ? double.parse(this.chargesController.text.trim())
+        : 0.0;
     double  commission =  this.commissionController.text.trim().isNotEmpty ? double.parse(this.commissionController.text.trim()) : 0.0;
     double  amount =  this.withdrawAmountController.text.trim().isNotEmpty ? double.parse(this.withdrawAmountController.text.trim()) : 0.0;
-    double cash = balancedata.cash - amount;
+    double cash = (balancedata.cash + charges) - amount;
     double eMoney = balancedata.eMoney + commission + amount;
     model.updateBalance(
       BalanceData(id:balancedata.id,cash: cash, eMoney: eMoney, date: Utils.getCurrentDate(), agent: balancedata.agent)

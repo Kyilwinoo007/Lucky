@@ -41,7 +41,7 @@ class _CreateUserState extends State<CreateUser> {
   Wrapper _userPasswordErrMessage = new Wrapper("");
   Wrapper _nameErrMessage = new Wrapper("");
   Wrapper _phoneErrMessage = new Wrapper("");
- late UserInfo userInfo;
+ late UserInfo? userInfo;
 
   @override
   void initState(){
@@ -63,6 +63,7 @@ class _CreateUserState extends State<CreateUser> {
       label: "Shop Name:",
       isRequired: true,
       hintText: "Enter Shop Name",
+      maxLength: 50,
       leadingIcon: Icon(
         LineAwesomeIcons.user,
         size: 25.0,
@@ -354,34 +355,49 @@ class _CreateUserState extends State<CreateUser> {
   }
 
   void createUser() async{
-    model.addUserToFireStore(nameController.text,phoneController.text,emailController.text,_userPasswordController.text,userInfo.url);
-    QuerySnapshot  querySnapshot = await FirebaseFirestore.instance
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection(Constants.firestore_collection)
-        .where("email",isEqualTo: emailController.text)
-        .where("pwd",isEqualTo: _userPasswordController.text)
-        .where("name",isEqualTo: nameController.text)
+        .where("email", isEqualTo: emailController.text)
+        .where("name", isEqualTo: nameController.text)
         .get();
-    querySnapshot.docs.forEach((element) {
-      userId = element.id;
-    });
-    model.addUserToDatabase(context, UserData(
-        userId: userId,
-        parentId: userInfo.id,
-        name: nameController.text,
-        email: emailController.text,
-        phone: phoneController.text.trim().isNotEmpty ? phoneController.text : "",
-        userType: "user",
-        isActive: false,
-        isDeactivate: false));
-    model.updateFireStoreDatabase(userInfo.id);
-    Utils.dismissDialog(context);
-    Navigator.of(context).pop();
+    if (snapshot.docs.length > 0) {
+      Utils.dismissDialog(context);
+      Utils.confirmDialog(
+          context, "Sorry!", "User name and email already exists");
+    } else {
+      model.addUserToFireStore(nameController.text,phoneController.text,emailController.text,_userPasswordController.text,userInfo!.url);
+      QuerySnapshot  querySnapshot = await FirebaseFirestore.instance
+          .collection(Constants.firestore_collection)
+          .where("email",isEqualTo: emailController.text)
+          .where("pwd",isEqualTo: _userPasswordController.text)
+          .where("name",isEqualTo: nameController.text)
+          .get();
+      querySnapshot.docs.forEach((element) {
+        userId = element.id;
+      });
+      model.addUserToDatabase(context, UserData(
+          userId: userId,
+          parentId: userInfo!.id,
+          name: nameController.text,
+          email: emailController.text,
+          phone: phoneController.text.trim().isNotEmpty ? phoneController.text : "",
+          userType: "user",
+          isActive: false,
+          isDeactivate: false));
+      model.updateFireStoreDatabase(userInfo!.id);
+      Utils.dismissDialog(context);
+      Navigator.of(context).pop();
+    }
+
+
   }
 
   Future<void> getUserInfo() async {
    UserInfo userInfo = await basicInfo.getUserInfo();
    if(userInfo != null){
-     this.userInfo = userInfo;
+     setState(() {
+       this.userInfo = userInfo;
+     });
    }
   }
 

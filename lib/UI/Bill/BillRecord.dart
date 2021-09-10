@@ -98,8 +98,16 @@ class _BillRecordState extends State<BillRecord> {
       itemCount: transactionList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => BillDetail(transactionList[index])));        },
+          Utils.checkInternetConnection(context).then((value) =>
+          {
+            if(!value){
+              ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+            } else
+              {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BillDetail(transactionList[index]))),
+              }
+          });     },
         child: Container(
           width: 20,
           child: Slidable(
@@ -131,8 +139,17 @@ class _BillRecordState extends State<BillRecord> {
         itemCount: transactionList.length,
         itemBuilder: (context, index) => InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => BillDetail(transactionList[index])));
+            Utils.checkInternetConnection(context).then((value) =>
+            {
+              if(!value){
+                ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+              } else
+                {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BillDetail(transactionList[index]))),
+                }
+            });
+
           },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),

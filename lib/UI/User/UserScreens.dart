@@ -148,130 +148,136 @@ class _UserScreenItemState extends State<UserScreenItem> {
         elevation: 6,
         child: Padding(
           padding: EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Shop Name : ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.0,
+          child: Stack(
+            children :[
+              Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 36.0),
+                  child: Row(
+                          children: [
+                            Text(
+                              "Shop Name : ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                                fontSize: 14.0,
+                              ),
                             ),
-                          ),
-                          Text(
-                            this.widget.user.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
+                            Container(
+                              width: 210,
+                              child: Text(
+                                this.widget.user.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.0,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  InkWell(
-                        onTap: () async{
-                         var reslut = await Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => CreateUser(this.widget.user)));
-                        },
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.grey,
-                          size: 25.0,
+                          ],
                         ),
                       ),
-
-                  ],
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Email : ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      Text(
+                        this.widget.user.email,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Email : ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0,
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Phone : ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontSize: 14.0,
+                        ),
                       ),
-                    ),
-                    Text(
-                      this.widget.user.email,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
+                      Text(
+                        this.widget.user.phone,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Phone : ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0,
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child:  Text(
+                                "Deactivate",
+                                style: TextStyle(
+                                    fontSize: 17.0,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    Text(
-                      this.widget.user.phone,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ],
+                      FlutterSwitch(
+                        activeColor: Color.fromRGBO(51, 226, 255, 1),
+                        inactiveColor: Colors.black38,
+                        height: 25,
+                        width: 50,
+                        showOnOff: false,
+                        onToggle: (value) {
+                          setState(() {
+                            isDeactivate = value;
+                            deactivateUser(this.widget.user);
+                          });
+                        },
+                        value: isDeactivate,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 8.0, left: 12, bottom: 4, right: 14.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child:  Text(
-                              "Deactivate",
-                              style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold),
-                      ),
+              ],
+            ),
+              Positioned(
+                top: 4,
+                  right: 4,
+                  child:InkWell(
+                    onTap: () async{
+                      var reslut = await Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => CreateUser(this.widget.user)));
+                    },
+                    child: Icon(
+                      Icons.edit,
+                      color: Colors.grey,
+                      size: 25.0,
                     ),
-                    FlutterSwitch(
-                      activeColor: Color.fromRGBO(51, 226, 255, 1),
-                      inactiveColor: Colors.black38,
-                      height: 25,
-                      width: 50,
-                      showOnOff: false,
-                      onToggle: (value) {
-                        setState(() {
-                          isDeactivate = value;
-                          deactivateUser(this.widget.user);
-                        });
-                      },
-                      value: isDeactivate,
-                    )
-                  ],
-                ),
-              ),
-            ],
+                  ),
+              )
+          ]
           ),
         ),
       ),

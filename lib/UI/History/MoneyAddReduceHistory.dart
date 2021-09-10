@@ -61,14 +61,6 @@ class MoneyAddReduceHistoryState extends State<MoneyAddReduceHistory> {
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
               IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
-              IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
@@ -97,14 +89,6 @@ class MoneyAddReduceHistoryState extends State<MoneyAddReduceHistory> {
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[
-              IconSlideAction(
-                caption: 'Print',
-                color: Colors.green,
-                icon: Icons.print,
-                onTap: () => {},
-              ),
-            ],
-            secondaryActions: <Widget>[
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
@@ -213,19 +197,19 @@ class InputRecordItem extends StatelessWidget {
           trailing: Column(
             children :[
               Padding(
-                padding: EdgeInsets.only(top: 6.0,bottom: 8.0),
+                padding: EdgeInsets.only(bottom: 4.0),
                 child: Text('${transaction.agent}',
                 style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w800
                 ),),
               ),
-              Text(
-                '${transaction.date}',
-                style: TextStyle(
-                  fontSize: 15.0,
+           Text(
+                  '${transaction.date}',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                  ),
                 ),
-              ),
             ]
           )
         ),

@@ -96,8 +96,16 @@ class _PartnerTransferRecordState extends State<PartnerTransferRecord> {
       itemCount: transactionList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => BankTransactionDetail(Constants.PartnerType ,transactionList[index])));
+          Utils.checkInternetConnection(context).then((value) =>
+          {
+            if(!value){
+              ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+            } else
+              {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BankTransactionDetail(Constants.PartnerType ,transactionList[index]))),
+              }
+          });
         },
         child: Container(
           width: 20,
@@ -131,8 +139,17 @@ class _PartnerTransferRecordState extends State<PartnerTransferRecord> {
         itemCount: transactionList.length,
         itemBuilder: (context, index) => InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => BankTransactionDetail(Constants.PartnerType ,transactionList[index])));          },
+            Utils.checkInternetConnection(context).then((value) =>
+            {
+              if(!value){
+                ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+              } else
+                {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BankTransactionDetail(Constants.PartnerType ,transactionList[index]))),
+          }
+            });
+               },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[

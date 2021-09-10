@@ -38,12 +38,14 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
   TextEditingController phoneNumberController = new TextEditingController();
   TextEditingController commissionController = new TextEditingController();
   TextEditingController amountController = new TextEditingController();
+  TextEditingController chargesController = new TextEditingController();
 
   Wrapper _phoneNumberErrMessage =  new Wrapper("");
   Wrapper _bankNameErrMessage =  new Wrapper("");
   Wrapper _amountErrMessage =  new Wrapper("");
   Wrapper _partnerErrMessage =  new Wrapper("");
   Wrapper _commissionErrMessage =  new Wrapper("");
+  Wrapper _chargesErrMessage =  new Wrapper("");
 
 
   late List<DropdownMenuItem<String>> _typeDropDownMenuItems;
@@ -135,6 +137,19 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         size: 25.0,
       ),
     );
+    final chargesInput = CustomTextInput(
+      errorMessage: this._chargesErrMessage.value,
+      inputType: TextInputType.number,
+      controller: this.chargesController,
+      isRequired: false,
+      label: "Fees",
+      hintText: "eg.1000",
+      leadingIcon: Icon(
+        LineAwesomeIcons.alternate_wavy_money_bill,
+        size: 25.0,
+      ),
+    );
+
     final commissionInput = CustomTextInput(
       controller: this.commissionController,
       errorMessage: _commissionErrMessage.value,
@@ -237,7 +252,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
     );
     final agentType = MyCustomInput(
       isRequired: false,
-      label: 'Select Agent Type',
+      label: 'Select Agent',
       errorMessage: '',
       child: Row(
         children: <Widget>[
@@ -312,6 +327,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         commissionInput:commissionInput,
         agentType : agentType,
         dateInput:dateInput,
+        chargeInput:chargesInput,
         transactionType :transactionType,
         submitButton: submitButton,
         cancelButton: cancelButton,
@@ -324,6 +340,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         commissionInput:commissionInput,
         agentType : agentType,
         dateInput:dateInput,
+        chargeInput:chargesInput,
         transactionType :transactionType,
         submitButton: submitButton,
         cancelButton: cancelButton,
@@ -341,10 +358,10 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         required InkWell dateInput,
       required MyCustomInput transactionType,
       required SolidGreenButton submitButton,
-      required OutlineGreenElevatedButton cancelButton}) {
+      required OutlineGreenElevatedButton cancelButton, required CustomTextInput chargeInput}) {
 
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 16),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -378,6 +395,18 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
 
               Expanded(
                 child: amountInput,
+              ),
+
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+
+              Expanded(
+                child: chargeInput,
               ),
 
             ],
@@ -439,7 +468,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         required InkWell dateInput,
       required MyCustomInput transactionType,
       required SolidGreenButton submitButton,
-      required OutlineGreenElevatedButton cancelButton}) {
+      required OutlineGreenElevatedButton cancelButton, required CustomTextInput chargeInput}) {
 
     return SingleChildScrollView(
       child: Container(
@@ -447,6 +476,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
           left: 10,
           right: 10,
           top: 16,
+          bottom: 16
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -457,13 +487,16 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
             SizedBox(height: 10,),
             amountInput,
             SizedBox(height: 10,),
+            chargeInput,
+            SizedBox(height: 10,),
             Row(
               children: <Widget>[
-                Expanded(
-                  child: commissionInput,
-                ),
+
                 Expanded(
                   child: agentType,
+                ),
+                Expanded(
+                  child: commissionInput,
                 ),
               ],
             ),
@@ -471,11 +504,12 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: dateInput,
-                ),
-                Expanded(
                   child: transactionType,
                 ),
+                Expanded(
+                  child: dateInput,
+                ),
+
               ],
             ),
             SizedBox(height: 24,),
@@ -504,7 +538,8 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
     bool isPhoneValid = true,isAmountValid = false,isBankNameValid = true;
     bool isPartNameValid = true;
     bool isCommissionValid = true;
-    String phoneErrorMsg = '' , amountMsg = '',bankNameErrorMsg = '' , commissionMsg = '' ,partnerErrorMsg = '';
+    bool isChargeValid = true;
+    String phoneErrorMsg = '' , amountMsg = '',bankNameErrorMsg = '' , commissionMsg = '' ,partnerErrorMsg = '',chargeErrorMsg = '';
     if(this.widget.transferorType == Constants.BankType){    // if current widget is for bank transfer bank name is required and phoneNo is not required
       isPhoneValid = true;
       if(bankController.text.trim().isNotEmpty){
@@ -575,6 +610,13 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
         commissionMsg = "Invalid";
       }
     }
+    if(chargesController.text.trim().isNotEmpty){
+      double charge = double.parse(chargesController.text.trim());
+      if(charge < 1){
+        isChargeValid = false;
+        chargeErrorMsg = "Invalid";
+      }
+    }
 
     setState(() {
       _commissionErrMessage.value = commissionMsg;
@@ -582,9 +624,10 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
       _bankNameErrMessage.value = bankNameErrorMsg;
       _amountErrMessage.value = amountMsg;
       _partnerErrMessage.value = partnerErrorMsg;
+      _chargesErrMessage.value = chargeErrorMsg;
     });
 
-    return isPhoneValid && isBankNameValid && isAmountValid && isCommissionValid && isPartNameValid;
+    return isPhoneValid && isBankNameValid && isAmountValid && isCommissionValid && isPartNameValid && isChargeValid;
 
   }
 
@@ -594,25 +637,28 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
 
   void updateBalance() async{
     double  commission =  this.commissionController.text.trim().isNotEmpty ? double.parse(this.commissionController.text.trim()) : 0.0;
-
+    double charges = this.chargesController.text.trim().isNotEmpty
+        ? double.parse(this.chargesController.text.trim())
+        : 0.0;
     if(_selectedType == Constants.BANK_TRANSFER_TYPE || _selectedType == Constants.PARTNER_TRANSFER_TYPE){
       //if transfer reduce amount from eMoney
       //add commission to eMoney
       double eMoney =(balanceData.eMoney - double.parse(amountController.text.trim())) + commission;
       model.updateBalance(
-          BalanceData(id:balanceData.id,cash: balanceData.cash, eMoney: eMoney, date: Utils.getCurrentDate(), agent: balanceData.agent)
+          BalanceData(id:balanceData.id,cash: balanceData.cash + charges, eMoney: eMoney, date: Utils.getCurrentDate(), agent: balanceData.agent)
       );
 
     }else{
       //if receive add amount to eMoney
       //add commission to eMoney
+
       if(balanceData != null){
-        double eMoney =(balanceData.eMoney + double.parse(amountController.text.trim())) + commission;
+        double eMoney =(balanceData.eMoney + double.parse(amountController.text.trim())) + commission - charges;
         model.updateBalance(
             BalanceData(id:balanceData.id,cash: balanceData.cash, eMoney: eMoney, date: Utils.getCurrentDate(), agent: balanceData.agent)
         );
       }else{
-        double eMoney =(double.parse(amountController.text.trim())) + commission;
+        double eMoney =(double.parse(amountController.text.trim()) - charges) + commission;
         model.insertBalance(
           BalanceData(cash: 0.0, eMoney: eMoney, date: Utils.getCurrentDate(), agent: _selectedAgent.toString())
         );
@@ -667,7 +713,7 @@ class _CreateBankTransferState extends State<CreateBankTransfer> {
           amount: double.parse(amountController.text.trim()),
           commission: commission,
           transferrorType: this.widget.transferorType,
-          charges: 0.0,)
+          charges: chargesController.text.trim().isNotEmpty ? double.parse(chargesController.text) : 0.0,)
 
     );
     if(result){

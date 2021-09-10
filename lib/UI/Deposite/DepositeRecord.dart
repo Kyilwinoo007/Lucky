@@ -18,13 +18,13 @@ import 'package:responsive_widgets/responsive_widgets.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 
-class DepositeRecord extends StatefulWidget{
+class DepositRecord extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _DepositeRecordState();
+  State<StatefulWidget> createState() => _DepositRecordState();
 
 }
 
-class _DepositeRecordState extends State<DepositeRecord>{
+class _DepositRecordState extends State<DepositRecord>{
   final TransactionViewModel model = serviceLocator<TransactionViewModel>();
   List<Transaction> transactionList = [];
 
@@ -39,7 +39,7 @@ class _DepositeRecordState extends State<DepositeRecord>{
     return Scaffold(
         appBar: luckyAppbar(
           context: context,
-          title: "Deposite",
+          title: "Deposit",
             actions: [
               IconButton(
                   onPressed: () {
@@ -86,7 +86,7 @@ class _DepositeRecordState extends State<DepositeRecord>{
         : Utils.buildEmptyView(
         context: context,
         icon: LineAwesomeIcons.crying_face,
-        title: "Empty Deposite");
+        title: "Empty Deposit");
   }
 
   buildLandscapeLayout(List<Transaction> transactionList) {
@@ -94,8 +94,16 @@ class _DepositeRecordState extends State<DepositeRecord>{
       itemCount: transactionList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => DepositeDetail(transactionList[index])));        },
+          Utils.checkInternetConnection(context).then((value) =>
+          {
+            if(!value){
+              ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+            } else
+              {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => DepositeDetail(transactionList[index]))),
+              }
+          });     },
         child: Container(
           width: 20,
           child: Slidable(
@@ -127,8 +135,17 @@ class _DepositeRecordState extends State<DepositeRecord>{
         itemCount: transactionList.length,
         itemBuilder: (context, index) => InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => DepositeDetail(transactionList[index])));
+            Utils.checkInternetConnection(context).then((value) =>
+            {
+              if(!value){
+                ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+              } else
+                {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => DepositeDetail(transactionList[index]))),
+                }
+            });
+
           },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),

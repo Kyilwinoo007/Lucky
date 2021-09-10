@@ -93,8 +93,18 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
       itemCount: transactionList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => TransactionDetail(transactionList[index])));        },
+          Utils.checkInternetConnection(context).then((value) =>
+          {
+          if(!value){
+          ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+          } else
+          {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => TransactionDetail(transactionList[index]))),
+        }
+          });
+
+              },
         child: Container(
           width: 20,
           child: Slidable(
@@ -126,8 +136,16 @@ class _WithdrawRecordState extends State<WithDrawRecord> {
         itemCount: transactionList.length,
         itemBuilder: (context, index) => InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => TransactionDetail(transactionList[index])));
+            Utils.checkInternetConnection(context).then((value) =>
+            {
+              if(!value){
+                ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+              } else
+                {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => TransactionDetail(transactionList[index]))),
+                }
+            });
           },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),

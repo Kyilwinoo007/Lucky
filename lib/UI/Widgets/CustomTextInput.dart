@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lucky/Utils/Colors.dart';
 import 'package:lucky/Utils/styles.dart';
@@ -21,6 +22,7 @@ class CustomTextInput extends StatefulWidget {
   final TextInputType inputType;
   final Function? validator;
   final Color lableColor;
+  final maxLength;
 
   CustomTextInput({
     Key? key,
@@ -35,6 +37,7 @@ class CustomTextInput extends StatefulWidget {
     required this.hintText,
     this.onIconPressed,
     this.trailingIcon,
+    this.maxLength = 40,
      this.leadingIcon = const Icon(null),
      this.onLeadingIconPressed,
     this.lableColor = Colors.grey,
@@ -74,6 +77,9 @@ class _MyCustomTextInputState extends State<CustomTextInput> {
           leading: this.widget.leadingIcon,
           trailing: this.widget.trailingIcon,
           title:TextFormField(
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(this.widget.maxLength)
+            ],
             onChanged: (val) => this.widget.onChangeHandler != null
                 ? this.widget.onChangeHandler!(val)
                 : null,

@@ -31,11 +31,13 @@ class _CreateDepositeState extends State<CreateDeposite> {
   TextEditingController phoneController = new TextEditingController();
   TextEditingController commissionController = new TextEditingController();
   TextEditingController amountController = new TextEditingController();
+  TextEditingController chargesController = new TextEditingController();
 
   Wrapper _nameErrMessage = new Wrapper("");
   Wrapper _phoneErrMessage = new Wrapper("");
   Wrapper _amountErrMessage = new Wrapper("");
   Wrapper _commissionErrMessage = new Wrapper("");
+  Wrapper _chargesErrMessage = new Wrapper("");
 
   var _date = new DateTime.now();
 
@@ -82,6 +84,19 @@ class _CreateDepositeState extends State<CreateDeposite> {
       ),
       hintText: 'eg.1000',
     );
+    final chargesInput = CustomTextInput(
+      errorMessage: this._chargesErrMessage.value,
+      inputType: TextInputType.number,
+      controller: this.chargesController,
+      isRequired: false,
+      label: "Fees",
+      hintText: "eg.1000",
+      leadingIcon: Icon(
+        LineAwesomeIcons.alternate_wavy_money_bill,
+        size: 25.0,
+      ),
+    );
+
     final amountInput = CustomTextInput(
       inputType: TextInputType.number,
       isRequired: true,
@@ -210,7 +225,7 @@ class _CreateDepositeState extends State<CreateDeposite> {
     return Scaffold(
       appBar: luckyAppbar(
         context: context,
-        title: "Create Deposite",
+        title: "Create Deposit",
       ),
       body: orientation == Orientation.landscape
           ? buildLandscapeView(
@@ -218,6 +233,7 @@ class _CreateDepositeState extends State<CreateDeposite> {
               phoneNo: phNoInput,
               amount: amountInput,
               commission: commissionInput,
+              charge:chargesInput,
               agent: agentInput,
               date: dateInput,
               submitButton: submitButton,
@@ -227,6 +243,7 @@ class _CreateDepositeState extends State<CreateDeposite> {
               phoneNo: phNoInput,
               amount: amountInput,
               commision: commissionInput,
+              charge:chargesInput,
               agent: agentInput,
               date: dateInput,
               submitButton: submitButton,
@@ -261,9 +278,9 @@ class _CreateDepositeState extends State<CreateDeposite> {
       required MyCustomInput agent,
       required InkWell date,
       required SolidGreenButton submitButton,
-      required OutlineGreenElevatedButton cancelButton}) {
+      required OutlineGreenElevatedButton cancelButton, required CustomTextInput charge}) {
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 16),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -285,9 +302,8 @@ class _CreateDepositeState extends State<CreateDeposite> {
               Expanded(
                 child: amount,
               ),
-              Expanded(
-                child: commission,
-              ),
+              Expanded(child: charge),
+
             ],
           ),
         ),
@@ -296,11 +312,14 @@ class _CreateDepositeState extends State<CreateDeposite> {
           child: Row(
             children: <Widget>[
               Expanded(
+                child: commission,
+              ),
+              Expanded(
                 child: agent,
               ),
               Expanded(
                 child: date,
-              )
+              ),
             ],
           ),
         ),
@@ -329,14 +348,14 @@ class _CreateDepositeState extends State<CreateDeposite> {
       required MyCustomInput agent,
       required InkWell date,
       required SolidGreenButton submitButton,
-      required OutlineGreenElevatedButton cancelButton}) {
+      required OutlineGreenElevatedButton cancelButton, required CustomTextInput charge}) {
     return SingleChildScrollView(
       child: Container(
-        // height: MediaQuery.of(context).size.height * 0.72,
         margin: EdgeInsets.only(
           left: 10,
           right: 10,
           top: 16,
+          bottom: 16
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -347,8 +366,11 @@ class _CreateDepositeState extends State<CreateDeposite> {
             SizedBox(height: 10,),
             amount,
             SizedBox(height: 10,),
+            charge,
+            SizedBox(height: 10,),
             commision,
             SizedBox(height: 10,),
+
             Row(
                 children: <Widget>[
                   Expanded(
@@ -383,7 +405,8 @@ class _CreateDepositeState extends State<CreateDeposite> {
   bool isValid() {
     bool isNameValid, isPhoneValid, isAmountValid;
     bool isCommissionValid = true;
-    String nameErrorMsg = '', phoneErrorMsg = '', amountErrorMsg = '' ,commissionErrorMsg = '';
+    bool isChargeValid = true;
+    String nameErrorMsg = '', phoneErrorMsg = '', amountErrorMsg = '' ,commissionErrorMsg = '',chargeErrorMsg = '';
     if (nameController.text.trim().isNotEmpty) {
       isNameValid = true;
     } else {
@@ -431,16 +454,23 @@ class _CreateDepositeState extends State<CreateDeposite> {
         commissionErrorMsg = "Invalid";
       }
     }
-
+    if(chargesController.text.trim().isNotEmpty){
+      double charge = double.parse(chargesController.text.trim());
+      if(charge < 1){
+        isChargeValid = false;
+        chargeErrorMsg = "Invalid";
+      }
+    }
 
     setState(() {
       _commissionErrMessage.value = commissionErrorMsg;
       _nameErrMessage.value = nameErrorMsg;
       _phoneErrMessage.value = phoneErrorMsg;
       _amountErrMessage.value = amountErrorMsg;
+      _chargesErrMessage.value = chargeErrorMsg;
     });
 
-    return isNameValid && isPhoneValid && isAmountValid && isCommissionValid;
+    return isNameValid && isPhoneValid && isAmountValid && isCommissionValid && isChargeValid;
   }
 
   void getBalanceByAgentName() async {
@@ -456,7 +486,10 @@ class _CreateDepositeState extends State<CreateDeposite> {
         ? double.parse(this.commissionController.text.trim())
         : 0.0;
     double amount = double.parse(this.amountController.text.trim());
-    double cash = balancedata.cash + amount;
+    double charges = this.chargesController.text.trim().isNotEmpty
+        ? double.parse(this.chargesController.text.trim())
+        : 0.0;
+    double cash = balancedata.cash + amount + charges;
     double eMoney = (balancedata.eMoney - amount) + commission;
     model.updateBalance(BalanceData(
         id: balancedata.id,
@@ -487,7 +520,7 @@ class _CreateDepositeState extends State<CreateDeposite> {
             amount: double.parse(amountController.text.trim()),
             commission: commission,
             transferrorType: Constants.CustomerType,
-            charges: 0.0));
+            charges: chargesController.text.trim().isNotEmpty ? double.parse(chargesController.text) : 0.0));
     if (result) {
       Utils.successDialog(context, "Success!", "Successfully Added")
           .then((value) {

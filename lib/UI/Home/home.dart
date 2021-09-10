@@ -43,11 +43,6 @@ class _HomeState extends State<Home> {
     model.getAllBalance(context);
     getUserInfo();
   }
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    model.getAllBalance(context);
-  }
   void getUserInfo() async{
     UserInfo userInfo =await basicInfo.getUserInfo();
     if(userInfo != null){
@@ -64,24 +59,24 @@ class _HomeState extends State<Home> {
     var depositWidget = ButtonWidgets(
       icon: Icon(Icons.account_balance),
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DepositeRecord()));
+       Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DepositRecord())).then((value) => model.getAllBalance(context));
       },
-      text: "Deposite",
+      text: "Deposit",
     );
     var withdrawWidget = ButtonWidgets(
       icon: Icon(Icons.credit_card),
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => WithDrawRecord()));
+      onTap: (){
+       Navigator.push(
+            context, MaterialPageRoute(builder: (context) => WithDrawRecord())).then((value) => model.getAllBalance(context));
       },
       text: "Withdraw",
     );
     var transferWidget = ButtonWidgets(
       icon: Icon(Icons.send),
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => TransferTab()));
+       Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TransferTab())).then((value) => model.getAllBalance(context));
       },
       text: "Transfer",
     );
@@ -89,7 +84,7 @@ class _HomeState extends State<Home> {
       icon: Icon(Icons.villa),
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => BillRecord()));
+            context, MaterialPageRoute(builder: (context) => BillRecord())).then((value) => model.getAllBalance(context));
       },
       text: "Bill",
     );
@@ -115,7 +110,7 @@ class _HomeState extends State<Home> {
     );
     var usersWidget = ButtonWidgets(
       icon: Icon(Icons.people),
-      onTap: () async{
+      onTap: () {
         if(userInfo.userType.trim() == Constants.AdminUserType){
           Navigator.push(context, MaterialPageRoute(builder: (context) => UserScreen()));
         }else{
@@ -134,8 +129,10 @@ class _HomeState extends State<Home> {
     var agentWidget = ButtonWidgets(
       icon: Icon(Icons.real_estate_agent),
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Agent()));
+       Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Agent())).then((value) =>
+         model.getAllBalance(context));
+
       },
       text: "Agent",
     );

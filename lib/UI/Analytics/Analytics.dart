@@ -23,7 +23,7 @@ class _AnalyticState extends State<Analytics> with SingleTickerProviderStateMixi
 
   List<Widget> list = [
     Tab(
-      text: "Deposite",
+      text: "Deposit",
     ),
     Tab(
       text: "Transfer",

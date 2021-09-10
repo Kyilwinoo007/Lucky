@@ -9,7 +9,7 @@ import 'package:lucky/Data/SharedPref/basicInfo.dart';
 import 'package:lucky/Data/UserInfo.dart';
 import 'package:lucky/Repository/MoneyInputViewModel.dart';
 import 'package:lucky/UI/Home/home.dart';
-import 'package:lucky/UI/PrinterSettings/BluetoothDevices.dart';
+import 'package:lucky/UI/PrinterSettings/PrinterSetting.dart';
 import 'package:lucky/UI/PrinterSettings/PrinterSetting.dart';
 import 'package:lucky/UI/Widgets/LuckyAppBar.dart';
 import 'package:lucky/Utils/Colors.dart';
@@ -94,6 +94,7 @@ class _ProfileState extends State<Profile> {
                                   fontWeight: FontWeight.bold),
                             ),
                             Container(
+                              width: 250,
                               decoration: BoxDecoration(
                                 color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -233,7 +234,7 @@ class _ProfileState extends State<Profile> {
                         child:ElevatedButton(
                           onPressed: (){
                             Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => BluetoothDevices()));                          },
+                                context, MaterialPageRoute(builder: (context) => PrinterSetting()));                          },
                           style:ElevatedButton.styleFrom(
                           primary: Colors.white,
                           elevation: 5.0,

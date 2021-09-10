@@ -93,6 +93,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
   }
 
   buildPortraitView() {
+    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return SingleChildScrollView(
       child: Center(
         child: Screenshot(
@@ -108,7 +109,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
                    children: [
                       Padding(
                         padding:
-                            EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                            EdgeInsets.only(left:90.0,top: 2.0,bottom: 1.0),
                         child:  Container(
                           decoration: BoxDecoration(
                               color: Colors.green[50],),
@@ -125,9 +126,10 @@ class _DepositeDetailState extends State<DepositeDetail> {
                     elevation: 3,
                     shadowColor: Colors.grey,
                     child: Row(children: [
-                      Padding(
+                      Container(
+                        width:260,
                         padding:
-                            EdgeInsets.only(top: 4.0, left: 90, bottom: 8.0),
+                            EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
                         child: Text(
                           userInfo!.name,
                           style: TextStyle(
@@ -154,25 +156,26 @@ class _DepositeDetailState extends State<DepositeDetail> {
                                     color: Colors.black54,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  this
-                                          .widget
-                                          .transaction
-                                          .fromCustomerName
-                                          .isEmpty
-                                      ? "Unknown"
-                                      : this
-                                          .widget
-                                          .transaction
-                                          .fromCustomerName,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold),
+                              Container(
+                                width: 180,
+                                padding: EdgeInsets.only(left: 10),
+                                child:  Text(
+                                    this
+                                            .widget
+                                            .transaction
+                                            .fromCustomerName
+                                            .isEmpty
+                                        ? "Unknown"
+                                        : this
+                                            .widget
+                                            .transaction
+                                            .fromCustomerName,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),
@@ -188,7 +191,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(left: 25),
+                                padding: EdgeInsets.only(left: 10),
                                 child: Text(
                                   this.widget.transaction.fromPhone,
                                   style: TextStyle(
@@ -485,6 +488,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
   }
 
   buildLandscapeView() {
+    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return ListView(children: [
       Screenshot(
         controller: screenshotController,
@@ -518,8 +522,10 @@ class _DepositeDetailState extends State<DepositeDetail> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 8.0, left: 90, bottom: 8.0),
+                  Container(
+                    width:260,
+                    padding:
+                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
                     child: Text(
                       userInfo!.name,
                       style: TextStyle(
@@ -549,8 +555,9 @@ class _DepositeDetailState extends State<DepositeDetail> {
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 50),
+                            Container(
+                              width: 180,
+                              padding: EdgeInsets.only(left: 10),
                               child: Text(
                                 this.widget.transaction.fromCustomerName.isEmpty
                                     ? "Unknown"
@@ -869,16 +876,22 @@ class _DepositeDetailState extends State<DepositeDetail> {
   void _connect() {
     try {
       basicInfo.getPrinterDevice().then((value) {
-        userBt.BluetoothDevice bt = value;
-        BluetoothDevice device = BluetoothDevice(bt.name, bt.address);
-        bluetooth.isConnected.then((isConnected) => {
-              if (!isConnected!)
-                {
-                  bluetooth.connect(device).then((value) => {
-                        printVoucher(),
-                      }),
-                }
-            });
+        if(value != null){
+          userBt.BluetoothDevice bt = value;
+          BluetoothDevice device = BluetoothDevice(bt.name, bt.address);
+          bluetooth.isConnected.then((isConnected) => {
+            if (!isConnected!)
+              {
+                bluetooth.connect(device).then((value) => {
+                  printVoucher(),
+                }),
+              }
+          });
+        }else{
+          Utils.errorDialog(context, "No connected printer found!");
+
+        }
+
       });
     } on PlatformException {}
   }

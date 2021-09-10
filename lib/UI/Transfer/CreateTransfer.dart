@@ -359,7 +359,7 @@ class _CreateTransferState extends State<CreateTransfer> {
       submitButton,
       clearButton}) {
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 16),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -464,6 +464,7 @@ class _CreateTransferState extends State<CreateTransfer> {
           left: 10,
           right: 10,
           top: 16,
+          bottom: 16
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

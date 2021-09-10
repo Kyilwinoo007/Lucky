@@ -97,6 +97,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
   }
 
   buildPortraitView() {
+    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return SingleChildScrollView(
       child: Screenshot(
         controller: screenshotController,
@@ -129,9 +130,10 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                 // shape: RoundedRectangleBorder(
                 //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
-                  Padding(
+                  Container(
+                    width:260,
                     padding:
-                    EdgeInsets.only(top: 8.0, left: 90, bottom: 8.0),
+                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
                     child: Text(
                       userInfo!.name,
                       style: TextStyle(
@@ -160,6 +162,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                             Container(
+                              width: 150,
                                 decoration: BoxDecoration(
                                   // color: Colors.green[50],
                                   borderRadius: BorderRadius.all(
@@ -186,6 +189,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                              Container(
+                               width: 150,
                                 decoration: BoxDecoration(
                                   // color: Colors.green[50],
                                   borderRadius: BorderRadius.all(
@@ -525,6 +529,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
   }
 
   buildLandscapeView() {
+    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return ListView(
       children :[
         Screenshot(
@@ -559,9 +564,10 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                 // shape: RoundedRectangleBorder(
                 //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
-                  Padding(
+                  Container(
+                    width:260,
                     padding:
-                    EdgeInsets.only(top: 8.0, left: 90, bottom: 8.0),
+                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
                     child: Text(
                       userInfo!.name,
                       style: TextStyle(
@@ -590,6 +596,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                             Container(
+                              width: 160,
                               decoration: BoxDecoration(
                                 // color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -616,6 +623,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                             Container(
+                              width: 150,
                               decoration: BoxDecoration(
                                 // color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -936,16 +944,21 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
   _connect() {
     try {
       basicInfo.getPrinterDevice().then((value) {
-        userBt.BluetoothDevice bt = value;
-        BluetoothDevice device = BluetoothDevice(bt.name, bt.address);
-        bluetooth.isConnected.then((isConnected) => {
-          if (!isConnected!)
-            {
-              bluetooth.connect(device).then((value) => {
-                printVoucher(),
-              }),
-            }
-        });
+        if(value != null){
+          userBt.BluetoothDevice bt = value;
+          BluetoothDevice device = BluetoothDevice(bt.name, bt.address);
+          bluetooth.isConnected.then((isConnected) => {
+            if (!isConnected!)
+              {
+                bluetooth.connect(device).then((value) => {
+                  printVoucher(),
+                }),
+              }
+          });
+        }else{
+          Utils.errorDialog(context, "No connected printer found!");
+        }
+
       });
     } on PlatformException {}
   }

@@ -32,11 +32,13 @@ class _CreateBillState extends State<CreateBill> {
   TextEditingController phoneController = new TextEditingController();
   TextEditingController commissionController = new TextEditingController();
   TextEditingController amountController = new TextEditingController();
+  TextEditingController chargesController = new TextEditingController();
 
   Wrapper _nameErrMessage = new Wrapper("");
   Wrapper _phoneErrMessage = new Wrapper("");
   Wrapper _amountErrMessage = new Wrapper("");
   Wrapper _commissionErrMessage = new Wrapper("");
+  Wrapper _chargesErrMessage = new Wrapper("");
 
   var _date = new DateTime.now();
 
@@ -102,6 +104,19 @@ class _CreateBillState extends State<CreateBill> {
       ),
       hintText: 'eg.1000',
     );
+    final chargesInput = CustomTextInput(
+      errorMessage: this._chargesErrMessage.value,
+      inputType: TextInputType.number,
+      controller: this.chargesController,
+      isRequired: false,
+      label: "Fees",
+      hintText: "eg.1000",
+      leadingIcon: Icon(
+        LineAwesomeIcons.alternate_wavy_money_bill,
+        size: 25.0,
+      ),
+    );
+
     final amountInput = CustomTextInput(
       inputType: TextInputType.number,
       isRequired: true,
@@ -236,6 +251,7 @@ class _CreateBillState extends State<CreateBill> {
           phoneNo: phNoInput,
           amount: amountInput,
           commission: commissionInput,
+          charge:chargesInput,
           agent: agentInput,
           date: dateInput,
           submitButton: submitButton,
@@ -245,6 +261,7 @@ class _CreateBillState extends State<CreateBill> {
           phoneNo: phNoInput,
           amount: amountInput,
           commision: commissionInput,
+          charge:chargesInput,
           agent: agentInput,
           date: dateInput,
           submitButton: submitButton,
@@ -260,8 +277,9 @@ class _CreateBillState extends State<CreateBill> {
   bool isValid() {
     bool isNameValid, isAmountValid;
     bool isCommissionValid = true;
+    bool isChargeValid = true;
     bool isPhoneValid = true;
-    String nameErrorMsg = '', amountErrorMsg = '' ,commissionErrorMsg = '',phoneErrorMsg = '';
+    String nameErrorMsg = '', amountErrorMsg = '' ,commissionErrorMsg = '',phoneErrorMsg = '',chargeErrorMsg = '';
     if (nameController.text.trim().isNotEmpty) {
       isNameValid = true;
     } else {
@@ -298,6 +316,14 @@ class _CreateBillState extends State<CreateBill> {
         commissionErrorMsg = "Invalid";
       }
     }
+
+    if(chargesController.text.trim().isNotEmpty){
+      double charge = double.parse(chargesController.text.trim());
+      if(charge < 1){
+        isChargeValid = false;
+        chargeErrorMsg = "Invalid";
+      }
+    }
     if(phoneController.text.trim().isNotEmpty){
       if(!Utils.validatePhone(phoneController.text.trim())){
         isPhoneValid = false;
@@ -310,9 +336,10 @@ class _CreateBillState extends State<CreateBill> {
       _nameErrMessage.value = nameErrorMsg;
       _amountErrMessage.value = amountErrorMsg;
       _phoneErrMessage.value = phoneErrorMsg;
+      _chargesErrMessage.value = chargeErrorMsg;
     });
 
-    return isNameValid && isAmountValid && isCommissionValid && isPhoneValid;
+    return isNameValid && isAmountValid && isCommissionValid && isPhoneValid && isChargeValid;
   }
 
   void updateBalance() {
@@ -322,8 +349,11 @@ class _CreateBillState extends State<CreateBill> {
     double commission = this.commissionController.text.trim().isNotEmpty
         ? double.parse(this.commissionController.text.trim())
         : 0.0;
+    double charges = this.chargesController.text.trim().isNotEmpty
+        ? double.parse(this.chargesController.text.trim())
+        : 0.0;
     double amount = double.parse(this.amountController.text.trim());
-    double cash = balancedata.cash + amount;
+    double cash = balancedata.cash + amount + charges;
     double eMoney = (balancedata.eMoney - amount) + commission;
     model.updateBalance(BalanceData(
         id: balancedata.id,
@@ -354,7 +384,7 @@ class _CreateBillState extends State<CreateBill> {
             amount: double.parse(amountController.text.trim()),
             commission: commission,
             transferrorType: Constants.CustomerType,
-            charges: 0.0));
+            charges: chargesController.text.trim().isNotEmpty ? double.parse(chargesController.text) : 0.0));
     if (result) {
       Utils.successDialog(context, "Success!", "Successfully Added")
           .then((value) {
@@ -375,10 +405,10 @@ class _CreateBillState extends State<CreateBill> {
       required MyCustomInput agent,
       required InkWell date,
       required SolidGreenButton submitButton,
-      required OutlineGreenElevatedButton cancelButton}) {
+      required OutlineGreenElevatedButton cancelButton, required CustomTextInput charge}) {
 
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 16),
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -400,9 +430,8 @@ class _CreateBillState extends State<CreateBill> {
               Expanded(
                 child: amount,
               ),
-              Expanded(
-                child: commission,
-              ),
+              Expanded(child: charge),
+
             ],
           ),
         ),
@@ -410,6 +439,9 @@ class _CreateBillState extends State<CreateBill> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: <Widget>[
+              Expanded(
+                child: commission,
+              ),
               Expanded(
                 child: agent,
               ),
@@ -445,13 +477,14 @@ class _CreateBillState extends State<CreateBill> {
       required MyCustomInput agent,
       required InkWell date,
       required SolidGreenButton submitButton,
-      required OutlineGreenElevatedButton cancelButton}) {
+      required OutlineGreenElevatedButton cancelButton, required CustomTextInput charge}) {
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.only(
           left: 10,
           right: 10,
           top: 16,
+          bottom: 16
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -461,6 +494,8 @@ class _CreateBillState extends State<CreateBill> {
             phoneNo,
             SizedBox(height: 10,),
             amount,
+            SizedBox(height: 10,),
+            charge,
             SizedBox(height: 10,),
             commision,
             SizedBox(height: 10,),

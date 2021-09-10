@@ -21,7 +21,7 @@ class Constants {
 
   //transactions type
   static const List<String> transactionTypeList = [DEPOSITE_TYPE,WITHDRAW_TYPE,TRANSFER_TYPE];
-  static const String DEPOSITE_TYPE = "Deposite";
+  static const String DEPOSITE_TYPE = "Deposit";
   static const String WITHDRAW_TYPE = "Withdraw";
   static const String TRANSFER_TYPE = "Transfer";
   static const String BILL_TOP_UP = "Bill Top Up";

@@ -96,8 +96,16 @@ class _BankTransferRecordState extends State<BankTransferRecord> {
       itemCount: transactionList.length,
       itemBuilder: (context, index) => InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => BankTransactionDetail(this.widget.transferorType ,transactionList[index])));
+          Utils.checkInternetConnection(context).then((value) =>
+          {
+            if(!value){
+              ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+            } else
+              {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BankTransactionDetail(this.widget.transferorType ,transactionList[index]))),
+              }
+          });
         },
         child: Container(
           width: 20,
@@ -131,8 +139,17 @@ class _BankTransferRecordState extends State<BankTransferRecord> {
         itemCount: transactionList.length,
         itemBuilder: (context, index) => InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => BankTransactionDetail(this.widget.transferorType ,transactionList[index])));          },
+            Utils.checkInternetConnection(context).then((value) =>
+            {
+              if(!value){
+                ScaffoldMessenger.of(context).showSnackBar(Utils.showSnackBar()),
+              } else
+                {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BankTransactionDetail(this.widget.transferorType ,transactionList[index]))),
+          }
+            });
+                   },
           child: Slidable(
             actionPane: SlidableDrawerActionPane(),
             actions: <Widget>[

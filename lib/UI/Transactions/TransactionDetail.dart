@@ -34,6 +34,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
   @override
   void initState() {
     super.initState();
+    isTransfer = this.widget.transaction.transactionsType == Constants.TRANSFER_TYPE;
     getUserInfo();
   }
 
@@ -54,7 +55,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
         allowFontScaling: true,
       );
     }
-    isTransfer = this.widget.transaction.transactionsType == Constants.TRANSFER_TYPE;
     var orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: luckyAppbar(
@@ -93,6 +93,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
   }
 
   buildPortraitView() {
+    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return SingleChildScrollView(
       child: Screenshot(
         controller: screenshotController,
@@ -106,7 +107,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                     children: [
                       Padding(
                         padding:
-                        EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
+                        EdgeInsets.only(left:90.0,top: 2.0,bottom: 1.0),
                         child:  Container(
                           decoration: BoxDecoration(
                             color: Colors.green[50],),
@@ -125,14 +126,16 @@ class _TransactionDetailState extends State<TransactionDetail> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: Row(children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 90, bottom: 8.0),
+                    Container(
+                      width:260,
+                      padding:
+                      EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
                       child: Text(
                         userInfo!.name,
                         style: TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20.0),
+                            fontSize: 18.0),
                       ),
                     ),
                   ]),
@@ -149,12 +152,13 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           padding: EdgeInsets.all(2.0),
                           child: isTransfer ?  Row(
                             children: <Widget>[
-                              Text("Transferor Name : " , style: TextStyle(
-                                  fontSize: 16.0,
+                              Text("Transferor Name :" , style: TextStyle(
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
                              Container(
+                               width: 150,
                                   decoration: BoxDecoration(
                                     // color: Colors.green[50],
                                     borderRadius: BorderRadius.all(
@@ -165,7 +169,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
                                     child: Text(this.widget.transaction.fromCustomerName.isEmpty ? "Unknown" : this.widget.transaction.fromCustomerName,
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           color: Colors.green,
                                           fontWeight: FontWeight.bold
                                       ),),
@@ -176,11 +180,12 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           Row(
                             children: <Widget>[
                               Text("Withdrawer Name : " , style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
                               Container(
+                                width: 150,
                                   decoration: BoxDecoration(
                                     // color: Colors.green[50],
                                     borderRadius: BorderRadius.all(
@@ -191,7 +196,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
                                     child: Text(this.widget.transaction.toCustomerName.isEmpty ? "Unknown" : this.widget.transaction.toCustomerName,
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           color: Colors.green,
                                         fontWeight: FontWeight.bold
                                       ),),
@@ -206,11 +211,12 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             Row(
                               children: <Widget>[
                                 Text("Recipient Name : " , style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: 14.0,
                                     color: Colors.black54,
                                     fontWeight: FontWeight.bold
                                 ),),
                                 Container(
+                                  width: 150,
                                     decoration: BoxDecoration(
                                       // color: Colors.green[50],
                                       borderRadius: BorderRadius.all(
@@ -221,7 +227,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                       padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
                                       child: Text(this.widget.transaction.toCustomerName.isEmpty ? "Unknown": this.widget.transaction.toCustomerName,
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             color: Colors.green,
                                             fontWeight: FontWeight.bold
                                         ),),
@@ -232,11 +238,12 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             Row(
                               children: <Widget>[
                                 Text("Transferor Name : " , style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: 14.0,
                                     color: Colors.black54,
                                     fontWeight: FontWeight.bold
                                 ),),
                                 Container(
+                                  width: 150,
                                     decoration: BoxDecoration(
                                       // color: Colors.green[50],
                                       borderRadius: BorderRadius.all(
@@ -247,7 +254,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                       padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
                                       child: Text(this.widget.transaction.fromCustomerName.isEmpty ? "Unknown" : this.widget.transaction.fromCustomerName,
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             color: Colors.green,
                                             fontWeight: FontWeight.bold
                                         ),),
@@ -279,7 +286,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                         child: Row(
                           children: <Widget>[
                             Text("Recipient Phone :" , style: TextStyle(
-                                fontSize: 16.0,
+                                fontSize: 14.0,
                                 color: Colors.black54,
                                 fontWeight: FontWeight.bold
                             ),),
@@ -294,7 +301,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                 padding: EdgeInsets.symmetric(horizontal: 2,vertical: 4),
                                 child: Text(this.widget.transaction.toPhone ,
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold
                                   ),),
@@ -308,7 +315,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           child: Row(
                             children: <Widget>[
                               Text("Transferor Phone :" , style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
@@ -323,7 +330,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   padding: EdgeInsets.symmetric(horizontal: 2,vertical: 4),
                                   child: Text(this.widget.transaction.fromPhone ,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold
                                     ),),
@@ -356,7 +363,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           child: Row(
                             children: <Widget>[
                               Text("Amount : " , style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
@@ -371,7 +378,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 8),
                                   child: Text(this.widget.transaction.amount.toString() ,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold
                                     ),),
@@ -380,41 +387,13 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             ],
                           ),
                         ),
-                        // Padding(
-                        //   padding: EdgeInsets.all(10.0),
-                        //   child: Row(
-                        //     children: <Widget>[
-                        //       Text("Commission : " , style: TextStyle(
-                        //           fontSize: 16.0,
-                        //           color: Colors.black54,
-                        //           fontWeight: FontWeight.bold
-                        //       ),),
-                        //       Container(
-                        //         decoration: BoxDecoration(
-                        //           color: Colors.green[50],
-                        //           borderRadius: BorderRadius.all(
-                        //             Radius.circular(10.0),
-                        //           ),
-                        //         ),
-                        //         child: Padding(
-                        //           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                        //           child: Text(this.widget.transaction.commission.toString() ,
-                        //             style: TextStyle(
-                        //                 fontSize: 16,
-                        //                 color: Colors.green,
-                        //                 fontWeight: FontWeight.bold
-                        //             ),),
-                        //         ),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
+
                         Padding(
                           padding: EdgeInsets.all(4.0),
                           child: Row(
                             children: <Widget>[
                               Text("Charges : " , style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
@@ -429,7 +408,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   padding: EdgeInsets.all(8),
                                   child: Text(this.widget.transaction.charges.toString() ,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold
                                     ),),
@@ -457,7 +436,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                       child: Row(
                         children: <Widget>[
                           Text("Total :" , style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                               color: Colors.black87,
                               fontWeight: FontWeight.bold
                           ),),
@@ -474,7 +453,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                 padding: EdgeInsets.all(8),
                                 child: Text((this.widget.transaction.charges + this.widget.transaction.amount).toString(),
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold
                                   ),),
@@ -506,7 +485,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           child: Row(
                             children: <Widget>[
                               Text("Agent :" , style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
@@ -521,7 +500,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   padding: EdgeInsets.all(8),
                                   child: Text(this.widget.transaction.agent ,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold
                                     ),),
@@ -535,7 +514,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           child: Row(
                             children: <Widget>[
                               Text("Date :" , style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold
                               ),),
@@ -550,7 +529,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   padding: EdgeInsets.all(8),
                                   child: Text(this.widget.transaction.date,
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold
                                     ),),
@@ -566,7 +545,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                               Text(
                                 "#1-" + (this.widget.transaction.id! + 1000).toString(),
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: 13.0,
                                     color: Colors.black54,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -585,7 +564,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     child: Text(
                                       Utils.formatTime(DateTime.now()),
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 13,
                                           color: Colors.green,
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -610,6 +589,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
   }
 
   buildLandscapeView() {
+    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return ListView(
       children: [
         Screenshot(
@@ -644,8 +624,10 @@ class _TransactionDetailState extends State<TransactionDetail> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: Row(children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 8.0, left: 90, bottom: 8.0),
+                    Container(
+                      width:260,
+                      padding:
+                      EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
                       child: Text(
                         userInfo!.name,
                         style: TextStyle(
@@ -1104,16 +1086,22 @@ class _TransactionDetailState extends State<TransactionDetail> {
   _connect() {
     try {
       basicInfo.getPrinterDevice().then((value) {
-        userBt.BluetoothDevice bt = value;
-        BluetoothDevice device = BluetoothDevice(bt.name, bt.address);
-        bluetooth.isConnected.then((isConnected) => {
-          if (!isConnected!)
-            {
-              bluetooth.connect(device).then((value) => {
-                printVoucher(),
-              }),
-            }
-        });
+        if(value != null){
+          userBt.BluetoothDevice bt = value;
+          BluetoothDevice device = BluetoothDevice(bt.name, bt.address);
+          bluetooth.isConnected.then((isConnected) => {
+            if (!isConnected!)
+              {
+                bluetooth.connect(device).then((value) => {
+                  printVoucher(),
+                }),
+              }
+          });
+        }else{
+          Utils.errorDialog(context, "No connected printer found!");
+
+        }
+
       });
     } on PlatformException {}
 

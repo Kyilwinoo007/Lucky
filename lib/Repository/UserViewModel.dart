@@ -111,13 +111,6 @@ class UserViewModel extends ChangeNotifier{
   }
 
   updateUserFireStoreDatabase(UserData? userData, String name, String phone, String email, String pwd) async{
-    // await FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userData!.userId).update(
-    // {
-    // 'name': name,
-    // 'phone': phone.isNotEmpty ? phone : "",
-    // 'email': email,
-    // 'pwd':pwd,
-    // });
 
     if(pwd.isNotEmpty){
       await FirebaseFirestore.instance.collection(Constants.firestore_collection).doc(userData!.userId).update(
