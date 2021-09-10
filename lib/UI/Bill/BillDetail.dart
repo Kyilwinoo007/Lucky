@@ -86,7 +86,6 @@ class _BillDetailState extends State<BillDetail> {
     );
   }
   buildPortraitView() {
-    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return SingleChildScrollView(
       child: Screenshot(
         controller: screenshotController,
@@ -98,16 +97,19 @@ class _BillDetailState extends State<BillDetail> {
             children: <Widget>[
               userInfo!.url.isNotEmpty ? Row(
                   children: [
-                    Padding(
+                    Container(
+                      width: 260,
                       padding:
-                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
-                      child:  Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green[50],),
-                        height: 80,
-                        child: Image.network(
-                          userInfo!.url,
-                          fit: BoxFit.fill,
+                      EdgeInsets.only(top: 2.0,bottom: 2.0),
+                      child:  Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
@@ -120,15 +122,17 @@ class _BillDetailState extends State<BillDetail> {
                 //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
                   Container(
-                    width:260,
+                    width:250,
                     padding:
-                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
-                    child: Text(
-                      userInfo!.name,
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0),
+                    EdgeInsets.only(top: 1.0, bottom: 2.0),
+                    child: Center(
+                      child: Text(
+                        userInfo!.name,
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0),
+                      ),
                     ),
                   ),
                 ]),
@@ -430,7 +434,6 @@ class _BillDetailState extends State<BillDetail> {
   }
 
   buildLandscapeView() {
-    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return ListView(
         children :[
           Screenshot(
@@ -443,16 +446,19 @@ class _BillDetailState extends State<BillDetail> {
                 children: <Widget>[
                   userInfo!.url.isNotEmpty ? Row(
                       children: [
-                        Padding(
+                        Container(
+                          width:260,
                           padding:
-                          EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
-                          child:  Container(
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],),
-                            height: 80,
-                            child: Image.network(
-                              userInfo!.url,
-                              fit: BoxFit.fill,
+                          EdgeInsets.only(top: 8.0,bottom: 4.0),
+                          child:  Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.green[50],),
+                              height: 80,
+                              child: Image.network(
+                                userInfo!.url,
+                                fit: BoxFit.fill,
+                              ),
                             ),
                           ),
                         ),
@@ -465,15 +471,17 @@ class _BillDetailState extends State<BillDetail> {
                     //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Row(children: [
                       Container(
-                        width:260,
+                        width:250,
                         padding:
-                        EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
-                        child: Text(
-                          userInfo!.name,
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0),
+                        EdgeInsets.only(top: 1.0, bottom: 2.0),
+                        child: Center(
+                          child: Text(
+                            userInfo!.name,
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0),
+                          ),
                         ),
                       ),
                     ]),
@@ -827,12 +835,15 @@ class _BillDetailState extends State<BillDetail> {
                 .asUint8List(element.offsetInBytes, element.lengthInBytes));
           });
           bluetooth.printNewLine();
-          bluetooth.printNewLine();
           bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
-          bluetooth.disconnect();
         }
+        Future.delayed(new Duration(seconds: 10),(){
+          bluetooth.disconnect();
+
+        });
       });
+
     }).catchError((onError) {
       print(onError);
     });

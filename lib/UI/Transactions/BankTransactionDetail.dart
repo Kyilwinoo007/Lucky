@@ -66,6 +66,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
         title: "${this.widget.transaction.transactionsType} Detail",
         actions: [
           IconButton(
+
             onPressed: () {
               Utils.isEnableBT(bluetooth).then((value) => {
                 if (value)
@@ -97,7 +98,6 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
   }
 
   buildPortraitView() {
-    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return SingleChildScrollView(
       child: Screenshot(
         controller: screenshotController,
@@ -109,16 +109,19 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
             children: <Widget>[
               userInfo!.url.isNotEmpty ? Row(
                   children: [
-                    Padding(
+                    Container(
+                      width: 260,
                       padding:
-                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
-                      child:  Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green[50],),
-                        height: 80,
-                        child: Image.network(
-                          userInfo!.url,
-                          fit: BoxFit.fill,
+                      EdgeInsets.only(top: 8.0,bottom: 4.0),
+                      child:  Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
@@ -131,15 +134,17 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                 //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
                   Container(
-                    width:260,
+                    width:250,
                     padding:
-                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
-                    child: Text(
-                      userInfo!.name,
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0),
+                    EdgeInsets.only(top: 1.0, bottom: 2.0),
+                    child: Center(
+                      child: Text(
+                        userInfo!.name,
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0),
+                      ),
                     ),
                   ),
                 ]),
@@ -162,7 +167,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                             Container(
-                              width: 150,
+                              width: 140,
                                 decoration: BoxDecoration(
                                   // color: Colors.green[50],
                                   borderRadius: BorderRadius.all(
@@ -189,7 +194,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                              Container(
-                               width: 150,
+                               width: 140,
                                 decoration: BoxDecoration(
                                   // color: Colors.green[50],
                                   borderRadius: BorderRadius.all(
@@ -529,7 +534,6 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
   }
 
   buildLandscapeView() {
-    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return ListView(
       children :[
         Screenshot(
@@ -543,16 +547,19 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
             children: <Widget>[
               userInfo!.url.isNotEmpty ? Row(
                   children: [
-                    Padding(
+                    Container(
+                      width:260,
                       padding:
-                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
-                      child:  Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green[50],),
-                        height: 80,
-                        child: Image.network(
-                          userInfo!.url,
-                          fit: BoxFit.fill,
+                      EdgeInsets.only(top: 4.0,bottom: 4.0),
+                      child:  Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
@@ -565,15 +572,17 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                 //     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
                   Container(
-                    width:260,
+                    width:250,
                     padding:
-                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
-                    child: Text(
-                      userInfo!.name,
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0),
+                    EdgeInsets.only(top: 1.0, bottom: 2.0),
+                    child: Center(
+                      child: Text(
+                        userInfo!.name,
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0),
+                      ),
                     ),
                   ),
                 ]),
@@ -596,7 +605,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                             Container(
-                              width: 160,
+                              width: 140,
                               decoration: BoxDecoration(
                                 // color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -623,7 +632,7 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                                 fontWeight: FontWeight.bold
                             ),),
                             Container(
-                              width: 150,
+                              width: 140,
                               decoration: BoxDecoration(
                                 // color: Colors.green[50],
                                 borderRadius: BorderRadius.all(
@@ -986,12 +995,15 @@ class _BankTransactionDetailState extends State<BankTransactionDetail> {
                 .asUint8List(element.offsetInBytes, element.lengthInBytes));
           });
           bluetooth.printNewLine();
-          bluetooth.printNewLine();
           bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
-          bluetooth.disconnect();
         }
+        Future.delayed(new Duration(seconds: 10),(){
+          bluetooth.disconnect();
+
+        });
       });
+
     }).catchError((onError) {
       print(onError);
     });

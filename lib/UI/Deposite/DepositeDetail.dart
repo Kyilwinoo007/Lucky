@@ -93,7 +93,6 @@ class _DepositeDetailState extends State<DepositeDetail> {
   }
 
   buildPortraitView() {
-    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return SingleChildScrollView(
       child: Center(
         child: Screenshot(
@@ -107,16 +106,19 @@ class _DepositeDetailState extends State<DepositeDetail> {
                 children: <Widget>[
                userInfo!.url.isNotEmpty ? Row(
                    children: [
-                      Padding(
+                      Container(
+                        width: 260,
                         padding:
-                            EdgeInsets.only(left:90.0,top: 2.0,bottom: 1.0),
-                        child:  Container(
-                          decoration: BoxDecoration(
-                              color: Colors.green[50],),
-                          height: 80,
-                          child: Image.network(
-                            userInfo!.url,
-                            fit: BoxFit.fill,
+                            EdgeInsets.only(top: 1.0,bottom: 1.0),
+                        child:  Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.green[50],),
+                            height: 80,
+                            child: Image.network(
+                              userInfo!.url,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                       ),
@@ -127,15 +129,17 @@ class _DepositeDetailState extends State<DepositeDetail> {
                     shadowColor: Colors.grey,
                     child: Row(children: [
                       Container(
-                        width:260,
+                        width:250,
                         padding:
-                            EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
-                        child: Text(
-                          userInfo!.name,
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0),
+                            EdgeInsets.only(top: 1.0, bottom: 2.0),
+                        child: Center(
+                          child: Text(
+                            userInfo!.name,
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0),
+                          ),
                         ),
                       ),
                     ]),
@@ -160,8 +164,7 @@ class _DepositeDetailState extends State<DepositeDetail> {
                                 width: 180,
                                 padding: EdgeInsets.only(left: 10),
                                 child:  Text(
-                                    this
-                                            .widget
+                                    this.widget
                                             .transaction
                                             .fromCustomerName
                                             .isEmpty
@@ -488,7 +491,6 @@ class _DepositeDetailState extends State<DepositeDetail> {
   }
 
   buildLandscapeView() {
-    var length = userInfo!.name.length > 15 ? userInfo!.name.length : 0.0;
     return ListView(children: [
       Screenshot(
         controller: screenshotController,
@@ -501,16 +503,19 @@ class _DepositeDetailState extends State<DepositeDetail> {
             children: <Widget>[
               userInfo!.url.isNotEmpty ? Row(
                   children: [
-                    Padding(
+                    Container(
+                      width: 260,
                       padding:
-                      EdgeInsets.only(left:90.0,top: 8.0,bottom: 4.0),
-                      child:  Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green[50],),
-                        height: 80,
-                        child: Image.network(
-                          userInfo!.url,
-                          fit: BoxFit.fill,
+                      EdgeInsets.only(top: 8.0,bottom: 4.0),
+                      child:  Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],),
+                          height: 80,
+                          child: Image.network(
+                            userInfo!.url,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
@@ -523,15 +528,17 @@ class _DepositeDetailState extends State<DepositeDetail> {
                     borderRadius: BorderRadius.all(Radius.circular(5.0))),
                 child: Row(children: [
                   Container(
-                    width:260,
+                    width:250,
                     padding:
-                    EdgeInsets.only(top: 1.0, left: (80.0 - length), bottom: 2.0),
-                    child: Text(
-                      userInfo!.name,
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0),
+                    EdgeInsets.only(top: 1.0, bottom: 2.0),
+                    child: Center(
+                      child: Text(
+                        userInfo!.name,
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0),
+                      ),
                     ),
                   ),
                 ]),
@@ -919,12 +926,15 @@ class _DepositeDetailState extends State<DepositeDetail> {
                 .asUint8List(element.offsetInBytes, element.lengthInBytes));
           });
 
-          bluetooth.printNewLine();
+          // bluetooth.printNewLine();
           bluetooth.printNewLine();
           bluetooth.printCustom("--------------------------------", 1, 1);
           bluetooth.paperCut();
-          bluetooth.disconnect();
         }
+        Future.delayed(new Duration(seconds: 10),(){
+          bluetooth.disconnect();
+
+        });
       });
     }).catchError((onError) {
       print(onError);
